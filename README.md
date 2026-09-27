@@ -9,7 +9,9 @@ make build    # data/proposals.csv + .geojson -> dist/proposals.json; cameras ->
 make serve    # site/ on port 8000 (Codespaces forwards it as "skyline")
 make cameras  # recompute the 20 views in data/cameras.json from landmark coordinates
 make contact-sheet   # headless 600×800 previews of all 20 views -> docs/contact-sheet.png
-make renders  # headless 2400×3200 renders -> renders/NN-slug_YYYY-MM-DD.png
+make renders  # headless 2400×3200 renders (3840×2160 for 16:9 views) -> renders/NN-slug_YYYY-MM-DD.png
+make candidates      # City open-data leads -> data/candidates.csv + docs/candidates-summary.md (unverified)
+make test-trace      # headless iPad-touch test of Trace mode -> docs/trace-mode.png
 ```
 
 - `make fetch REFRESH=1` refetches everything.
@@ -23,6 +25,13 @@ Viewer (`web/index.html`, single file, three.js r166.1 from cdnjs):
 - Pick a view from `cameras.json`, then use **Render PNG** to download
   `NN-slug_YYYY-MM-DD.png` (2400×3200, or 3840×2160 at 16:9). Commit it to `renders/`.
 - **Copy camera** copies the current view in `cameras.json` format.
+- A view can set `"aspect": "16:9"` in `cameras.json` (view 20 does). Picking that view switches
+  the render size to 3840×2160, and `make renders` / `make contact-sheet` honour it.
+- **Trace** switches to a top-down map (land use plus base footprints). Existing proposal footprints
+  are outlined with their ids. Tap corners to draw, tap the first corner to close, and use **Undo** or
+  **Clear** to fix mistakes. One finger pans; pinch zooms. **Copy GeoJSON** asks for the proposal id
+  and copies a WGS84 `Feature` to paste into `data/proposals.geojson`. If the clipboard is blocked, it
+  shows the text selected instead.
 - **FPS** shows frame rate, draw calls, triangles and an estimate of GPU memory.
 - On iPad, **Render PNG** saves via the download prompt. If that doesn't happen, the status bar
   offers **Save again**, **Open in new tab** (long-press → Save to Photos) and **Share…**.

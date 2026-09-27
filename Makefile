@@ -4,7 +4,7 @@ PYTHON ?= python3
 BASE_GLB_MAX_MB := 25
 DIST_MAX_MB := 60
 
-.PHONY: all fetch candidates build pack site serve renders-check cameras contact-sheet renders compare-footprints
+.PHONY: all fetch candidates build pack site serve renders-check cameras contact-sheet renders compare-footprints test-trace
 
 # Full path: `make fetch build serve` (or `make all` for fetch + build).
 all: fetch build
@@ -19,8 +19,10 @@ fetch:
 	$(PYTHON) scripts/fetch_base.py --footprints $(FOOTPRINTS) $(if $(REFRESH),--refresh) $(if $(SKIP),--skip $(SKIP))
 	$(PYTHON) scripts/build_proposals.py
 
+# Unverified leads from City open data -> data/candidates.csv + docs/candidates-summary.md (never proposals.csv).
+# Cached in data/raw/candidates/; make candidates REFRESH=1 refetches.
 candidates:
-	$(PYTHON) scripts/fetch_candidates.py
+	$(PYTHON) scripts/fetch_candidates.py $(if $(REFRESH),--refresh)
 
 # proposals.csv + proposals.geojson -> dist/proposals.json; data/cameras.json -> dist/cameras.json
 build:
@@ -66,6 +68,10 @@ cameras:
 # Headless (CPU/SwiftShader) renders through the real viewer. Needs: python -m playwright install chromium
 contact-sheet:
 	$(PYTHON) scripts/render_views.py --size 600x800 --out docs/contact-sheet --sheet docs/contact-sheet.png --compact
+
+# Headless touch test of Trace mode (iPad-sized, touch events only) -> docs/trace-mode.png
+test-trace:
+	$(PYTHON) scripts/test_trace.py
 
 renders:
 	$(PYTHON) scripts/render_views.py --size 2400x3200 --out renders --dated
