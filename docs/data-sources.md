@@ -175,7 +175,7 @@ Pages are fetched once, 2 s apart per host, with a User-Agent naming the project
 | DP description (Phase 3A) | storeys / metres already in the DP text | `dp_description` | high |
 | Zoning Bylaw Map `67p2-r285`, latest snapshot | current zone at the site (point in polygon) and its link | (feeds the next two rows) | |
 | `zoningbylaw.edmonton.ca/dc-NNNNN` (`dc1-`, `dc2-`) | Direct Control provision: every "maximum Height … N m" / "maximum … N Storeys" phrase and height table; podium, street-wall, stepback and setback limits skipped; tallest tower wins | `dc_text` | medium (high if SkyriseCities agrees within 2 storeys) |
-| `skyrisecities.com/database/cities/edmonton.14475` | one page with all Edmonton projects (coordinates, storeys, height, status, completion) | `skyrisecities` | high by street address, medium by name / same block |
+| `skyrisecities.com/database/cities/edmonton.14475` | one page with all Edmonton projects (coordinates, storeys, height, status, completion) | `skyrisecities` | high by street address; medium by DP project name, or the one building project inside a rezoned parcel (≤ 15,000 m²) |
 | `skyrisecities.com/database/projects/<slug>.<id>` | the project's street address, for projects within 120 m of a candidate (one fetch each) | (matching only) | |
 | Zoning Bylaw 20001 zone pages | zone maximum Height: the `hNN` modifier on the map, else the zone table (`ZONE_MAX` in the script, re-checked against the live page every run) | `zone_max` (≤ 40 m, or the site's own rezoning) | low |
 | DP dwelling count | 20–59 → 4–6 storeys, 60–149 → 6–12, 150+ → 12+ (stored as 5 / 9 / 12, capped by the zone ceiling) | `dwellings_estimate` | low |

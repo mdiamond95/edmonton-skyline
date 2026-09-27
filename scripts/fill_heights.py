@@ -15,8 +15,10 @@ Sources, in the order a row takes them (docs/data-sources.md, "Candidate heights
   skyrisecities       SkyriseCities Edmonton database: the city page lists every project with
                       coordinates, storeys and height in one fetch; project pages within 120 m of
                       a candidate are read once each (2 s apart, cached) for their street address.
-                      Matched by street address (high), else same street and block within 80 m, or
-                      a named DP ("(The Clancy)") matching the project title (medium).
+                      Matched by street address (high) or by a named DP ("(The Clancy)") matching the
+                      project title (medium); a rezoning row (no address) by the one building project
+                      whose pin is inside the rezoned parcel (medium; parcel <= 15,000 m2, project not
+                      finished before the rezoning and not taller than the new zone allows).
   zone_max            standard or special-area zone maximum Height (hNN modifier on the zoning map,
                       else the zone's table value). A ceiling, not a height: low confidence, and
                       only used when it caps the building below 12 storeys (<= 40 m); a higher
@@ -55,7 +57,8 @@ DELAY = 2.0
 ZB = "https://zoningbylaw.edmonton.ca"
 SR = "https://skyrisecities.com"
 SR_CITY = f"{SR}/database/cities/edmonton.14475"
-SR_RADIUS, SR_BLOCK_M, SR_NAME_M = 120, 80, 250
+SR_RADIUS, SR_NAME_M = 120, 250
+PARCEL_MAX_M2 = 15_000
 RES_M, OFFICE_M = 3.1, 4.0
 ZONE_MAX_USE_M = 40.0          # zone ceilings above this don't pin the storey band
 NEW_COLUMNS = ["zone_current", "zone_max_m", "storeys_final", "height_final_m", "height_source",
@@ -296,9 +299,15 @@ def addr_key(a):
     return m.group(1), f"{m.group(2)} {STREET_ABBR.get(m.group(3), m.group(3))}"
 
 
+GENERIC = {"the", "and", "tower", "towers", "building", "buildings", "phase", "residences", "residence", "condos",
+           "edmonton", "street", "avenue", "apartment", "apartments", "housing", "multi", "unit", "dwelling", "dwellings",
+           "site", "annex", "area", "residential", "mixed", "use", "development", "redevelopment", "lands", "one", "two"}
+PLACES = {"blatchford", "oliver", "garneau", "strathcona", "inglewood", "westmount", "boyle", "mcdougall", "quarters",
+          "jasper", "whyte", "downtown", "stadium", "rossdale", "queen", "mary", "park", "north", "south", "west", "east"}
+
+
 def name_tokens(s):
-    return {w for w in re.findall(r"[a-z0-9]+", s.lower()) if len(w) > 2 and w not in
-            {"the", "and", "tower", "towers", "building", "phase", "residences", "condos", "edmonton", "street", "avenue"}}
+    return {w for w in re.findall(r"[a-z0-9]+", s.lower()) if len(w) > 2 and w not in GENERIC}
 
 
 def match_skyrise(row, projects, parcel=None):
@@ -311,7 +320,8 @@ def match_skyrise(row, projects, parcel=None):
     for d, p in near:
         if d > SR_NAME_M:
             break
-        name_hit = bool(ntok) and len(ntok & name_tokens(p["title"])) >= max(1, len(ntok) - 1)
+        shared = ntok & name_tokens(p["title"])
+        name_hit = bool(shared) and len(shared) >= max(1, len(ntok) - 1) and (d <= 30 or bool(shared - PLACES))
         if d > SR_RADIUS and not name_hit:
             continue
         pk = addr_key(sr_address(p)) if d <= SR_RADIUS else None
@@ -319,9 +329,6 @@ def match_skyrise(row, projects, parcel=None):
             how, conf = f"address {pk[0]} {pk[1]}", "high"
         elif name_hit:
             how, conf = f"project name '{named[-1]}', {d:.0f} m", "medium"
-        elif ak and pk and pk[1] == ak[1] and abs(int(re.sub(r'\D', '', pk[0])) - int(re.sub(r'\D', '', ak[0]))) < 100 \
-                and d <= SR_BLOCK_M:
-            how, conf = f"same block of {pk[1]} ({pk[0]} vs {ak[0]}), {d:.0f} m", "medium"
         else:
             continue
         if best is None or (conf == "high" and best[2] != "high"):
@@ -329,12 +336,25 @@ def match_skyrise(row, projects, parcel=None):
         if conf == "high":
             break
     if best is None and parcel is not None:   # rezoning rows: no street address, match the parcel itself
-        inside = [(d, p) for d, p in near if d <= 600 and parcel.contains(Point(p["lon"], p["lat"]))]
-        if inside:
-            d, p = inside[0]
-            more = f", 1 of {len(inside)} projects in it" if len(inside) > 1 else ""
-            best = (p, f"pin inside the rezoned parcel{more}", "medium", d)
+        best = match_parcel(row, near, parcel)
     return best
+
+
+def match_parcel(row, near, parcel):
+    """A rezoning row's SkyriseCities project: the only building project whose pin is inside a rezoned
+    parcel of at most PARCEL_MAX_M2, not finished before the rezoning, and not taller than the new zone
+    allows (+10%): a taller project there is an older scheme the rezoning replaced."""
+    area = parcel.area * 111_320 ** 2 * math.cos(math.radians(float(row["lat"])))
+    if area > PARCEL_MAX_M2:
+        return None
+    inside = [(d, p) for d, p in near if d <= 600 and parcel.contains(Point(p["lon"], p["lat"]))
+              and (p["storeys"] or 0) >= 3 and not re.search(r"park|public space|infrastructure|transit", p["category"], re.I)]
+    if len(inside) != 1:
+        return None
+    d, p = inside[0]
+    if p["completion"].isdigit() and int(p["completion"]) < int(row["decision_date"][:4]):
+        return None
+    return p, "pin inside the rezoned parcel", "medium", d
 
 
 # ---------------------------------------------------------------------------------------------
@@ -357,6 +377,14 @@ def is_conversion(desc):
     return bool(re.search(r"^to convert|conversion of (an )?existing|convert (a portion of )?(an )?existing", desc, re.I))
 
 
+def is_existing_work(desc):
+    """Alterations / additions to a building that already stands (not a new building)."""
+    return bool(re.search(r"alterations? to (an existing|a residential|a \w+ building)|^to increase|^to amend|"
+                          r"^to add \d+ (additional )?dwellings? to|additional dwelling in an existing|"
+                          r"addition to an existing|^to construct an addition|^to develop an urban garden|"
+                          r"^to develop a surface parking|^to construct (exterior|interior)", desc, re.I))
+
+
 def band_of(s):
     if s in ("", None):
         return "still unknown"
@@ -375,6 +403,7 @@ def main():
     print(f"  SkyriseCities Edmonton database: {len(projects)} projects "
           f"({sum(1 for p in projects if p['storeys'])} with storeys)")
 
+    props = list(csv.DictReader((ROOT / "data" / "proposals.csv").open(encoding="utf-8")))  # read only
     dc_cache = {}
     stats = Counter()
     for r in rows:
@@ -383,8 +412,9 @@ def main():
         notes = []
         zone, zurl, parcel = zone_at(zoning, float(r["lat"]), float(r["lon"]), geom=True)
         rezoning = r["source_dataset"].startswith("67p2")
-        if rezoning and r["url"].startswith(ZB):
-            zurl = r["url"]    # the rezoned polygon's own link
+        if rezoning:   # the zone the parcel was rezoned to, and that polygon's own link
+            zone = r["status_raw"].split("-> ")[-1].strip() or zone
+            zurl = r["url"] if r["url"].startswith(ZB) else zurl
         r["zone_current"] = zone or ""
         code = (zone or "").split(" ")[0]
         zmax, zmax_url = None, ""
@@ -403,12 +433,24 @@ def main():
                 dc_cache[zurl] = parse_dc(page_text(s)) if s else (None, None, [])
             dc = dc_cache[zurl]
         sr = match_skyrise(r, projects, parcel if rezoning else None)
+        if sr and rezoning and zmax:
+            p = sr[0]
+            h_sr = p["height"] or (p["storeys"] or 0) * rate
+            if h_sr > 1.1 * zmax:
+                notes.append(f"SkyriseCities '{p['title']}' ({p['storeys'] or '?'} storeys) is taller than the "
+                             f"rezoned {zone} allows: older scheme, not used ({p['url']})")
+                sr = None
+        dp_st = r["storeys_guess"]
+        m2 = re.search(r"storeys from (\d{1,2}) to (\d{1,2})", desc, re.I)
+        if m2 and not dp_st:
+            dp_st = m2.group(2)
+            notes.append(f"DP changes storeys {m2.group(1)} -> {m2.group(2)}")
 
         # choose -----------------------------------------------------------------------------
         st = ht = None
         src = conf = url = ""
-        if r["storeys_guess"] or (r["height_guess_m"] and r["source_dataset"].startswith("2ccn")):
-            st = int(r["storeys_guess"]) if r["storeys_guess"] else floor_storeys(float(r["height_guess_m"]), rate)
+        if dp_st or (r["height_guess_m"] and r["source_dataset"].startswith("2ccn")):
+            st = int(dp_st) if dp_st else floor_storeys(float(r["height_guess_m"]), rate)
             ht = float(r["height_guess_m"]) if r["height_guess_m"] else round(st * rate, 1)
             src, conf, url = "dp_description", "high", r["url"]
         elif dc and (dc[0] or dc[1]):
@@ -447,11 +489,16 @@ def main():
                              + (f", capped by {zone} ceiling {zmax:g} m" if cap and cap < est else ""))
         if not src:
             why = []
+            if is_existing_work(desc) or is_conversion(desc):
+                why.append("not a new building (alteration / addition / use change)")
+            small = re.search(r"\b(\d{1,2}) (?:additional )?dwellings?\b", desc, re.I)
             if code.startswith("DC"):
                 why.append("DC text states no height" if dc else "DC text not found")
             if zmax:
                 why.append(f"only a high zone ceiling ({zone}: {zmax:g} m)")
-            if not r["dwellings"]:
+            if not r["dwellings"] and small and int(small.group(1)) < 20:
+                why.append(f"{small.group(1)} dwellings (< 20, no estimate)")
+            elif not r["dwellings"]:
                 why.append("no dwelling count")
             elif int(r["dwellings"]) < 20:
                 why.append(f"{r['dwellings']} dwellings (< 20, no estimate)")
@@ -462,10 +509,14 @@ def main():
             notes.append(f"DC allows {dc[0] or '?'} m / {dc[1] or '?'} storeys")
         if sr and src not in ("skyrisecities",) and not any("SkyriseCities" in n for n in notes):
             p = sr[0]
-            notes.append(f"SkyriseCities '{p['title']}' ({p['storeys'] or '?'} storeys, {p['status']}"
+            differs = src == "dc_text" and p["storeys"] and abs(p["storeys"] - st) > 2
+            notes.append(("SkyriseCities DISAGREES: " if differs else "SkyriseCities ")
+                         + f"'{p['title']}' ({p['storeys'] or '?'} storeys, {p['status']}"
                          + (f" {p['completion']}" if p["completion"] not in ("", "TBD") else "") + f", {sr[1]}): {p['url']}")
         if is_conversion(desc):
             notes.append("conversion of an existing building: already in base.glb at its measured height")
+        elif is_existing_work(desc):
+            notes.append("work on an existing building, not a new one: already in base.glb at its measured height")
         if rate == OFFICE_M:
             notes.append("office: 4.0 m per storey")
         r["storeys_final"] = st or ""
@@ -475,6 +526,8 @@ def main():
         r["height_source_url"] = url
         r["height_note"] = " | ".join(notes)
         r["_sr"] = sr
+        r["_prop"] = next((f"{p['id']} {p['name']}" for p in props
+                           if metres(float(r["lat"]), float(r["lon"]), float(p["lat"]), float(p["lon"])) <= 60), "")
         r["_site"] = exception_site(float(r["lat"]), float(r["lon"]))
         r["_unknown_before"] = not r["storeys_guess"] and not r["height_guess_m"]
         stats[src or "still unknown"] += 1
@@ -495,14 +548,22 @@ def main():
 def summary(rows, today, zsnap, n_sr, bad_zone):
     before = [r for r in rows if r["_unknown_before"]]
     src_before = Counter(r["height_source"] or "still unknown" for r in before)
-    src_all = Counter(r["height_source"] or "still unknown" for r in rows)
     band = lambda r: band_of(r["storeys_final"])  # noqa: E731
     conf = lambda r: r["height_confidence"] or "—"  # noqa: E731
     unk_why = Counter()
     for r in rows:
         if not r["height_source"]:
             n = r["height_note"].split("unknown: ", 1)[-1].split(" | ")[0]
-            unk_why[re.sub(r"\([^)]*\)", "(…)", n)] += 1
+            if "not a new building" in n:
+                k = "not a new building (alteration, addition, child-care or use change, parking lot): no height needed"
+            elif "(< 20" in n:
+                k = "fewer than 20 dwellings (no estimate; a small building)"
+            elif "DC text" in n:
+                k = "Direct Control text states no height (heritage / use-only DC) and no dwelling count"
+            else:
+                k = "only a high zone ceiling (downtown / UI / RL h65) and no dwelling count"
+            unk_why[k] += 1
+            r["_why"] = k
 
     def fmt(r):
         h = f"{r['height_final_m']} m" if r["height_final_m"] else "?"
@@ -518,6 +579,12 @@ def summary(rows, today, zsnap, n_sr, bad_zone):
         yr = sr[0]["completion"] if sr_done else ""
         if occ or (sr_done and (not yr.isdigit() or int(yr) >= 2019)):
             when = f"occupancy {occ.group(1)}" if occ else f"SkyriseCities {sr[0]['status']} {yr or '(year n/a)'}"
+            if sr_done and sr[0]["storeys"]:
+                when += f", built {sr[0]['storeys']} st" + (f" / {sr[0]['height']:g} m" if sr[0]["height"] else "")
+            if r["_prop"]:
+                when += f"; **already in proposals.csv as {r['_prop']}**"
+            if "existing building" in r["height_note"]:
+                when += "; DP is work on the existing building"
             done.append((r, when))
     # (b) exception sites
     exc = [r for r in rows if r["_site"]]
@@ -552,7 +619,7 @@ def summary(rows, today, zsnap, n_sr, bad_zone):
         "- **high**: storeys stated in the DP; a DC height that SkyriseCities confirms within 2 storeys; a "
         "SkyriseCities project matched by exact street address.",
         "- **medium**: a Direct Control maximum (drafted for the site, but an envelope); a SkyriseCities project "
-        "matched by name or same block.",
+        "matched by name, or the one project inside a rezoned parcel.",
         "- **low**: a zone ceiling (`zone_max`, ≤ 40 m only) or a dwelling-count estimate.",
         "",
         "## Storey band × status_mapped",
@@ -601,8 +668,13 @@ def summary(rows, today, zsnap, n_sr, bad_zone):
         "12+ → 12), capped by the zone ceiling when that is lower. Fewer than 20 dwellings: no estimate.",
         f"- **SkyriseCities** ({n_sr} Edmonton projects, one fetch of the city page, then one fetch per project page "
         f"within {SR_RADIUS} m of a candidate, 2 s apart, cached; no forum threads). Matched by street address "
-        f"(high); by a DP name in brackets matching the project title within {SR_NAME_M} m, or the same block of "
-        f"the same street within {SR_BLOCK_M} m (medium). Coordinates alone never match.",
+        f"(high); by a DP name in brackets matching the project title within {SR_NAME_M} m (medium; generic words "
+        "such as 'apartment' or 'site' and neighbourhood names alone don't count beyond 30 m). A rezoning row has no "
+        "address: it takes the one building project (≥ 3 storeys, not a park or transit job) whose pin is inside the "
+        f"rezoned parcel, only for parcels ≤ {PARCEL_MAX_M2:,} m², not finished before the rezoning, and not more "
+        "than 10% taller than the new zone allows (a taller one is an older scheme the rezoning replaced). A first "
+        "pass also matched 'same block of the same street'; it linked unrelated buildings (a 9-dwelling DP to the "
+        "16-storey Forest Garden), so it was dropped. Coordinates alone never match.",
         "- **Metres ↔ storeys**: 3.1 m per residential storey, 4.0 m for office-only DPs (scope.md).",
         "- **Conversions** of existing buildings are flagged in `height_note`: they are already in `base.glb` "
         "at their measured height and are not new towers.",
