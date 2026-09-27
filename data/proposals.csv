@@ -1,0 +1,6 @@
+id,name,address,lat,lon,height_m,storeys,status,developer,source_url,last_checked
+P001,Stantec Tower,10220 103 Ave NW,53.54505,-113.49621,250.8,66,existing,Katz Group / ICE District Properties,https://en.wikipedia.org/wiki/Stantec_Tower,2026-09-27
+P002,PLACEHOLDER – The Quarters tower,102 Ave NW & 96 St NW (approx.),53.54401,-113.48506,100,32,construction,TBD (placeholder),https://data.edmonton.ca/,2026-09-27
+P003,PLACEHOLDER – Warehouse District tower,103 Ave NW & 106 St NW (approx.),53.54485,-113.50237,,38,approved,TBD (placeholder),https://data.edmonton.ca/,2026-09-27
+P004,PLACEHOLDER – Rossdale tower,Rossdale Rd NW & 104 St NW (approx.),53.53475,-113.49872,145,45,proposed,TBD (placeholder),https://data.edmonton.ca/,2026-09-27
+P005,PLACEHOLDER – Station Lands tower,105 Ave NW & 99 St NW (approx.),53.54788,-113.49042,128,40,stalled,TBD (placeholder),https://data.edmonton.ca/,2026-09-27

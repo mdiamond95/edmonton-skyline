@@ -1,17 +1,23 @@
-PYTHON ?= python
+PYTHON ?= python3
 
 # Size budgets (MB) — see CLAUDE.md
 BASE_GLB_MAX_MB := 25
 DIST_MAX_MB := 60
 
-.PHONY: fetch candidates build pack site serve renders-check
+.PHONY: all fetch candidates build pack site serve renders-check
 
+# Full path: `make fetch build serve` (or `make all` for fetch + build).
+all: fetch build
+
+# Base city: footprints, heights, terrain, land use -> dist/base.glb, terrain.*, landuse.json.
+# Downloads are cached in data/raw/. Options: make fetch REFRESH=1  |  make fetch SKIP=city,overpass
 fetch:
-	$(PYTHON) scripts/fetch_base.py
+	$(PYTHON) scripts/fetch_base.py $(if $(REFRESH),--refresh) $(if $(SKIP),--skip $(SKIP))
 
 candidates:
 	$(PYTHON) scripts/fetch_candidates.py
 
+# proposals.csv + proposals.geojson -> dist/proposals.json; data/cameras.json -> dist/cameras.json
 build:
 	$(PYTHON) scripts/build_proposals.py
 	$(MAKE) pack

@@ -1,0 +1,109 @@
+{
+ "sources": {
+  "overture_ml_heights_ignored": 37786,
+  "footprints": {
+   "primary": "overture",
+   "fill": null
+  },
+  "terrain": "hrdem",
+  "lidar": "hrdem-mosaic-1m 3_4",
+  "landuse": "overture"
+ },
+ "attempts": [
+  {
+   "kind": "footprints",
+   "source": "city",
+   "ok": false,
+   "detail": "ProxyError: HTTPSConnectionPool(host='data.edmonton.ca', port=443): Max retries exceeded with url: /api/views/6n9r-ddf8.json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
+  },
+  {
+   "kind": "footprints (OSM)",
+   "source": "overpass",
+   "ok": false,
+   "detail": "RuntimeError: all Overpass endpoints failed: HTTPSConnectionPool(host='overpass.kumi.systems', port=443): Max retries exceeded with url: /api/interpreter (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
+  },
+  {
+   "kind": "footprints (OSM)",
+   "source": "geofabrik",
+   "ok": false,
+   "detail": "ProxyError: HTTPSConnectionPool(host='download.geofabrik.de', port=443): Max retries exceeded with url: /north-america/canada/alberta-latest.osm.pbf (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
+  },
+  {
+   "kind": "footprints (OSM)",
+   "source": "overture",
+   "ok": true,
+   "detail": "70907 items"
+  },
+  {
+   "kind": "terrain",
+   "source": "city_dem",
+   "ok": false,
+   "detail": "ProxyError: HTTPSConnectionPool(host='data.edmonton.ca', port=443): Max retries exceeded with url: /api/views/nppw-6ykk.json (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
+  },
+  {
+   "kind": "terrain",
+   "source": "hrdem",
+   "ok": true,
+   "detail": "2301 items"
+  },
+  {
+   "kind": "lidar dsm",
+   "source": "hrdem",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "kind": "landuse",
+   "source": "overpass",
+   "ok": false,
+   "detail": "RuntimeError: all Overpass endpoints failed: HTTPSConnectionPool(host='overpass.kumi.systems', port=443): Max retries exceeded with url: /api/interpreter (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
+  },
+  {
+   "kind": "landuse",
+   "source": "geofabrik",
+   "ok": false,
+   "detail": "ProxyError: HTTPSConnectionPool(host='download.geofabrik.de', port=443): Max retries exceeded with url: /north-america/canada/alberta-latest.osm.pbf (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))"
+  },
+  {
+   "kind": "landuse",
+   "source": "overture",
+   "ok": true,
+   "detail": "4 items"
+  }
+ ],
+ "fallbacks": [
+  "City footprints (6n9r-ddf8) unavailable; used overture as primary",
+  "Overpass unavailable; OSM footprints/tags came from overture",
+  "City DEM (nppw-6ykk) unavailable; terrain from hrdem",
+  "Overpass unavailable; landuse/water/roads from overture"
+ ],
+ "glb": {
+  "buildings": 70979,
+  "vertices": 891762,
+  "simplify_m": 0.0,
+  "min_area_m2": 0
+ },
+ "coverage": {
+  "city": {
+   "count": 0,
+   "pct": 0.0,
+   "area_pct": 0.0
+  },
+  "lidar": {
+   "count": 68458,
+   "pct": 96.4,
+   "area_pct": 97.8
+  },
+  "osm": {
+   "count": 53,
+   "pct": 0.1,
+   "area_pct": 0.3
+  },
+  "default": {
+   "count": 2468,
+   "pct": 3.5,
+   "area_pct": 1.9
+  }
+ },
+ "date": "2026-09-27"
+}
