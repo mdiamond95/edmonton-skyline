@@ -66,6 +66,9 @@
   #frame { position: fixed; pointer-events: none; border: 1.5px dashed rgba(0, 0, 0, 0.35); display: none; }
   #busy { position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
     background: rgba(0, 0, 0, 0.35); color: #fff; font-size: 16px; font-weight: 600; z-index: 10; }
+  #fps { right: 12px; top: max(12px, env(safe-area-inset-top)); font: 12px/1.4 ui-monospace, Menlo, monospace;
+    color: var(--muted); white-space: pre; pointer-events: none; }
+  @media (max-width: 900px) { #fps { top: auto; bottom: calc(max(12px, env(safe-area-inset-bottom)) + 150px); } }
   [hidden] { display: none !important; }
 </style>
 <script type="importmap">
@@ -86,7 +89,9 @@
   <button id="copycam" title="Copy the current view as a cameras.json entry">Copy camera</button>
   <label class="tog"><input type="checkbox" id="ssao" checked> SSAO</label>
   <label class="tog"><input type="checkbox" id="srcdbg"> Height sources</label>
+  <label class="tog"><input type="checkbox" id="fpstog"> FPS</label>
 </div>
+<div class="panel" id="fps" hidden></div>
 <div class="panel" id="legend"></div>
 <div class="panel" id="popup" hidden></div>
 <div class="panel" id="status">Loading…</div>
@@ -106,21 +111,33 @@ const STATUS_LABEL = { existing: 'Existing', construction: 'Under construction',
   proposed: 'Proposed', stalled: 'Stalled' };
 const PAL = { ground: '#EDECE8', road: '#C9C8C4', park: '#9CC08E', forest: '#9CC08E',
   water: '#8FB8D8', tree: '#7FA872', fog: '#E9ECEE' };
-const SRC_HEX = ['#5CB85C', '#E4E3DF', '#F2C14E', '#D9534F']; // city, lidar, osm, default
-const SRC_NAMES = ['City height field', 'LiDAR DSM−DEM', 'OSM levels × 3.2', 'Default 8/12 m'];
+const SRC_HEX = ['#5CB85C', '#E4E3DF', '#F2C14E', '#D9534F', '#3FA7B5']; // city, lidar, osm, default, official
+const SRC_NAMES = ['City height field', 'LiDAR DSM−DEM', 'OSM levels × 3.2', 'Default 8/12 m',
+  'Official (existing row in proposals.csv)'];
 const SUN_AZ = 200, SUN_EL = 42;              // degrees; azimuth clockwise from north
 const FOG_START = 3000, FOG_DENSITY = 3.5e-5; // light exp² fog beginning 3 km out
+// ...or at 85% of the distance to the orbit target when that is further, so the high overview
+// (view 20, ~19 km out) is not veiled while the haze still falls off behind the subject.
+const fogStart = { value: FOG_START };
 const FOV = 35;
 const TREE_CAP = 20000;
 const RENDER_SIZES = { portrait: [2400, 3200], wide: [3840, 2160] };
+// Safari/iPadOS limits: a 2D canvas may hold at most 16,777,216 px (4096²), and big WebGL
+// render targets are what gets a tab killed. Renders are drawn in tiles no larger than this.
+const CANVAS_MAX_PX = 16777216;
+const TILE_MAX = 2048;       // px per side of one supersampled render tile
+const SS = 2;                // supersampling per axis for exported PNGs
 const params = new URLSearchParams(location.search);
-const LANDUSE_TEX = Math.min(Number(params.get('tex')) || 2048, 8192);
+const IS_TOUCH = matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 1;
+const LANDUSE_TEX = Math.min(Number(params.get('tex')) || 4096, IS_TOUCH ? 4096 : 8192); // 2.2 m/px at 4096
 
-// exp² fog that starts FOG_START metres from the camera
+// exp² fog that starts fogStart metres from the camera (uniform added to every matte() material)
+THREE.ShaderChunk.fog_pars_fragment = THREE.ShaderChunk.fog_pars_fragment.replace(
+  'uniform float fogDensity;', 'uniform float fogDensity; uniform float fogStart;');
 THREE.ShaderChunk.fog_fragment = `
 #ifdef USE_FOG
   #ifdef FOG_EXP2
-    float fogDist = max( 0.0, vFogDepth - ${FOG_START.toFixed(1)} );
+    float fogDist = max( 0.0, vFogDepth - fogStart );
     float fogFactor = 1.0 - exp( - fogDensity * fogDensity * fogDist * fogDist );
   #else
     float fogFactor = smoothstep( fogNear, fogFar, vFogDepth );
@@ -138,6 +155,15 @@ const setStatus = (html) => { statusEl.innerHTML = html; };
 const canvas = $('c');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
 const MAX_PIXELS = 3.2e6; // cap the on-screen drawing buffer (iPad GPU memory)
+renderer.info.autoReset = false; // one frame is several render() calls; reset per frame for the FPS panel
+let contextLost = false;
+canvas.addEventListener('webglcontextlost', (e) => {
+  // iPadOS reclaims GPU memory from background tabs; the page must reload to rebuild buffers.
+  e.preventDefault();
+  contextLost = true;
+  setStatus('The GPU context was lost (iPadOS frees GPU memory from background tabs). <a href="#" onclick="location.reload();return false">Reload</a>');
+});
+canvas.addEventListener('webglcontextrestored', () => location.reload());
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.NoToneMapping; // keep the scope palette hex-faithful
 renderer.shadowMap.enabled = true;
@@ -154,19 +180,24 @@ const sunDir = new THREE.Vector3(
   Math.sin(THREE.MathUtils.degToRad(SUN_AZ)) * Math.cos(THREE.MathUtils.degToRad(SUN_EL)),
   Math.sin(THREE.MathUtils.degToRad(SUN_EL)),
   -Math.cos(THREE.MathUtils.degToRad(SUN_AZ)) * Math.cos(THREE.MathUtils.degToRad(SUN_EL)));
-// Intensities chosen so an upward face in full sun ≈ its palette hex (dir·sin42° + hemi ≈ π)
-const sun = new THREE.DirectionalLight(0xffffff, 2.35);
+// Matte architectural-model tone: a strong sky fill and a moderate key, so walls in shade stay
+// light grey and shadows read soft. An upward face in full sun still equals its palette hex
+// (key·sin42° + fill ≈ π), so ground, parks, water and roofs keep the scope colours.
+const LIGHT = { key: 1.25, fill: 2.3, bounce: 0xdcdad3 };
+const sun = new THREE.DirectionalLight(0xffffff, LIGHT.key);
 sun.castShadow = true;
 sun.shadow.mapSize.set(2048, 2048);
-sun.shadow.bias = -0.0004;
+sun.shadow.bias = -0.00015; // ≈ 1.8 m over the 12 km shadow depth range
 sun.shadow.normalBias = 0;
 sun.shadow.radius = 3;
 scene.add(sun, sun.target);
-const hemi = new THREE.HemisphereLight(0xffffff, 0xc4c2bb, 1.6);
+const hemi = new THREE.HemisphereLight(0xffffff, LIGHT.bounce, LIGHT.fill);
 scene.add(hemi);
 
 function matte(hex, extra = {}) {
-  return new THREE.MeshStandardMaterial({ color: new THREE.Color(hex), roughness: 0.9, metalness: 0, ...extra });
+  const m = new THREE.MeshStandardMaterial({ color: new THREE.Color(hex), roughness: 0.9, metalness: 0, ...extra });
+  m.onBeforeCompile = (sh) => { sh.uniforms.fogStart = fogStart; };
+  return m;
 }
 
 // ---------------------------------------------------------------------------
@@ -175,17 +206,22 @@ function matte(hex, extra = {}) {
 class Orbit {
   constructor(cam, el, onChange) {
     Object.assign(this, { cam, el, onChange, target: new THREE.Vector3(), r: 3000, theta: 0, phi: 1.1,
-      pointers: new Map(), groundAt: () => null });
+      pointers: new Map(), groundAt: () => null, vel: { t: 0, p: 0 }, coasting: false, lastMove: 0, lastInput: 0 });
     el.addEventListener('pointerdown', (e) => this.down(e));
     el.addEventListener('pointermove', (e) => this.move(e));
     for (const t of ['pointerup', 'pointercancel', 'pointerleave']) el.addEventListener(t, (e) => this.up(e));
-    el.addEventListener('wheel', (e) => { e.preventDefault(); this.zoom(Math.exp(e.deltaY * 0.0015)); },
+    el.addEventListener('wheel', (e) => { e.preventDefault(); this.coasting = false; this.zoom(Math.exp(e.deltaY * 0.0015)); },
       { passive: false });
     el.addEventListener('contextmenu', (e) => e.preventDefault());
     for (const t of ['gesturestart', 'gesturechange']) document.addEventListener(t, (e) => e.preventDefault());
   }
+  // true while the view is changing: fingers down, coasting, or a wheel/pinch in the last 180 ms
+  get busy() { return this.pointers.size > 0 || this.coasting || performance.now() - this.lastInput < 180; }
   down(e) {
-    this.el.setPointerCapture?.(e.pointerId);
+    this.coasting = false;
+    this.vel.t = this.vel.p = 0;
+    this.lastInput = performance.now();
+    try { this.el.setPointerCapture?.(e.pointerId); } catch { /* pointer already gone (iOS cancel races) */ }
     this.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY, button: e.button, shift: e.shiftKey || e.ctrlKey });
     if (this.pointers.size === 1) this.tap = { x: e.clientX, y: e.clientY, t: performance.now() };
     else this.tap = null;
@@ -205,7 +241,7 @@ class Orbit {
     if (this.pointers.size >= 2) {
       const pr = this.pair();
       if (this.prevPair && pr) {
-        if (pr.d > 0 && this.prevPair.d > 0) this.zoom(this.prevPair.d / pr.d, false);
+        if (pr.d > 0 && this.prevPair.d > 0) this.zoom(this.prevPair.d / pr.d);
         this.pan(pr.x - this.prevPair.x, pr.y - this.prevPair.y);
       }
       this.prevPair = pr;
@@ -213,10 +249,29 @@ class Orbit {
       this.pan(dx, dy);
     } else {
       const h = this.el.clientHeight || 1;
-      this.theta -= dx * 2 * Math.PI / h * 0.6;
-      this.phi -= dy * Math.PI / h * 0.6;
+      const dT = -dx * 2 * Math.PI / h * 0.6, dP = -dy * Math.PI / h * 0.6;
+      this.theta += dT;
+      this.phi += dP;
+      // smoothed angular velocity (rad/ms) for the release coast; event timestamps, not handler
+      // time, so a slow frame between move and release does not cancel the coast
+      const dt = Math.max(4, e.timeStamp - this.lastMove);
+      const cap = (v) => THREE.MathUtils.clamp(v, -0.006, 0.006);
+      this.vel.t = cap(0.5 * this.vel.t + 0.5 * dT / dt);
+      this.vel.p = cap(0.5 * this.vel.p + 0.5 * dP / dt);
+      this.lastMove = e.timeStamp;
       this.apply();
     }
+    this.lastInput = performance.now();
+  }
+  step(dt) {
+    // release inertia: velocity decays ~22% per 16 ms frame, so a hard flick coasts ≲ 25°
+    if (!this.coasting) return;
+    this.theta += this.vel.t * dt;
+    this.phi += this.vel.p * dt;
+    const k = Math.pow(0.985, dt);
+    this.vel.t *= k; this.vel.p *= k;
+    if (Math.abs(this.vel.t) + Math.abs(this.vel.p) < 2e-5) this.coasting = false;
+    this.apply();
   }
   up(e) {
     if (!this.pointers.has(e.pointerId)) return;
@@ -225,11 +280,16 @@ class Orbit {
     if (e.type === 'pointerup' && this.tap && performance.now() - this.tap.t < 500) {
       this.onTap?.(e.clientX, e.clientY);
     }
+    // coast only after a one-finger rotate that was still moving when released
+    this.coasting = this.pointers.size === 0 && !this.tap && e.type === 'pointerup' && e.timeStamp - this.lastMove < 80 &&
+      Math.abs(this.vel.t) + Math.abs(this.vel.p) > 1e-4;
     this.tap = null;
+    this.lastInput = performance.now();
   }
-  zoom(f, apply = true) {
+  zoom(f) {
     this.r = THREE.MathUtils.clamp(this.r * f, 40, 40000);
-    if (apply) this.apply(); else this.apply();
+    this.lastInput = performance.now();
+    this.apply();
   }
   pan(dx, dy) {
     const h = this.el.clientHeight || 1;
@@ -243,6 +303,7 @@ class Orbit {
     this.apply();
   }
   set(pos, tgt) {
+    this.coasting = false;
     this.target.copy(tgt);
     const d = pos.clone().sub(tgt);
     this.r = d.length();
@@ -431,6 +492,11 @@ async function buildLanduse() {
   const tex = new THREE.CanvasTexture(cv);
   tex.colorSpace = THREE.SRGBColorSpace;
   tex.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+  // Upload now, then shrink the 2D canvas: Safari counts canvas backing stores against the page
+  // (a 4096² canvas is 64 MB) and the GPU copy is all that is needed from here on.
+  renderer.initTexture(tex);
+  world.landuseTexSize = cv.width;
+  cv.width = cv.height = 1;
   world.terrain.material.map = tex;
   world.terrain.material.color.set(0xffffff);
   world.terrain.material.needsUpdate = true;
@@ -439,7 +505,26 @@ async function buildLanduse() {
   return { data: cls.getContext('2d').getImageData(0, 0, 1024, 1024).data, size: 1024 };
 }
 
-function buildTrees(clsmap) {
+function buildingOccupancy(N = 2048) {
+  // N×N grid over the extent marking each base building's bounding box, so trees stay off roofs.
+  const { xmin, xmax, ymin, ymax } = world.tmeta.extent, T = world.table;
+  const occ = new Uint8Array(N * N), sx = N / (xmax - xmin), sy = N / (ymax - ymin);
+  for (let b = 0; b < T.length / 4; b++) {
+    const pos = world.buildings[T[b * 4]].geometry.attributes.position.array;
+    let x0 = Infinity, x1 = -Infinity, n0 = Infinity, n1 = -Infinity;
+    for (let v = T[b * 4 + 1]; v < T[b * 4 + 1] + T[b * 4 + 2]; v++) {
+      const x = pos[v * 3], n = -pos[v * 3 + 2];
+      if (x < x0) x0 = x; if (x > x1) x1 = x; if (n < n0) n0 = n; if (n > n1) n1 = n;
+    }
+    if (x1 - x0 < 0.5) continue; // hidden (collapsed) building
+    const i0 = Math.max(0, Math.floor((x0 - xmin) * sx)), i1 = Math.min(N - 1, Math.floor((x1 - xmin) * sx));
+    const j0 = Math.max(0, Math.floor((ymax - n1) * sy)), j1 = Math.min(N - 1, Math.floor((ymax - n0) * sy));
+    for (let j = j0; j <= j1; j++) occ.fill(1, j * N + i0, j * N + i1 + 1);
+  }
+  return { occ, N };
+}
+
+function buildTrees(clsmap, occupancy) {
   // Low-poly instanced trees on park / forest polygons (deterministic, capped at TREE_CAP).
   let seed = 20240101;
   const rnd = () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
@@ -460,6 +545,7 @@ function buildTrees(clsmap) {
     const c = clsmap.data[(Math.floor(v * S) * S + Math.floor(u * S)) * 4];
     if (c !== 1 && c !== 2) continue;
     if (rnd() > accept[c] * areaPerTry) continue;
+    if (occupancy.occ[Math.floor(v * occupancy.N) * occupancy.N + Math.floor(u * occupancy.N)]) continue;
     const x = xmin + u * (xmax - xmin), z = -(ymax - v * (ymax - ymin));
     const s = 0.75 + rnd() * 0.6;
     (c === 2 && rnd() < 0.4 ? pts.conifer : pts.broad).push([x, heightAt(x, z), z, s, rnd() * Math.PI]);
@@ -527,17 +613,34 @@ function pointInPoly(x, y, poly) {
   return true;
 }
 
-function hideBaseUnderProposals() {
-  // Collapse base buildings whose centroid (or most of whose outline) lies inside a proposal footprint.
-  const T = world.table, polys = [];
+function collapseBuilding(b) {
+  // Hide one base building by collapsing its vertices onto its first vertex (zero-area triangles).
+  const T = world.table, prim = T[b * 4], first = T[b * 4 + 1], count = T[b * 4 + 2];
+  const pos = world.buildings[prim].geometry.attributes.position.array;
+  for (let v = first + 1; v < first + count; v++) {
+    pos[v * 3] = pos[first * 3]; pos[v * 3 + 1] = pos[first * 3 + 1]; pos[v * 3 + 2] = pos[first * 3 + 2];
+  }
+  return prim;
+}
+
+function hideBaseUnderProposals(pj) {
+  // scripts/build_proposals.py lists the base buildings under each footprint (hide_base). Those
+  // indices only fit the base.glb they were computed from; otherwise fall back to a local test.
+  const T = world.table, dirty = new Set();
+  let hidden = 0;
+  if (pj.base_glb && pj.base_glb.buildings === T.length / 4) {
+    for (const p of pj.proposals) for (const b of p.hide_base || []) { dirty.add(collapseBuilding(b)); hidden++; }
+    for (const k of dirty) world.buildings[k].geometry.attributes.position.needsUpdate = true;
+    return hidden;
+  }
+  console.warn('proposals.json was built against a different base.glb; run `make build`');
+  const polys = [];
   for (const p of world.proposals) for (const poly of p.footprint) {
     let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
     for (let i = 0; i < poly[0].length; i += 2) { x0 = Math.min(x0, poly[0][i]); x1 = Math.max(x1, poly[0][i]);
       y0 = Math.min(y0, poly[0][i + 1]); y1 = Math.max(y1, poly[0][i + 1]); }
     polys.push({ poly, x0, x1, y0, y1 });
   }
-  let hidden = 0;
-  const dirty = new Set();
   for (let b = 0; b < T.length / 4; b++) {
     const prim = T[b * 4], first = T[b * 4 + 1], count = T[b * 4 + 2];
     const pos = world.buildings[prim].geometry.attributes.position.array;
@@ -549,10 +652,7 @@ function hideBaseUnderProposals() {
       let inside = pointInPoly(cx, cy, P.poly) ? count : 0;
       if (!inside) for (let v = first; v < first + count; v++) inside += pointInPoly(pos[v * 3], -pos[v * 3 + 2], P.poly);
       if (inside >= count * 0.5) {
-        for (let v = first + 1; v < first + count; v++) {
-          pos[v * 3] = pos[first * 3]; pos[v * 3 + 1] = pos[first * 3 + 1]; pos[v * 3 + 2] = pos[first * 3 + 2];
-        }
-        dirty.add(prim);
+        dirty.add(collapseBuilding(b));
         hidden++;
         break;
       }
@@ -589,6 +689,7 @@ async function buildProposals() {
     scene.add(mesh);
     world.propMeshes.push(mesh);
   }
+  return pj;
 }
 
 // ---------------------------------------------------------------------------
@@ -598,7 +699,7 @@ const fsCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 const fsQuad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2));
 const fsScene = new THREE.Scene(); fsScene.add(fsQuad);
 const VS = `varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }`;
-const depthMat = new THREE.MeshBasicMaterial({ colorWrite: false });
+const depthMat = new THREE.MeshBasicMaterial({ colorWrite: false, fog: false });
 const aoMat = new THREE.ShaderMaterial({
   uniforms: { tDepth: { value: null }, res: { value: new THREE.Vector2() }, projInv: { value: new THREE.Matrix4() },
     proj: { value: new THREE.Matrix4() }, radius: { value: 8 }, fogStart: { value: FOG_START }, fogDensity: { value: FOG_DENSITY } },
@@ -680,9 +781,11 @@ function ensureAOTargets(w, h) {
 function drawFS(mat, target) { fsQuad.material = mat; renderer.setRenderTarget(target); renderer.render(fsScene, fsCam); }
 
 function renderScene(target, w, h, withAO) {
+  fogStart.value = Math.max(FOG_START, 0.85 * camera.position.distanceTo(orbit.target));
   // main pass
   renderer.autoClear = true;
-  renderer.shadowMap.needsUpdate = true;
+  renderer.shadowMap.needsUpdate = shadowDirty;
+  shadowDirty = false;
   renderer.setRenderTarget(target);
   renderer.render(scene, camera);
   if (!withAO) return;
@@ -707,6 +810,7 @@ function renderScene(target, w, h, withAO) {
   aoMat.uniforms.projInv.value.copy(camera.projectionMatrixInverse);
   aoMat.uniforms.proj.value.copy(camera.projectionMatrix);
   aoMat.uniforms.radius.value = THREE.MathUtils.clamp(dist * 0.004, 3, 30);
+  aoMat.uniforms.fogStart.value = fogStart.value;
   drawFS(aoMat, T.a);
   blurMat.uniforms.tDepth.value = T.depth.depthTexture;
   blurMat.uniforms.projInv.value.copy(camera.projectionMatrixInverse);
@@ -719,15 +823,21 @@ function renderScene(target, w, h, withAO) {
   renderer.autoClear = true;
 }
 
-function fitShadow(cam, target) {
+let shadowDirty = true;
+const shadowFit = { c: new THREE.Vector3(Infinity, 0, 0), R: 0 };
+function fitShadow(cam, target, force = false) {
+  // Refit (and re-render the shadow map) only when the view has moved enough to need it:
+  // pure rotation keeps the same box, so orbiting skips the shadow pass entirely.
   const dist = cam.position.distanceTo(target);
   const R = THREE.MathUtils.clamp(dist * 0.9, 400, 6500);
-  // centre the shadow box a little ahead of the target, toward the camera's view
+  if (!force && shadowFit.c.distanceTo(target) < 0.1 * shadowFit.R && Math.abs(R / shadowFit.R - 1) < 0.15) return;
+  shadowFit.c.copy(target); shadowFit.R = R;
+  shadowDirty = true;
   const c = target.clone();
   sun.target.position.copy(c);
-  sun.position.copy(c).addScaledVector(sunDir, 12000);
+  sun.position.copy(c).addScaledVector(sunDir, 6000);
   const sc = sun.shadow.camera;
-  sc.left = -R; sc.right = R; sc.top = R; sc.bottom = -R; sc.near = 1000; sc.far = 24000;
+  sc.left = -R; sc.right = R; sc.top = R; sc.bottom = -R; sc.near = 100; sc.far = 12000;
   sc.updateProjectionMatrix();
   sun.target.updateMatrixWorld();
   sun.updateMatrixWorld();
@@ -758,15 +868,65 @@ function resize() {
 window.addEventListener('resize', resize);
 $('aspect').addEventListener('change', resize);
 
-function loop() {
-  if (needsRender && world.terrain) {
+// While the view is moving, frames skip SSAO (the most expensive pass on iPad); the first
+// frame after it settles is drawn at full quality.
+let lastT = performance.now(), wasBusy = false, rendering = false;
+const stats = { frames: 0, since: performance.now(), ms: 0, calls: 0, tris: 0 };
+function loop(now) {
+  const dt = Math.min(50, now - lastT); lastT = now;
+  orbit.step(dt);
+  const busy = orbit.busy;
+  if (world.terrain && !rendering && !contextLost && (needsRender || (wasBusy && !busy))) {
     needsRender = false;
+    const t0 = performance.now();
+    renderer.info.reset();
     fitShadow(camera, orbit.target);
     const b = renderer.getDrawingBufferSize(new THREE.Vector2());
-    renderScene(null, b.x, b.y, $('ssao').checked);
+    renderScene(null, b.x, b.y, $('ssao').checked && !busy);
+    stats.frames++;
+    stats.ms = 0.8 * stats.ms + 0.2 * (performance.now() - t0);
+    stats.calls = renderer.info.render.calls; stats.tris = renderer.info.render.triangles;
   }
+  wasBusy = busy;
   requestAnimationFrame(loop);
 }
+
+function gpuMemoryMB() {
+  // Estimate of what this page holds on the GPU: vertex/index/instance buffers, textures,
+  // shadow map, drawing buffer (4× MSAA colour + depth, plus resolve) and SSAO targets.
+  let bytes = 0;
+  const seen = new Set();
+  scene.traverse((o) => {
+    const g = o.geometry;
+    if (o.isInstancedMesh) bytes += o.instanceMatrix.array.byteLength;
+    if (!g || seen.has(g)) return;
+    seen.add(g);
+    for (const a of Object.values(g.attributes)) bytes += a.array.byteLength;
+    if (g.index) bytes += g.index.array.byteLength;
+  });
+  const map = world.terrain?.material.map;
+  if (map) bytes += world.landuseTexSize ** 2 * 4 * 4 / 3;
+  const sm = sun.shadow.mapSize;
+  bytes += sm.x * sm.y * 8;
+  const b = renderer.getDrawingBufferSize(new THREE.Vector2());
+  bytes += b.x * b.y * (4 * 4 + 4 * 4 + 4);
+  if (aoTargets.w > 1) bytes += aoTargets.w * aoTargets.h * 16;
+  return bytes / 1048576;
+}
+
+function updateFPS() {
+  const el = $('fps');
+  if (el.hidden) return;
+  const now = performance.now(), secs = (now - stats.since) / 1000;
+  const fps = stats.frames / secs;
+  stats.frames = 0; stats.since = now;
+  const b = renderer.getDrawingBufferSize(new THREE.Vector2());
+  el.textContent = `${fps < 0.5 ? 'idle (draws on change)' : fps.toFixed(0) + ' fps'}\n` +
+    `${stats.ms.toFixed(1)} ms CPU/frame\n${stats.calls} draws · ${(stats.tris / 1e6).toFixed(2)} M tris\n` +
+    `GPU ≈ ${gpuMemoryMB().toFixed(0)} MB · ${b.x}×${b.y}`;
+}
+setInterval(updateFPS, 500);
+$('fpstog').addEventListener('change', (e) => { $('fps').hidden = !e.target.checked; stats.since = performance.now(); stats.frames = 0; updateFPS(); });
 
 // ---------------------------------------------------------------------------
 // UI: legend, cameras, popup, copy camera, height-source debug
@@ -818,6 +978,11 @@ $('srcdbg').addEventListener('change', (e) => {
     }
     setStatus('Height sources: ' + SRC_NAMES.map((n, i) => `<span style="color:${SRC_HEX[i] === '#E4E3DF' ? 'inherit' : SRC_HEX[i]}">■</span> ${n}`).join(' · '));
   } else setStatus('');
+  for (const m of world.propMeshes) {
+    if (m.userData.proposal.status !== 'existing') continue;
+    m.userData.mat ??= m.material;
+    m.material = on ? (world.officialMat ??= matte(SRC_HEX[4])) : m.userData.mat;
+  }
   world.buildings.forEach((m) => { m.geometry.attributes.color.needsUpdate = true; });
   requestRender();
 });
@@ -847,84 +1012,143 @@ orbit.onTap = (x, y) => {
 };
 
 // ---------------------------------------------------------------------------
-// Render PNG: tiled 2×2 supersampled off-screen render (Safari canvas-limit safe)
+// Render PNG: tiled, 2× supersampled off-screen render (Safari/iPadOS safe)
 // ---------------------------------------------------------------------------
 function slugify(s) { return s.normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
 
-async function renderPNG() {
-  const [W, H] = RENDER_SIZES[$('aspect').value];
+function drawNameChip(ctx, name, W, H) {
+  // docs/scope.md: bottom-left, dark rounded rect, white bold sans, chip 4% of frame height
+  const bh = Math.round(H * 0.04), fs = Math.round(bh * 0.56), pad = Math.round(bh * 0.42);
+  const mg = Math.round(H * 0.025);
+  ctx.font = `700 ${fs}px -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif`;
+  const bw = Math.min(W - 2 * mg, Math.ceil(ctx.measureText(name).width) + 2 * pad);
+  const x = mg, y = H - mg - bh;
+  ctx.fillStyle = 'rgba(24, 24, 27, 0.88)';
+  ctx.beginPath();
+  if (ctx.roundRect) ctx.roundRect(x, y, bw, bh, bh * 0.28); else ctx.rect(x, y, bw, bh);
+  ctx.fill();
+  ctx.fillStyle = '#ffffff';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(name, x + pad, y + bh / 2 + fs * 0.04, bw - 2 * pad);
+}
+
+async function renderImage(W, H, { chip = true, progress = () => {} } = {}) {
+  // Draws the current view into a W×H 2D canvas in tiles. Each tile is rendered at SS× into a
+  // render target of at most TILE_MAX² (plus a margin so SSAO has context across seams), box-
+  // downsampled on the GPU, read back and pasted. Peak GPU use stays ~40 MB whatever W×H is.
+  if (W * H > CANVAS_MAX_PX) throw new Error(`${W}×${H} exceeds Safari's ${CANVAS_MAX_PX / 1048576}M-pixel canvas limit`);
   const cam = world.currentCam;
-  const nn = cam ? cam.id : '00';
-  const slug = cam ? (cam.slug || slugify(cam.name)) : 'custom';
-  const fname = `${nn}-${slug}_${world.dataDate || new Date().toISOString().slice(0, 10)}.png`;
-  $('busy').style.display = 'flex';
-  $('busy').textContent = 'Rendering…';
-  await new Promise((r) => setTimeout(r, 30));
-  const SS = 2, TILES = 2, M = 48; // supersample per axis, tiles per axis, tile margin (px, supersampled)
   const out = document.createElement('canvas');
   out.width = W; out.height = H;
   const ctx = out.getContext('2d');
-  const saved = { aspect: camera.aspect, pr: renderer.getPixelRatio(), size: renderer.getSize(new THREE.Vector2()) };
-  const fullW = W * SS, fullH = H * SS, tw = fullW / TILES, th = fullH / TILES;
-  const big = new THREE.WebGLRenderTarget(tw + 2 * M, th + 2 * M, { colorSpace: THREE.SRGBColorSpace, samples: 0,
+  const gl = renderer.getContext();
+  const cap = Math.min(TILE_MAX, renderer.capabilities.maxTextureSize, gl.getParameter(gl.MAX_RENDERBUFFER_SIZE));
+  const M = 32 * SS;                                       // tile margin, supersampled px
+  const inner = cap - 2 * M - SS;
+  const nx = Math.ceil(W * SS / inner), ny = Math.ceil(H * SS / inner);
+  const tw = Math.ceil(W / nx), th = Math.ceil(H / ny);    // tile size, output px
+  const bw = tw * SS + 2 * M, bh = th * SS + 2 * M;
+  const big = new THREE.WebGLRenderTarget(bw, bh, { colorSpace: THREE.SRGBColorSpace, samples: 0,
     minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter });
-  const small = new THREE.WebGLRenderTarget((tw + 2 * M) / SS, (th + 2 * M) / SS, { colorSpace: THREE.SRGBColorSpace, depthBuffer: false });
+  const small = new THREE.WebGLRenderTarget(bw / SS, bh / SS, { colorSpace: THREE.SRGBColorSpace, depthBuffer: false });
+  const saved = { aspect: camera.aspect };
   sun.shadow.map?.dispose(); sun.shadow.map = null; sun.shadow.mapSize.set(4096, 4096);
+  rendering = true;
   try {
     camera.aspect = W / H;
     camera.updateProjectionMatrix();
-    fitShadow(camera, orbit.target);
+    fitShadow(camera, orbit.target, true);
     const pix = new Uint8Array(small.width * small.height * 4);
-    for (let ty = 0; ty < TILES; ty++) for (let tx = 0; tx < TILES; tx++) {
-      $('busy').textContent = `Rendering tile ${ty * TILES + tx + 1}/${TILES * TILES}…`;
+    const img = new ImageData(small.width, small.height), rowB = small.width * 4, m = M / SS;
+    for (let iy = 0; iy < ny; iy++) for (let ix = 0; ix < nx; ix++) {
+      progress(iy * nx + ix + 1, nx * ny);
       await new Promise((r) => setTimeout(r, 0));
-      camera.setViewOffset(fullW, fullH, tx * tw - M, ty * th - M, tw + 2 * M, th + 2 * M);
-      renderScene(big, big.width, big.height, $('ssao').checked);
+      const x0 = ix * tw, y0 = iy * th;
+      if (x0 >= W || y0 >= H) continue;
+      camera.setViewOffset(W * SS, H * SS, x0 * SS - M, y0 * SS - M, bw, bh);
+      renderScene(big, bw, bh, $('ssao').checked);
       copyMat.uniforms.tSrc.value = big.texture;
       drawFS(copyMat, small);
       renderer.readRenderTargetPixels(small, 0, 0, small.width, small.height, pix);
-      const img = new ImageData(small.width, small.height);
-      const rowB = small.width * 4;
       for (let y = 0; y < small.height; y++) img.data.set(pix.subarray((small.height - 1 - y) * rowB, (small.height - y) * rowB), y * rowB);
-      const m = M / SS;
-      ctx.putImageData(img, tx * tw / SS - m, ty * th / SS - m, m, m, tw / SS, th / SS);
+      ctx.putImageData(img, x0 - m, y0 - m, m, m, Math.min(tw, W - x0), Math.min(th, H - y0));
     }
   } finally {
+    rendering = false;
     camera.clearViewOffset();
     camera.aspect = saved.aspect;
     camera.updateProjectionMatrix();
     renderer.setRenderTarget(null);
     big.dispose(); small.dispose();
     sun.shadow.map?.dispose(); sun.shadow.map = null; sun.shadow.mapSize.set(2048, 2048);
+    fitShadow(camera, orbit.target, true);
     ensureAOTargets(1, 1);
     requestRender();
   }
-  // bottom-left name chip: dark rounded rect, white bold sans, text = 4% of frame height
-  if (cam) {
-    const fs = Math.round(H * 0.04), pad = Math.round(fs * 0.55), mg = Math.round(H * 0.03);
-    ctx.font = `700 ${fs}px -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif`;
-    const tw2 = ctx.measureText(cam.name).width;
-    const bw = tw2 + pad * 2, bh = fs + pad * 1.6, x = mg, y = H - mg - bh;
-    ctx.fillStyle = 'rgba(24, 24, 27, 0.88)';
-    ctx.beginPath();
-    if (ctx.roundRect) ctx.roundRect(x, y, bw, bh, fs * 0.35); else ctx.rect(x, y, bw, bh);
-    ctx.fill();
-    ctx.fillStyle = '#ffffff';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(cam.name, x + pad, y + bh / 2 + fs * 0.04);
-  }
-  const blob = await new Promise((r) => out.toBlob(r, 'image/png'));
+  if (chip && cam) drawNameChip(ctx, cam.name, W, H);
+  return out;
+}
+
+let lastPNG = null;
+async function savePNG(canvas, fname) {
+  // iPadOS Safari: an <a download> click on a blob: URL saves to Files/Downloads (iPadOS 13+).
+  // If that is unavailable or throws, open the PNG in a new tab (long-press → Save to Photos);
+  // if the pop-up is blocked, the status bar keeps tappable Save / Open / Share links.
+  const blob = await new Promise((r, j) => canvas.toBlob((b) => (b ? r(b) : j(new Error('PNG encoding failed'))), 'image/png'));
+  if (lastPNG) URL.revokeObjectURL(lastPNG.url);
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = fname;
-  document.body.appendChild(a); a.click(); a.remove();
-  setStatus(`Saved <b>${fname}</b> (${W}×${H}). <a href="${url}" target="_blank" rel="noopener">Open image</a> — commit to renders/.`);
-  $('busy').style.display = 'none';
-  window.__lastRender = { fname, url, W, H };
+  lastPNG = { url, fname, blob };
+  let how = 'downloaded';
+  try {
+    const a = document.createElement('a');
+    if (!('download' in a)) throw new Error('no download attribute');
+    a.href = url; a.download = fname; a.rel = 'noopener';
+    document.body.appendChild(a); a.click(); a.remove();
+  } catch {
+    how = window.open(url, '_blank') ? 'opened in a new tab' : 'ready';
+  }
+  const canShare = navigator.canShare?.({ files: [new File([blob], fname, { type: 'image/png' })] });
+  setStatus(`<b>${esc(fname)}</b> (${canvas.width}×${canvas.height}) ${how}. ` +
+    `<a href="${url}" download="${esc(fname)}">Save again</a> · <a href="${url}" target="_blank" rel="noopener">Open in new tab</a>` +
+    (canShare ? ' · <a href="#" id="sharepng">Share…</a>' : '') + ' — commit it to renders/.');
+  $('sharepng')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    navigator.share({ files: [new File([lastPNG.blob], lastPNG.fname, { type: 'image/png' })] }).catch(() => {});
+  });
+  window.__lastRender = { fname, url, W: canvas.width, H: canvas.height };
+}
+
+function renderFilename(cam) {
+  const nn = cam ? cam.id : '00';
+  const slug = cam ? (cam.slug || slugify(cam.name)) : 'custom';
+  return `${nn}-${slug}_${world.dataDate || new Date().toISOString().slice(0, 10)}.png`;
+}
+
+async function renderPNG() {
+  const [W, H] = RENDER_SIZES[$('aspect').value];
+  const busy = $('busy');
+  busy.style.display = 'flex';
+  busy.textContent = 'Rendering…';
+  try {
+    const canvas = await renderImage(W, H, { progress: (i, n) => { busy.textContent = `Rendering tile ${i}/${n}…`; } });
+    busy.textContent = 'Encoding PNG…';
+    await new Promise((r) => setTimeout(r, 0));
+    await savePNG(canvas, renderFilename(world.currentCam));
+    canvas.width = canvas.height = 0; // release the 2D backing store now (Safari counts it against the page)
+  } finally {
+    busy.style.display = 'none';
+  }
 }
 $('render').addEventListener('click', () => renderPNG().catch((e) => {
-  $('busy').style.display = 'none'; setStatus(`Render failed: ${esc(e.message)}`); console.error(e);
+  setStatus(`Render failed: ${esc(e.message)}`); console.error(e);
 }));
+
+async function renderView(id, W, H) {
+  // Headless entry point for scripts/render_views.py: returns a PNG data URL.
+  applyCamera(id);
+  const canvas = await renderImage(W, H);
+  return canvas.toDataURL('image/png');
+}
 
 // ---------------------------------------------------------------------------
 // Boot
@@ -936,9 +1160,10 @@ async function main() {
   await buildTerrain();
   orbit.set(new THREE.Vector3(2600, 1200, 2600), new THREE.Vector3(-150, heightAt(-150, 100), 100));
   setStatus('Loading buildings, land use, proposals…');
-  const [nb, clsmap, , cams] = await Promise.all([buildBase(), buildLanduse(), buildProposals(), getJSON('cameras.json')]);
-  const hidden = hideBaseUnderProposals();
-  const nt = buildTrees(clsmap);
+  const [nb, clsmap, pj, cams] = await Promise.all([buildBase(), buildLanduse(), buildProposals(), getJSON('cameras.json')]);
+  const hidden = hideBaseUnderProposals(pj);
+  const nt = buildTrees(clsmap, buildingOccupancy());
+  shadowDirty = true;
   buildLegend();
   buildCameraPicker(cams);
   const first = cams.cameras.find((c) => c.position);
@@ -950,7 +1175,7 @@ async function main() {
   requestRender();
 }
 main().catch((e) => { console.error(e); setStatus(`Failed to load: ${esc(e.message)}`); window.__error = String(e); });
-window.__skyline = { world, camera, orbit, renderPNG, applyCamera, cameraJSON, requestRender };
+window.__skyline = { world, camera, orbit, renderPNG, renderView, applyCamera, cameraJSON, requestRender, gpuMemoryMB, heightAt };
 </script>
 </body>
 </html>

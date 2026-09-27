@@ -9,8 +9,10 @@ Outputs
   dist/base_meta.json sources used, fallbacks, height-source coverage
 
 Source chains (first that works wins; every step is logged):
-  footprints : City of Edmonton open data (6n9r-ddf8) -> Overpass (fill/fallback)
-               -> Geofabrik Alberta PBF + osmium -> Overture Maps (S3; OSM-derived)
+  footprints : City of Edmonton open data (jpxi-a9a5 Rooflines 2019 -> 6n9r-ddf8 Footprints 2017)
+               OR the OSM chain: Overpass -> Geofabrik Alberta PBF + osmium -> Overture Maps.
+               One footprint set is used, never a blend of City and OSM geometry
+               (--footprints auto|city|osm; auto = City when reachable).
   landuse    : Overpass -> Geofabrik PBF -> Overture Maps
   terrain    : City DEM points (nppw-6ykk) -> NRCan HRDEM 1 m LiDAR DTM
                -> NRCan MRDEM 30 m -> AWS Terrain Tiles (terrarium)
@@ -21,6 +23,7 @@ Base-building height priority (docs/scope.md): City height field > LiDAR DSM-DEM
 
 Downloads are cached in data/raw/ (gitignored); pass --refresh to refetch.
 Pass --skip city,overpass,... to skip sources (also env SKYLINE_SKIP).
+Pass --dist DIR to write somewhere other than dist/ (used by scripts/compare_footprints.py).
 """
 import argparse
 import json
@@ -46,10 +49,12 @@ from shapely.ops import polygonize, transform as shp_transform, unary_union
 from shapely.strtree import STRtree
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import (BBOX_WSEN, DIST, LAT_MAX, LAT_MIN, LON_MAX, LON_MIN,  # noqa: E402
+import common  # noqa: E402
+from common import (BBOX_WSEN, LAT_MAX, LAT_MIN, LON_MAX, LON_MIN,  # noqa: E402
                     ORIGIN_E, ORIGIN_N, RAW, CENTRE_LAT, CENTRE_LON, STATUS_HEX,
                     TO_UTM, UTM_EPSG, local_extent, write_json)
 
+DIST = common.DIST  # rebound by --dist
 HTTP = requests.Session()
 HTTP.headers["User-Agent"] = "edmonton-skyline/1 (github.com/mdiamond95/edmonton-skyline)"
 
@@ -188,7 +193,10 @@ def rec(geom, source, osm_levels=None, osm_height=None, city_height=None, cls=No
 # ---------------------------------------------------------------------------
 
 CITY = "https://data.edmonton.ca"
-CITY_FOOTPRINTS = "6n9r-ddf8"   # "Building Footprint"
+# Footprint layers, newest first. jpxi-a9a5 carries building_height (roof - ground, 2019 LiDAR);
+# 6n9r-ddf8 (May 2017 rooflines) has only the_geom and area.
+CITY_FOOTPRINT_LAYERS = [("jpxi-a9a5", "City of Edmonton - Rooflines (as of 2019)"),
+                         ("6n9r-ddf8", "Building Footprint (rooflines as of May 2017)")]
 CITY_DEM_POINTS = "nppw-6ykk"   # "Digital Elevation Model Points 3TM (DEM)"
 HEIGHT_RE = re.compile(r"(^|_)(height|hgt|bldg_?ht|z_?max|roof_?height)($|_)", re.I)
 STOREY_RE = re.compile(r"storey|stories|floors|levels", re.I)
@@ -222,16 +230,16 @@ def socrata_rows(dsid, where, fmt="geojson", page=50000, select=None):
         offset += page
 
 
-def fetch_city_footprints(refresh):
-    path = cached("city_footprints.json")
+def fetch_city_footprints(dsid, refresh):
+    path = cached(f"city_footprints_{dsid}.json")
     if path.exists() and not refresh:
         data = json.loads(path.read_text())
     else:
-        cols = socrata_columns(CITY_FOOTPRINTS)
+        cols = socrata_columns(dsid)
         geom_col = next((n for n, t in cols if t.lower() in ("multipolygon", "polygon")), None)
         if not geom_col:
-            raise RuntimeError(f"no polygon column in {CITY_FOOTPRINTS}: {cols}")
-        feats = socrata_rows(CITY_FOOTPRINTS, f"intersects({geom_col}, '{bbox_wkt()}')")
+            raise RuntimeError(f"no polygon column in {dsid}: {cols}")
+        feats = socrata_rows(dsid, f"intersects({geom_col}, '{bbox_wkt()}')")
         data = {"columns": cols, "features": feats}
         RAW.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(data))
@@ -239,7 +247,7 @@ def fetch_city_footprints(refresh):
     num = {n for n, t in cols if t.lower() in ("number", "double", "money")}
     hfield = next((n for n, _ in cols if HEIGHT_RE.search(n or "") and n in num), None)
     sfield = next((n for n, _ in cols if STOREY_RE.search(n or "") and n in num), None)
-    LOG["sources"]["city_footprint_fields"] = {"columns": [n for n, _ in cols],
+    LOG["sources"]["city_footprint_fields"] = {"dataset": dsid, "columns": [n for n, _ in cols],
                                                "height_field": hfield, "storeys_field": sfield}
     out = []
     for f in data["features"]:
@@ -255,7 +263,7 @@ def fetch_city_footprints(refresh):
                 return float(p[k]) if k and p.get(k) not in (None, "") else None
             except (TypeError, ValueError):
                 return None
-        out.append(rec(g, "city", city_height=num_or_none(hfield), osm_levels=num_or_none(sfield)))
+        out.append(rec(g, f"city:{dsid}", city_height=num_or_none(hfield), osm_levels=num_or_none(sfield)))
     return out
 
 
@@ -833,36 +841,6 @@ def assign_height(it):
 # Footprint merging
 # ---------------------------------------------------------------------------
 
-def merge_fill(primary, fill, overlap=0.3):
-    """Add fill footprints not already covered by primary; copy OSM tags onto matching primaries."""
-    if not primary:
-        return list(fill)
-    tree = STRtree([p["geom"] for p in primary])
-    added = 0
-    out = list(primary)
-    for f in fill:
-        g = f["geom"]
-        hits = tree.query(g, predicate="intersects")
-        covered = 0.0
-        best, best_iou = None, 0
-        for i in hits:
-            inter = primary[i]["geom"].intersection(g).area
-            covered += inter
-            iou = inter / (primary[i]["geom"].union(g).area or 1)
-            if iou > best_iou:
-                best, best_iou = i, iou
-        if best is not None and best_iou > 0.5:
-            p = primary[best]
-            p["osm_levels"] = p["osm_levels"] or f["osm_levels"]
-            p["osm_height"] = p["osm_height"] or f["osm_height"]
-            p["class"] = p["class"] or f["class"]
-        if f["is_part"] or covered / g.area < overlap:
-            out.append(f)
-            added += 1
-    log(f"    fill added {added} of {len(fill)} footprints")
-    return out
-
-
 def resolve_parts(items):
     """Replace buildings that have parts by their parts (+ residual outline)."""
     outlines = [i for i in items if not i["is_part"]]
@@ -1113,34 +1091,47 @@ def main():
                     help="comma list: city,overpass,geofabrik,overture,city_dem,hrdem,mrdem,terrarium,lidar")
     ap.add_argument("--terrain-res", type=float, default=4.0, help="heightmap spacing in metres")
     ap.add_argument("--glb-budget-mb", type=float, default=22.0)
+    ap.add_argument("--footprints", choices=("auto", "city", "osm"), default="auto",
+                    help="auto: City layer when reachable, else the OSM chain (default)")
+    ap.add_argument("--dist", default=None, help="output directory (default dist/)")
     args = ap.parse_args()
     skip = {s.strip() for s in args.skip.split(",") if s.strip()}
     refresh = args.refresh
-    DIST.mkdir(exist_ok=True)
+    global DIST
+    if args.dist:
+        DIST = Path(args.dist).resolve()
+    DIST.mkdir(parents=True, exist_ok=True)
     RAW.mkdir(parents=True, exist_ok=True)
     ext = local_extent()
     extent_box = box(*ext)
     log(f"Local extent (m): {ext}  origin UTM12N E{ORIGIN_E:.1f} N{ORIGIN_N:.1f}")
 
     # ---- footprints -------------------------------------------------------
-    log("Footprints:")
-    city_name, city = run_chain("footprints", [("city", lambda: fetch_city_footprints(refresh))], skip)
-    osm_name, osm = run_chain("footprints (OSM)", [
-        ("overpass", lambda: fetch_overpass_buildings(refresh)),
-        ("geofabrik", lambda: osm_buildings_from_features(fetch_geofabrik_features(refresh), "geofabrik")),
-        ("overture", lambda: fetch_overture_buildings(refresh)),
-    ], skip)
-    if not city and not osm:
-        sys.exit("ERROR: no footprint source reachable")
-    if not city:
-        LOG["fallbacks"].append(f"City footprints ({CITY_FOOTPRINTS}) unavailable; used {osm_name} as primary")
-    if osm_name and osm_name != "overpass":
-        LOG["fallbacks"].append(f"Overpass unavailable; OSM footprints/tags came from {osm_name}")
-    items = merge_fill(city or [], osm or []) if city else osm
-    items = resolve_parts(items)
+    # One source only: City footprints or the OSM chain, never a blend of the two geometries.
+    log(f"Footprints (mode {args.footprints}):")
+    fp_name = fp = None
+    if args.footprints in ("auto", "city"):
+        fp_name, fp = run_chain("footprints (City)", [
+            (f"city:{dsid}", lambda dsid=dsid: fetch_city_footprints(dsid, refresh))
+            for dsid, _ in CITY_FOOTPRINT_LAYERS if "city" not in skip], skip)
+        if fp is None and args.footprints == "city":
+            sys.exit("ERROR: --footprints city but no City footprint layer reachable")
+        if fp is None:
+            LOG["fallbacks"].append("City footprints unavailable; used the OSM chain")
+    if fp is None:
+        fp_name, fp = run_chain("footprints (OSM)", [
+            ("overpass", lambda: fetch_overpass_buildings(refresh)),
+            ("geofabrik", lambda: osm_buildings_from_features(fetch_geofabrik_features(refresh), "geofabrik")),
+            ("overture", lambda: fetch_overture_buildings(refresh)),
+        ], skip)
+        if fp is None:
+            sys.exit("ERROR: no footprint source reachable")
+        if fp_name != "overpass":
+            LOG["fallbacks"].append(f"Overpass unavailable; OSM footprints/tags came from {fp_name}")
+    items = resolve_parts(fp)
     items = [i for i in items if i["geom"].area >= 10 and extent_box.contains(i["geom"].representative_point())]
-    LOG["sources"]["footprints"] = {"primary": city_name or osm_name, "fill": osm_name if city else None}
-    log(f"  {len(items)} footprints after merge")
+    LOG["sources"]["footprints"] = {"primary": fp_name, "mode": args.footprints}
+    log(f"  {len(items)} footprints from {fp_name}")
 
     # ---- terrain ----------------------------------------------------------
     log("Terrain / LiDAR:")

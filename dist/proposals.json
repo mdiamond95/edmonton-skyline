@@ -41,7 +41,13 @@
       -17.6
      ]
     ]
-   ]
+   ],
+   "hide_base": [
+    35034,
+    35036,
+    35037
+   ],
+   "replaced_height_m": 189.1
   },
   {
    "id": "P002",
@@ -73,7 +79,9 @@
       -117.14
      ]
     ]
-   ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
   },
   {
    "id": "P003",
@@ -105,7 +113,9 @@
       16.45
      ]
     ]
-   ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
   },
   {
    "id": "P004",
@@ -137,7 +147,9 @@
       -1115.38
      ]
     ]
-   ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
   },
   {
    "id": "P005",
@@ -169,7 +181,13 @@
       325.7
      ]
     ]
-   ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
   }
- ]
+ ],
+ "base_glb": {
+  "buildings": 70979,
+  "bytes": 19021344
+ }
 }
