@@ -10,7 +10,6 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -216,3 +215,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# edmonton-skyline
+# dist/ and renders/ are tracked on purpose (served by GitHub Pages).
+data/raw/
+*.pbf

@@ -1,0 +1,10 @@
+requests
+shapely
+pyproj
+numpy
+trimesh
+pygltflib
+rasterio
+# osmium: fallback for reading OSM .pbf extracts when the API route fails
+osmium
+pandas
