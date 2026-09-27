@@ -1,0 +1,36 @@
+{
+ "heightmap": "terrain.png",
+ "width": 2232,
+ "height": 2301,
+ "extent": {
+  "xmin": -4466.0,
+  "xmax": 4458.0,
+  "ymin": -4598.0,
+  "ymax": 4602.0
+ },
+ "registration": "grid: sample (0,0) at (xmin, ymax); row 0 = north edge; col 0 = west edge",
+ "elevation": {
+  "offset": 611.6185913085938,
+  "scale": 0.02,
+  "min": 611.6185913085938,
+  "max": 685.9285278320312,
+  "datum": 611.0,
+  "formula": "elevation_m = offset + value * scale"
+ },
+ "frame": "local east/north metres; three.js x=east, y=elevation-datum, z=-north",
+ "origin": {
+  "lon": -113.495,
+  "lat": 53.545,
+  "utm_e": 334691.0091794692,
+  "utm_n": 5935795.835934506,
+  "epsg": 26912
+ },
+ "bbox_wgs84": {
+  "lon_min": -113.56,
+  "lon_max": -113.43,
+  "lat_min": 53.505,
+  "lat_max": 53.585
+ },
+ "source": "hrdem",
+ "resolution_m": 4.0
+}

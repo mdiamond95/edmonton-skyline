@@ -1,0 +1,184 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "P001",
+    "name": "Stantec Tower",
+    "footprint_source": "OpenStreetMap building:part via Overture Maps"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -113.4960663,
+       53.5448167
+      ],
+      [
+       -113.4960578,
+       53.5452833
+      ],
+      [
+       -113.4963607,
+       53.5452848
+      ],
+      [
+       -113.4963762,
+       53.5448174
+      ],
+      [
+       -113.4962021,
+       53.5448167
+      ],
+      [
+       -113.4960663,
+       53.5448167
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "P002",
+    "name": "PLACEHOLDER \u2013 The Quarters tower",
+    "footprint_source": "placeholder 32 m square on an open lot (LiDAR + footprints check)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -113.4852928,
+       53.5438613
+      ],
+      [
+       -113.4848103,
+       53.5438713
+      ],
+      [
+       -113.4848272,
+       53.5441587
+      ],
+      [
+       -113.4853097,
+       53.5441487
+      ],
+      [
+       -113.4852928,
+       53.5438613
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "P003",
+    "name": "PLACEHOLDER \u2013 Warehouse District tower",
+    "footprint_source": "placeholder 32 m square on an open lot (LiDAR + footprints check)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -113.5026028,
+       53.5447013
+      ],
+      [
+       -113.5021203,
+       53.5447114
+      ],
+      [
+       -113.5021372,
+       53.5449987
+      ],
+      [
+       -113.5026197,
+       53.5449886
+      ],
+      [
+       -113.5026028,
+       53.5447013
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "P004",
+    "name": "PLACEHOLDER \u2013 Rossdale tower",
+    "footprint_source": "placeholder 32 m square on an open lot (LiDAR + footprints check)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -113.4989527,
+       53.5346013
+      ],
+      [
+       -113.4984704,
+       53.5346114
+      ],
+      [
+       -113.4984873,
+       53.5348987
+      ],
+      [
+       -113.4989696,
+       53.5348886
+      ],
+      [
+       -113.4989527,
+       53.5346013
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "P005",
+    "name": "PLACEHOLDER \u2013 Station Lands tower",
+    "footprint_source": "placeholder 32 m square on an open lot (LiDAR + footprints check)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -113.4906528,
+       53.5477313
+      ],
+      [
+       -113.4901703,
+       53.5477413
+      ],
+      [
+       -113.4901872,
+       53.5480287
+      ],
+      [
+       -113.4906697,
+       53.5480187
+      ],
+      [
+       -113.4906528,
+       53.5477313
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

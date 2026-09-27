@@ -1,10 +1,11 @@
 requests
-shapely
-pyproj
 numpy
-trimesh
-pygltflib
+scipy
+shapely>=2.0
+pyproj
 rasterio
-# osmium: fallback for reading OSM .pbf extracts when the API route fails
+pyarrow
+mapbox_earcut
+pillow
+# osmium: last-resort reader for the Geofabrik Alberta .pbf when Overpass fails
 osmium
-pandas

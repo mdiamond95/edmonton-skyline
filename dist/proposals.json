@@ -1,0 +1,175 @@
+{
+ "data_date": "2026-09-27",
+ "status_colours": {
+  "existing": "#E4E3DF",
+  "construction": "#4E8FD1",
+  "approved": "#A995C9",
+  "proposed": "#E59CA5",
+  "stalled": "#E4E3DF"
+ },
+ "frame": "footprint rings are flat [east, north, ...] metres from origin (see terrain.json)",
+ "proposals": [
+  {
+   "id": "P001",
+   "name": "Stantec Tower",
+   "address": "10220 103 Ave NW",
+   "status": "existing",
+   "height_m": 250.8,
+   "height_source": "height_m",
+   "storeys": 66,
+   "developer": "Katz Group / ICE District Properties",
+   "source_url": "https://en.wikipedia.org/wiki/Stantec_Tower",
+   "last_checked": "2026-09-27",
+   "lat": 53.54505,
+   "lon": -113.49621,
+   "local": [
+    -79.96,
+    8.37
+   ],
+   "footprint": [
+    [
+     [
+      -71.35,
+      -17.91,
+      -68.97,
+      33.97,
+      -89.03,
+      34.84,
+      -91.88,
+      -17.11,
+      -80.35,
+      -17.6
+     ]
+    ]
+   ]
+  },
+  {
+   "id": "P002",
+   "name": "PLACEHOLDER \u2013 The Quarters tower",
+   "address": "102 Ave NW & 96 St NW (approx.)",
+   "status": "construction",
+   "height_m": 100.0,
+   "height_source": "height_m",
+   "storeys": 32,
+   "developer": "TBD (placeholder)",
+   "source_url": "https://data.edmonton.ca/",
+   "last_checked": "2026-09-27",
+   "lat": 53.54401,
+   "lon": -113.48506,
+   "local": [
+    654.62,
+    -133.14
+   ],
+   "footprint": [
+    [
+     [
+      638.62,
+      -149.14,
+      670.62,
+      -149.14,
+      670.62,
+      -117.14,
+      638.62,
+      -117.14
+     ]
+    ]
+   ]
+  },
+  {
+   "id": "P003",
+   "name": "PLACEHOLDER \u2013 Warehouse District tower",
+   "address": "103 Ave NW & 106 St NW (approx.)",
+   "status": "approved",
+   "height_m": 117.8,
+   "height_source": "storeys x 3.1",
+   "storeys": 38,
+   "developer": "TBD (placeholder)",
+   "source_url": "https://data.edmonton.ca/",
+   "last_checked": "2026-09-27",
+   "lat": 53.54485,
+   "lon": -113.50237,
+   "local": [
+    -488.8,
+    0.45
+   ],
+   "footprint": [
+    [
+     [
+      -504.81,
+      -15.54,
+      -472.8,
+      -15.54,
+      -472.8,
+      16.45,
+      -504.8,
+      16.45
+     ]
+    ]
+   ]
+  },
+  {
+   "id": "P004",
+   "name": "PLACEHOLDER \u2013 Rossdale tower",
+   "address": "Rossdale Rd NW & 104 St NW (approx.)",
+   "status": "proposed",
+   "height_m": 145.0,
+   "height_source": "height_m",
+   "storeys": 45,
+   "developer": "TBD (placeholder)",
+   "source_url": "https://data.edmonton.ca/",
+   "last_checked": "2026-09-27",
+   "lat": 53.53475,
+   "lon": -113.49872,
+   "local": [
+    -286.44,
+    -1131.37
+   ],
+   "footprint": [
+    [
+     [
+      -302.44,
+      -1147.37,
+      -270.44,
+      -1147.37,
+      -270.44,
+      -1115.37,
+      -302.44,
+      -1115.38
+     ]
+    ]
+   ]
+  },
+  {
+   "id": "P005",
+   "name": "PLACEHOLDER \u2013 Station Lands tower",
+   "address": "105 Ave NW & 99 St NW (approx.)",
+   "status": "stalled",
+   "height_m": 128.0,
+   "height_source": "height_m",
+   "storeys": 40,
+   "developer": "TBD (placeholder)",
+   "source_url": "https://data.edmonton.ca/",
+   "last_checked": "2026-09-27",
+   "lat": 53.54788,
+   "lon": -113.49042,
+   "local": [
+    314.6,
+    309.69
+   ],
+   "footprint": [
+    [
+     [
+      298.6,
+      293.69,
+      330.6,
+      293.69,
+      330.6,
+      325.69,
+      298.6,
+      325.7
+     ]
+    ]
+   ]
+  }
+ ]
+}
