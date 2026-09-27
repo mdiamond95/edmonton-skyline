@@ -220,3 +220,4 @@ __marimo__/
 # dist/ and renders/ are tracked on purpose (served by GitHub Pages).
 data/raw/
 *.pbf
+site/

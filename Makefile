@@ -4,7 +4,7 @@ PYTHON ?= python
 BASE_GLB_MAX_MB := 25
 DIST_MAX_MB := 60
 
-.PHONY: fetch candidates build pack serve renders-check
+.PHONY: fetch candidates build pack site serve renders-check
 
 fetch:
 	$(PYTHON) scripts/fetch_base.py
@@ -30,17 +30,19 @@ pack:
 	echo "dist/ total: $$((total / 1048576)) MB (limit $(DIST_MAX_MB) MB)"; \
 	if [ $$total -ge $$(($(DIST_MAX_MB) * 1048576)) ]; then echo "ERROR: dist/ is over budget"; exit 1; fi
 
-serve:
-	@echo "Serving repo root on port 8000; open /web/ in the forwarded 'skyline' port"
-	$(PYTHON) -m http.server 8000
+# Assemble the site exactly as GitHub Pages serves it: web/* at the root,
+# dist/ and renders/ beside it. The Pages workflow runs this same target.
+site:
+	rm -rf site
+	mkdir -p site
+	cp -r web/. site/
+	for d in dist renders; do [ -d "$$d" ] && cp -r "$$d" site/ || true; done
+	find site -name .gitkeep -delete
 
-# List renders/ with the date each file was last committed (or its mtime if uncommitted).
+serve: site
+	@echo "Serving site/ on port 8000 (forwarded as 'skyline'); rerun make serve after edits"
+	$(PYTHON) -m http.server 8000 --directory site
+
+# List renders/ and flag any older than the current data date (max last_checked).
 renders-check:
-	@files=$$(find renders -type f ! -name .gitkeep 2>/dev/null | sort); \
-	if [ -z "$$files" ]; then echo "renders/ is empty"; exit 0; fi; \
-	printf '%-24s %6s  %s\n' "DATE" "SIZE" "FILE"; \
-	for f in $$files; do \
-		d=$$(git log -1 --format=%cs -- "$$f" 2>/dev/null); \
-		[ -n "$$d" ] || d="$$(date -r "$$f" +%F) (uncommitted)"; \
-		printf '%-24s %6s  %s\n' "$$d" "$$(du -h "$$f" | cut -f1)" "$$f"; \
-	done
+	$(PYTHON) scripts/renders_check.py
