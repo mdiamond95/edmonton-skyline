@@ -4,7 +4,7 @@ PYTHON ?= python3
 BASE_GLB_MAX_MB := 25
 DIST_MAX_MB := 60
 
-.PHONY: all fetch candidates build pack site serve renders-check cameras contact-sheet renders compare-footprints test-trace
+.PHONY: all fetch candidates candidate-heights build pack site serve renders-check cameras contact-sheet renders compare-footprints test-trace
 
 # Full path: `make fetch build serve` (or `make all` for fetch + build).
 all: fetch build
@@ -21,8 +21,14 @@ fetch:
 
 # Unverified leads from City open data -> data/candidates.csv + docs/candidates-summary.md (never proposals.csv).
 # Cached in data/raw/candidates/; make candidates REFRESH=1 refetches.
+# Then fills in heights (DC texts, zone maxima, SkyriseCities, dwellings estimate; cached in data/raw/heights/).
 candidates:
 	$(PYTHON) scripts/fetch_candidates.py $(if $(REFRESH),--refresh)
+	$(PYTHON) scripts/fill_heights.py
+
+# Heights only, on the existing data/candidates.csv -> adds storeys_final, height_final_m, height_source, ...
+candidate-heights:
+	$(PYTHON) scripts/fill_heights.py
 
 # proposals.csv + proposals.geojson -> dist/proposals.json; data/cameras.json -> dist/cameras.json
 build:
