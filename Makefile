@@ -4,15 +4,20 @@ PYTHON ?= python3
 BASE_GLB_MAX_MB := 25
 DIST_MAX_MB := 60
 
-.PHONY: all fetch candidates build pack site serve renders-check
+.PHONY: all fetch candidates build pack site serve renders-check cameras contact-sheet renders compare-footprints
 
 # Full path: `make fetch build serve` (or `make all` for fetch + build).
 all: fetch build
 
 # Base city: footprints, heights, terrain, land use -> dist/base.glb, terrain.*, landuse.json.
 # Downloads are cached in data/raw/. Options: make fetch REFRESH=1  |  make fetch SKIP=city,overpass
+#   make fetch FOOTPRINTS=osm   (auto = City layer when reachable; see docs/data-sources.md for why
+#                                the committed dist/ uses osm)
+# Rebuilds proposals.json afterwards: its hidden-base-building lists are tied to this base.glb.
+FOOTPRINTS ?= osm
 fetch:
-	$(PYTHON) scripts/fetch_base.py $(if $(REFRESH),--refresh) $(if $(SKIP),--skip $(SKIP))
+	$(PYTHON) scripts/fetch_base.py --footprints $(FOOTPRINTS) $(if $(REFRESH),--refresh) $(if $(SKIP),--skip $(SKIP))
+	$(PYTHON) scripts/build_proposals.py
 
 candidates:
 	$(PYTHON) scripts/fetch_candidates.py
@@ -52,3 +57,20 @@ serve: site
 # List renders/ and flag any older than the current data date (max last_checked).
 renders-check:
 	$(PYTHON) scripts/renders_check.py
+
+# Recompute all 20 views in data/cameras.json from landmark coordinates, then copy to dist/.
+cameras:
+	$(PYTHON) scripts/set_cameras.py
+	$(PYTHON) scripts/build_proposals.py
+
+# Headless (CPU/SwiftShader) renders through the real viewer. Needs: python -m playwright install chromium
+contact-sheet:
+	$(PYTHON) scripts/render_views.py --size 600x800 --out docs/contact-sheet --sheet docs/contact-sheet.png --compact
+
+renders:
+	$(PYTHON) scripts/render_views.py --size 2400x3200 --out renders --dated
+	$(PYTHON) scripts/renders_check.py
+
+# City of Edmonton vs OSM/Overture footprints over the downtown core (writes data/raw/compare/).
+compare-footprints:
+	$(PYTHON) scripts/compare_footprints.py

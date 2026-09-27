@@ -9,3 +9,5 @@ mapbox_earcut
 pillow
 # osmium: last-resort reader for the Geofabrik Alberta .pbf when Overpass fails
 osmium
+# headless renders (make contact-sheet / renders); then: python -m playwright install --with-deps chromium
+playwright

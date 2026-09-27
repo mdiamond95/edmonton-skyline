@@ -1,6 +1,6 @@
 {
  "frame": "position/target = [east_m, north_m, elevation_m_ASL]; east/north are metres from the scope bbox centre in UTM 12N (EPSG:26912), see dist/terrain.json origin. Ground is ~660-690 m downtown, river ~615 m. Use the viewer's 'Copy camera' button to capture a view in this format.",
- "fov_note": "vertical FOV in degrees (render spec: 35)",
+ "fov_note": "vertical FOV in degrees (render spec: 35); portrait 3:4 renders",
  "cameras": [
   {
    "id": "01",
@@ -8,24 +8,44 @@
    "slug": "city-centre",
    "note": "from SE over Ice District, mirrors reference",
    "position": [
-    1650,
-    -1250,
-    1320
+    1947,
+    -642,
+    1568
    ],
    "target": [
-    -250,
-    0,
-    690
+    -37,
+    -110,
+    738
    ],
-   "fov": 35
+   "fov": 35,
+   "aim": {
+    "landmark": "core",
+    "bearing": 105,
+    "height_m": 900,
+    "pitch": 22
+   }
   },
   {
    "id": "02",
    "name": "Ice District from the south bank",
    "slug": "ice-district-from-the-south-bank",
-   "position": null,
-   "target": null,
-   "fov": 35
+   "position": [
+    72,
+    -1990,
+    1566
+   ],
+   "target": [
+    -115,
+    138,
+    746
+   ],
+   "fov": 35,
+   "aim": {
+    "landmark": "ice",
+    "bearing": 175,
+    "height_m": 900,
+    "pitch": 21
+   }
   },
   {
    "id": "03",
@@ -33,148 +53,374 @@
    "slug": "downtown-from-the-west",
    "note": "W\u00eehkw\u00eant\u00f4win",
    "position": [
-    -2700,
-    250,
-    1150
+    -1394,
+    -152,
+    1468
    ],
    "target": [
-    -150,
-    -150,
-    700
+    -338,
+    -189,
+    728
    ],
-   "fov": 35
+   "fov": 35,
+   "aim": {
+    "landmark": "core_west",
+    "bearing": 272,
+    "height_m": 800,
+    "pitch": 35
+   }
   },
   {
    "id": "04",
    "name": "Downtown from the north",
    "slug": "downtown-from-the-north",
    "note": "Blatchford",
-   "position": null,
-   "target": null,
-   "fov": 35
+   "position": [
+    -204,
+    1078,
+    1568
+   ],
+   "target": [
+    -37,
+    -110,
+    728
+   ],
+   "fov": 35,
+   "aim": {
+    "landmark": "core",
+    "bearing": 352,
+    "height_m": 900,
+    "pitch": 35
+   }
   },
   {
    "id": "05",
    "name": "W\u00eehkw\u00eant\u00f4win / Oliver",
    "slug": "wihkwentowin-oliver",
-   "position": null,
-   "target": null,
-   "fov": 35
+   "position": [
+    -1367,
+    -860,
+    1263
+   ],
+   "target": [
+    -1600,
+    -222,
+    693
+   ],
+   "fov": 35,
+   "aim": {
+    "landmark": "oliver",
+    "bearing": 160,
+    "height_m": 600,
+    "pitch": 40
+   }
   },
   {
    "id": "06",
    "name": "The Quarters & Boyle Street",
    "slug": "the-quarters-boyle-street",
-   "position": null,
-   "target": null,
-   "fov": 35
+   "position": [
+    1233,
+    -312,
+    1213
+   ],
+   "target": [
+    696,
+    -2,
+    693
+   ],
+   "fov": 35,
+   "aim": {
+    "landmark": "quarters",
+    "bearing": 120,
+    "height_m": 550,
+    "pitch": 40
+   }
   },
   {
    "id": "07",
    "name": "Rossdale & the river bend",
    "slug": "rossdale-the-river-bend",
-   "position": null,
-   "target": null,
-   "fov": 35
+   "position": [
+    406,
+    -2280,
+    1422
+   ],
+   "target": [
+    84,
+    -1395,
+    632
+   ],
+   "fov": 35,
+   "aim": {
+    "landmark": "rossdale",
+    "bearing": 160,
+    "height_m": 800,
+    "pitch": 40
+   }
   },
   {
    "id": "08",
    "name": "Station Lands & MacEwan",
    "slug": "station-lands-macewan",
-   "position": null,
-   "target": null,
-   "fov": 35
+   "position": [
+    448,
+    443,
+    1265
+   ],
+   "target": [
+    -256,
+    254,
+    695
+   ],
+   "fov": 35,
+   "aim": {
+    "landmark": "104ave",
+    "bearing": 75,
+    "height_m": 600,
+    "pitch": 38
+   }
   },
   {
    "id": "09",
    "name": "Warehouse District / 104 Street",
    "slug": "warehouse-district-104-street",
-   "position": null,
-   "target": null,
-   "fov": 35
+   "position": [
+    -384,
+    -670,
+    1117
+   ],
+   "target": [
+    -336,
+    -122,
+    687
+   ],
+   "fov": 35,
+   "aim": {
+    "landmark": "warehouse",
+    "bearing": 185,
+    "height_m": 450,
+    "pitch": 38
+   }
   },
   {
    "id": "10",
    "name": "Jasper Avenue corridor",
    "slug": "jasper-avenue-corridor",
-   "position": null,
-   "target": null,
-   "fov": 35
+   "position": [
+    -1242,
+    -402,
+    1269
+   ],
+   "target": [
+    -347,
+    -433,
+    709
+   ],
+   "fov": 35,
+   "aim": {
+    "landmark": "jasper",
+    "bearing": 272,
+    "height_m": 600,
+    "pitch": 32
+   }
   },
   {
    "id": "11",
    "name": "Legislature grounds",
    "slug": "legislature-grounds",
-   "position": null,
-   "target": null,
-   "fov": 35
+   "position": [
+    -902,
+    -1757,
+    1109
+   ],
+   "target": [
+    -813,
+    -1252,
+    679
+   ],
+   "fov": 35,
+   "aim": {
+    "landmark": "legislature",
+    "bearing": 190,
+    "height_m": 450,
+    "pitch": 40
+   }
   },
   {
    "id": "12",
    "name": "Old Strathcona / Whyte Avenue",
    "slug": "old-strathcona-whyte-avenue",
-   "position": null,
-   "target": null,
-   "fov": 35
+   "position": [
+    274,
+    -2829,
+    1122
+   ],
+   "target": [
+    -270,
+    -2975,
+    682
+   ],
+   "fov": 35,
+   "aim": {
+    "landmark": "whyte",
+    "bearing": 75,
+    "height_m": 450,
+    "pitch": 38
+   }
   },
   {
    "id": "13",
    "name": "Garneau / 109 Street",
    "slug": "garneau-109-street",
-   "position": null,
-   "target": null,
-   "fov": 35
+   "position": [
+    -1207,
+    -3100,
+    1174
+   ],
+   "target": [
+    -1146,
+    -2410,
+    689
+   ],
+   "fov": 35,
+   "aim": {
+    "landmark": "garneau",
+    "bearing": 185,
+    "height_m": 500,
+    "pitch": 35
+   }
   },
   {
    "id": "14",
    "name": "Strathcona from the east",
    "slug": "strathcona-from-the-east",
    "note": "Bonnie Doon side",
-   "position": null,
-   "target": null,
-   "fov": 35
+   "position": [
+    1496,
+    -3014,
+    1571
+   ],
+   "target": [
+    230,
+    -2903,
+    681
+   ],
+   "fov": 35,
+   "aim": {
+    "landmark": "strathcona",
+    "bearing": 95,
+    "height_m": 900,
+    "pitch": 35
+   }
   },
   {
    "id": "15",
    "name": "Blatchford",
    "slug": "blatchford",
-   "position": null,
-   "target": null,
-   "fov": 35
+   "position": [
+    -1390,
+    3486,
+    1565
+   ],
+   "target": [
+    -1234,
+    2605,
+    670
+   ],
+   "fov": 35,
+   "aim": {
+    "landmark": "blatchford",
+    "bearing": 350,
+    "height_m": 900,
+    "pitch": 45
+   }
   },
   {
    "id": "16",
    "name": "From the High Level Bridge",
    "slug": "from-the-high-level-bridge",
-   "position": null,
-   "target": null,
-   "fov": 35
+   "position": [
+    -1128,
+    -1608,
+    664
+   ],
+   "target": [
+    -37,
+    -110,
+    728
+   ],
+   "fov": 35,
+   "aim": {
+    "landmark": "core",
+    "eye_level": true
+   }
   },
   {
    "id": "17",
    "name": "From Ada Boulevard",
    "slug": "from-ada-boulevard",
    "note": "east",
-   "position": null,
-   "target": null,
-   "fov": 35
+   "position": [
+    3259,
+    1424,
+    659
+   ],
+   "target": [
+    -37,
+    -110,
+    748
+   ],
+   "fov": 35,
+   "aim": {
+    "landmark": "core",
+    "eye_level": true
+   }
   },
   {
    "id": "18",
    "name": "Exhibition Lands & Commonwealth",
    "slug": "exhibition-lands-commonwealth",
-   "position": null,
-   "target": null,
-   "fov": 35
+   "position": [
+    1166,
+    1466,
+    1461
+   ],
+   "target": [
+    1994,
+    2046,
+    671
+   ],
+   "fov": 35,
+   "aim": {
+    "landmark": "exhibition",
+    "bearing": 235,
+    "height_m": 800,
+    "pitch": 38
+   }
   },
   {
    "id": "19",
    "name": "Whyte to Downtown",
    "slug": "whyte-to-downtown",
    "note": "long axis, looking north",
-   "position": null,
-   "target": null,
-   "fov": 35
+   "position": [
+    -220,
+    -3667,
+    1516
+   ],
+   "target": [
+    -220,
+    -2108,
+    616
+   ],
+   "fov": 35,
+   "aim": {
+    "landmark": "valley",
+    "bearing": 180,
+    "height_m": 900,
+    "pitch": 30
+   }
   },
   {
    "id": "20",
@@ -182,15 +428,22 @@
    "slug": "full-extent-aerial",
    "position": [
     0,
-    -7000,
-    15000
+    -9411,
+    16968
    ],
    "target": [
     0,
-    300,
-    650
+    0,
+    668
    ],
-   "fov": 35
+   "fov": 35,
+   "aim": {
+    "landmark": "centre",
+    "bearing": 180,
+    "height_m": 16300,
+    "pitch": 60
+   }
   }
- ]
+ ],
+ "generator": "scripts/set_cameras.py (make cameras); aim = how each view was derived"
 }
