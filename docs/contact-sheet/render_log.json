@@ -82,7 +82,7 @@
    "id": "02",
    "name": "Ice District from the south bank",
    "file": "docs/contact-sheet/02-ice-district-from-the-south-bank.png",
-   "sky_pct": 12.5
+   "sky_pct": 21.4
   },
   {
    "id": "03",
@@ -136,7 +136,7 @@
    "id": "11",
    "name": "Legislature grounds",
    "file": "docs/contact-sheet/11-legislature-grounds.png",
-   "sky_pct": 0.0
+   "sky_pct": 18.5
   },
   {
    "id": "12",
@@ -148,7 +148,7 @@
    "id": "13",
    "name": "Garneau / 109 Street",
    "file": "docs/contact-sheet/13-garneau-109-street.png",
-   "sky_pct": 0.0
+   "sky_pct": 30.8
   },
   {
    "id": "14",
@@ -160,7 +160,7 @@
    "id": "15",
    "name": "Blatchford",
    "file": "docs/contact-sheet/15-blatchford.png",
-   "sky_pct": 0.0
+   "sky_pct": 28.6
   },
   {
    "id": "16",
@@ -178,7 +178,7 @@
    "id": "18",
    "name": "Exhibition Lands & Commonwealth",
    "file": "docs/contact-sheet/18-exhibition-lands-commonwealth.png",
-   "sky_pct": 0.0
+   "sky_pct": 17.4
   },
   {
    "id": "19",
@@ -190,7 +190,7 @@
    "id": "20",
    "name": "Full extent aerial",
    "file": "docs/contact-sheet/20-full-extent-aerial.png",
-   "sky_pct": 32.4
+   "sky_pct": 41.0
   }
  ]
 }

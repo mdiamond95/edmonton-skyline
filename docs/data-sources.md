@@ -131,3 +131,25 @@ LiDAR survey (they show as ground or as a stump) are entered this way. The build
 lots (checked against LiDAR and footprints) with invented heights. Their `source_url` points at the
 City portal until each row is researched. P001 (Stantec Tower, existing) uses its OSM `building:part`
 footprint and the published 250.8 m height.
+
+## Candidates (Phase 3A, 2026-09-27)
+
+`make candidates` (`scripts/fetch_candidates.py`) writes `data/candidates.csv` and
+`docs/candidates-summary.md`. These are unverified leads; nothing in them goes into `proposals.csv`
+automatically. The raw responses are cached in `data/raw/candidates/`.
+
+| Dataset | ID | Used for |
+|---|---|---|
+| Development Permits | `2ccn-pwtu` | Major/Minor DPs in the bbox, decided 2021-01-01 or later, plus all open ones (In Progress / Appealed carry no date) |
+| Zoning Bylaw Map – History | `67p2-r285` | Rezonings. The portal has no rezoning-application dataset, so each current polygon zoned for ≥ 20 m (hNN ≥ 20, Direct Control, downtown special-area zones) has its history walked back to its last zone change |
+| General Building Permits | `24uj-dj8v` | construction / complete status: new-building, foundation, excavation or structure permits within 40 m |
+| Public Notices | `vfpx-jrew` | not used: the rezoning notices are PDFs without coordinates |
+
+The zoning history mixes formats. Before 2025-06, DC numbers sit in the zone text with a generic
+bylaw link; after that they are in the link. Height modifiers (`h23`) appear from 2025. Change
+detection therefore treats a missing part as a wildcard. It also ignores the bulk-change snapshots
+where many polygons "change" at once: 2024-01-08 (the Zoning Bylaw 20001 switch-over) and 2025-06-17
+(a re-extract). A real rezoning dated exactly on one of those snapshots is missed. Rezoned polygons
+with a DP inside them are dropped; the DP row stands for the site. `zoningbylaw.edmonton.ca` (the DC
+texts with their heights) is blocked from the cloud sessions (proxy 403), so DC rezonings have no
+height.

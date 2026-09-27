@@ -109,6 +109,14 @@ class SiteHandler(SimpleHTTPRequestHandler):
         pass
 
 
+def view_size(cam, W, H):
+    """cameras.json "aspect": "16:9" -> landscape at 1.2x the portrait height (2400x3200 -> 3840x2160)."""
+    if cam.get("aspect") == "16:9":
+        w = round(max(W, H) * 1.2)
+        return w, round(w * 9 / 16)
+    return W, H
+
+
 def chromium_path():
     for p in [os.environ.get("SKYLINE_CHROMIUM"), "/opt/pw-browsers/chromium",
               *sorted(glob.glob("/opt/pw-browsers/chromium-*/chrome-linux/chrome"))]:
@@ -150,9 +158,13 @@ def contact_sheet(items, path, cols=5, thumb=(300, 400), compact=False):
             continue
     font = font or ImageFont.load_default()
     for k, (cid, name, png) in enumerate(items):
-        im = Image.open(png).convert("RGB").resize(thumb, Image.LANCZOS)
+        im = Image.open(png).convert("RGB")
         x, y = (k % cols) * thumb[0], (k // cols) * (thumb[1] + cap)
-        sheet.paste(im, (x, y))
+        if im.width * thumb[1] > im.height * thumb[0]:   # landscape view: fit the width, centre vertically
+            tw, th = thumb[0], round(thumb[0] * im.height / im.width)
+            sheet.paste(im.resize((tw, th), Image.LANCZOS), (x, y + (thumb[1] - th) // 2))
+        else:
+            sheet.paste(im.resize(thumb, Image.LANCZOS), (x, y))
         label = f"{cid}  {name}"
         while draw.textlength(label, font=font) > thumb[0] - 12 and len(label) > 8:
             label = label[:-2]
@@ -238,7 +250,8 @@ def main():
             cams = [c for c in cams if c["id"] in want]
         for c in cams:
             t1 = time.time()
-            data_url = page.evaluate("([id, w, h]) => window.__skyline.renderView(id, w, h)", [c["id"], W, H])
+            w, h = view_size(c, W, H)
+            data_url = page.evaluate("([id, w, h]) => window.__skyline.renderView(id, w, h)", [c["id"], w, h])
             png = base64.b64decode(data_url.split(",", 1)[1])
             name = f"{c['id']}-{c['slug']}" + (f"_{info['date']}" if args.dated else "") + ".png"
             path = out / name
@@ -246,7 +259,7 @@ def main():
             sky = sky_fraction(png)
             results.append({"id": c["id"], "name": c["name"], "file": str(path.relative_to(ROOT) if path.is_relative_to(ROOT) else path),
                             "sky_pct": round(100 * sky, 1)})
-            print(f"  {c['id']} {c['name']:<40} {time.time() - t1:5.1f}s  background/sky {100 * sky:4.1f}%  -> {path}")
+            print(f"  {c['id']} {c['name']:<40} {w}x{h} {time.time() - t1:5.1f}s  background/sky {100 * sky:4.1f}%  -> {path}")
         browser.close()
     srv.shutdown()
     if args.sheet:

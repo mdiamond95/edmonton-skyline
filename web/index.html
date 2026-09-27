@@ -69,6 +69,17 @@
   #fps { right: 12px; top: max(12px, env(safe-area-inset-top)); font: 12px/1.4 ui-monospace, Menlo, monospace;
     color: var(--muted); white-space: pre; pointer-events: none; }
   @media (max-width: 900px) { #fps { top: auto; bottom: calc(max(12px, env(safe-area-inset-bottom)) + 150px); } }
+  #tracebar { top: calc(max(12px, env(safe-area-inset-top)) + 60px); left: 12px; display: flex; flex-wrap: wrap;
+    gap: 6px 8px; align-items: center; max-width: 760px; }
+  #tracebar .hint { color: var(--muted); font-size: 12px; flex-basis: 100%; }
+  #traceinfo { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+  button.on { background: var(--ink); color: var(--bg); border-color: transparent; }
+  #traceov { position: fixed; inset: 0; width: 100%; height: 100%; touch-action: none; display: none; }
+  #traceov.active { display: block; }
+  #traceov text { font: 600 12px -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    paint-order: stroke; stroke: rgba(255, 255, 255, 0.85); stroke-width: 3px; }
+  #copybox { width: min(520px, calc(100vw - 48px)); height: 120px; font: 11px ui-monospace, Menlo, monospace;
+    -webkit-user-select: text; user-select: text; }
   [hidden] { display: none !important; }
 </style>
 <script type="importmap">
@@ -90,6 +101,19 @@
   <label class="tog"><input type="checkbox" id="ssao" checked> SSAO</label>
   <label class="tog"><input type="checkbox" id="srcdbg"> Height sources</label>
   <label class="tog"><input type="checkbox" id="fpstog"> FPS</label>
+  <button id="tracetog" title="Top-down map to draw a proposal footprint">Trace</button>
+</div>
+<svg id="traceov" aria-label="Trace footprint"></svg>
+<div class="panel" id="tracebar" hidden>
+  <b>Trace</b>
+  <button id="traceundo">Undo</button>
+  <button id="traceclear">Clear</button>
+  <button id="tracecopy" class="primary" disabled>Copy GeoJSON</button>
+  <button id="tracedone">Done</button>
+  <span id="traceinfo"></span>
+  <span class="hint">Tap corners; tap the first corner to close. Drag to pan, pinch or scroll to zoom.
+    Outlines are the footprints already in proposals.geojson.</span>
+  <textarea id="copybox" hidden readonly></textarea>
 </div>
 <div class="panel" id="fps" hidden></div>
 <div class="panel" id="legend"></div>
@@ -205,12 +229,12 @@ function matte(hex, extra = {}) {
 // ---------------------------------------------------------------------------
 class Orbit {
   constructor(cam, el, onChange) {
-    Object.assign(this, { cam, el, onChange, target: new THREE.Vector3(), r: 3000, theta: 0, phi: 1.1,
+    Object.assign(this, { cam, el, onChange, enabled: true, target: new THREE.Vector3(), r: 3000, theta: 0, phi: 1.1,
       pointers: new Map(), groundAt: () => null, vel: { t: 0, p: 0 }, coasting: false, lastMove: 0, lastInput: 0 });
-    el.addEventListener('pointerdown', (e) => this.down(e));
+    el.addEventListener('pointerdown', (e) => this.enabled && this.down(e));
     el.addEventListener('pointermove', (e) => this.move(e));
     for (const t of ['pointerup', 'pointercancel', 'pointerleave']) el.addEventListener(t, (e) => this.up(e));
-    el.addEventListener('wheel', (e) => { e.preventDefault(); this.coasting = false; this.zoom(Math.exp(e.deltaY * 0.0015)); },
+    el.addEventListener('wheel', (e) => { e.preventDefault(); if (!this.enabled) return; this.coasting = false; this.zoom(Math.exp(e.deltaY * 0.0015)); },
       { passive: false });
     el.addEventListener('contextmenu', (e) => e.preventDefault());
     for (const t of ['gesturestart', 'gesturechange']) document.addEventListener(t, (e) => e.preventDefault());
@@ -587,6 +611,7 @@ async function buildBase() {
   // a constant up-normal keeps three's shadow code (normal bias) well-defined.
   const mat = matte('#ffffff', { vertexColors: true, flatShading: true });
   mat.defaultAttributeValues = { ...mat.defaultAttributeValues, normal: [0, 1, 0] };
+  world.baseMat = mat;
   world.buildings = glb.prims.map((g) => {
     const m = new THREE.Mesh(g, mat);
     m.castShadow = m.receiveShadow = true;
@@ -863,6 +888,7 @@ function resize() {
   const fh = h, fw = h * RW / RH;
   const f = $('frame');
   Object.assign(f.style, { display: 'block', left: `${(w - fw) / 2}px`, top: '0px', width: `${fw}px`, height: `${fh}px` });
+  if (trace.on) traceView();
   requestRender();
 }
 window.addEventListener('resize', resize);
@@ -880,9 +906,12 @@ function loop(now) {
     needsRender = false;
     const t0 = performance.now();
     renderer.info.reset();
-    fitShadow(camera, orbit.target);
-    const b = renderer.getDrawingBufferSize(new THREE.Vector2());
-    renderScene(null, b.x, b.y, $('ssao').checked && !busy);
+    if (trace.on) renderTrace();
+    else {
+      fitShadow(camera, orbit.target);
+      const b = renderer.getDrawingBufferSize(new THREE.Vector2());
+      renderScene(null, b.x, b.y, $('ssao').checked && !busy);
+    }
     stats.frames++;
     stats.ms = 0.8 * stats.ms + 0.2 * (performance.now() - t0);
     stats.calls = renderer.info.render.calls; stats.tris = renderer.info.render.triangles;
@@ -946,10 +975,15 @@ function buildCameraPicker(cams) {
   sel.addEventListener('change', () => applyCamera(sel.value));
 }
 
+const ASPECT_KEY = { '16:9': 'wide', '3:4': 'portrait' }; // cameras.json "aspect" -> RENDER_SIZES key
+
 function applyCamera(id) {
   const c = world.cameras.find((k) => k.id === id);
   world.currentCam = c || null;
   if (!c || !c.position) return;
+  // per-view output aspect (e.g. view 20 is 16:9); the picker can still override it before rendering
+  const ak = ASPECT_KEY[c.aspect] || 'portrait';
+  if ($('aspect').value !== ak) { $('aspect').value = ak; resize(); }
   camera.fov = c.fov || FOV;
   orbit.set(toWorld(...c.position), toWorld(...c.target));
 }
@@ -1010,6 +1044,226 @@ orbit.onTap = (x, y) => {
   pop.style.top = `${THREE.MathUtils.clamp(y + 12, 60, window.innerHeight - ph - 12)}px`;
   pop.querySelector('.x').onclick = () => { pop.hidden = true; };
 };
+
+// ---------------------------------------------------------------------------
+// Trace mode: top-down orthographic map (land use + base footprints + proposal outlines) for
+// drawing a new proposal footprint by tapping its corners; exports a GeoJSON Feature (WGS84)
+// ready to paste into data/proposals.geojson.
+// ---------------------------------------------------------------------------
+const trace = { on: false, cx: 0, cn: 0, half: 400, pts: [], closed: false, pointers: new Map(), tap: null, prev: null };
+const orthoCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 1, 20000);
+orthoCam.up.set(0, 0, -1); // north up
+const traceOv = $('traceov');
+const SVGNS = 'http://www.w3.org/2000/svg';
+
+function localToLonLat(e, n) {
+  // Inverse transverse Mercator, UTM zone 12N on GRS80 (EPSG:26912), local frame from terrain.json origin.
+  const o = world.tmeta.origin, a = 6378137, f = 1 / 298.257222101, k0 = 0.9996, lon0 = -111 * Math.PI / 180;
+  const e2 = f * (2 - f), ep2 = e2 / (1 - e2), e1 = (1 - Math.sqrt(1 - e2)) / (1 + Math.sqrt(1 - e2));
+  const x = e + o.utm_e - 500000, y = n + o.utm_n;
+  const mu = y / k0 / (a * (1 - e2 / 4 - 3 * e2 ** 2 / 64 - 5 * e2 ** 3 / 256));
+  const p1 = mu + (3 * e1 / 2 - 27 * e1 ** 3 / 32) * Math.sin(2 * mu) + (21 * e1 ** 2 / 16 - 55 * e1 ** 4 / 32) * Math.sin(4 * mu) +
+    (151 * e1 ** 3 / 96) * Math.sin(6 * mu) + (1097 * e1 ** 4 / 512) * Math.sin(8 * mu);
+  const s1 = Math.sin(p1), c1 = Math.cos(p1), t1 = Math.tan(p1) ** 2, C1 = ep2 * c1 * c1;
+  const N1 = a / Math.sqrt(1 - e2 * s1 * s1), R1 = a * (1 - e2) / (1 - e2 * s1 * s1) ** 1.5, D = x / (N1 * k0);
+  const lat = p1 - (N1 * Math.tan(p1) / R1) * (D * D / 2 - (5 + 3 * t1 + 10 * C1 - 4 * C1 * C1 - 9 * ep2) * D ** 4 / 24 +
+    (61 + 90 * t1 + 298 * C1 + 45 * t1 * t1 - 252 * ep2 - 3 * C1 * C1) * D ** 6 / 720);
+  const lon = lon0 + (D - (1 + 2 * t1 + C1) * D ** 3 / 6 + (5 - 2 * C1 + 28 * t1 - 3 * C1 * C1 + 8 * ep2 + 24 * t1 * t1) * D ** 5 / 120) / c1;
+  return [lon * 180 / Math.PI, lat * 180 / Math.PI];
+}
+
+function traceView() {
+  // fit the orthographic frustum to the window around (cx, cn); `half` = half the view height in m
+  const w = window.innerWidth, h = window.innerHeight, hw = trace.half * w / h;
+  const ext = world.tmeta.extent;
+  trace.cx = THREE.MathUtils.clamp(trace.cx, ext.xmin, ext.xmax);
+  trace.cn = THREE.MathUtils.clamp(trace.cn, ext.ymin, ext.ymax);
+  Object.assign(orthoCam, { left: -hw, right: hw, top: trace.half, bottom: -trace.half });
+  orthoCam.position.set(trace.cx, 4000, -trace.cn);
+  orthoCam.lookAt(trace.cx, 0, -trace.cn);
+  orthoCam.updateProjectionMatrix();
+  orthoCam.updateMatrixWorld();
+  drawTraceOverlay();
+  requestRender();
+}
+const toScreen = (e, n) => { const w = window.innerWidth, h = window.innerHeight, k = h / (2 * trace.half);
+  return [w / 2 + (e - trace.cx) * k, h / 2 - (n - trace.cn) * k]; };
+const toLocal = (x, y) => { const w = window.innerWidth, h = window.innerHeight, k = 2 * trace.half / h;
+  return [trace.cx + (x - w / 2) * k, trace.cn - (y - h / 2) * k]; };
+
+function renderTrace() {
+  // top-down, no fog, no SSAO; shadows fitted to the visible area so roofs read as footprints
+  const tgt = new THREE.Vector3(trace.cx, heightAt(trace.cx, -trace.cn), -trace.cn);
+  fogStart.value = 1e9;
+  const probe = tgt.clone().setY(tgt.y + trace.half * 1.15 * Math.max(1, window.innerWidth / window.innerHeight));
+  fitShadow({ position: probe }, tgt);
+  renderer.shadowMap.needsUpdate = shadowDirty;
+  shadowDirty = false;
+  renderer.setRenderTarget(null);
+  renderer.render(scene, orthoCam);
+}
+
+function polyArea(pts) {
+  let a = 0;
+  for (let i = 0; i < pts.length; i++) { const [x1, y1] = pts[i], [x2, y2] = pts[(i + 1) % pts.length]; a += x1 * y2 - x2 * y1; }
+  return a / 2;
+}
+
+function drawTraceOverlay() {
+  const svg = traceOv;
+  svg.setAttribute('viewBox', `0 0 ${window.innerWidth} ${window.innerHeight}`);
+  const parts = [];
+  // proposal footprints already placed (status colour outline + id)
+  for (const p of world.proposals) {
+    const col = p.status === 'existing' ? '#3FA7B5' : p.status === 'stalled' ? '#777' : STATUS_HEX[p.status];
+    let lx = 0, ly = 0, cnt = 0;
+    for (const poly of p.footprint) for (const ring of poly) {
+      const d = [];
+      for (let i = 0; i < ring.length; i += 2) { const [x, y] = toScreen(ring[i], ring[i + 1]); d.push(`${x.toFixed(1)},${y.toFixed(1)}`);
+        if (ring === poly[0]) { lx += x; ly += y; cnt++; } }
+      parts.push(`<polygon points="${d.join(' ')}" fill="${col}" fill-opacity="0.18" stroke="${col}" stroke-width="2"/>`);
+    }
+    if (cnt) parts.push(`<text x="${(lx / cnt).toFixed(1)}" y="${(ly / cnt).toFixed(1)}" text-anchor="middle" dy="4" fill="#1d1d1f">${esc(p.id)}</text>`);
+  }
+  // the footprint being traced
+  const P = trace.pts.map(([e, n]) => toScreen(e, n));
+  if (P.length) {
+    const d = P.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' ');
+    parts.push(trace.closed
+      ? `<polygon points="${d}" fill="#E59CA5" fill-opacity="0.35" stroke="#C0392B" stroke-width="2.5"/>`
+      : `<polyline points="${d}" fill="none" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="7 4"/>`);
+    P.forEach(([x, y], i) => parts.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${i === 0 && !trace.closed && P.length >= 3 ? 11 : 6}"
+      fill="${i === 0 ? '#C0392B' : '#fff'}" stroke="#C0392B" stroke-width="2.5"/>`));
+  }
+  svg.innerHTML = parts.join('');
+  const n = trace.pts.length;
+  $('traceinfo').textContent = trace.closed
+    ? `${n} corners · ${Math.abs(polyArea(trace.pts)).toFixed(0)} m²`
+    : n ? `${n} corner${n > 1 ? 's' : ''}${n >= 3 ? ' · tap the first corner to close' : ''}` : `scale: ${(trace.half * 2).toFixed(0)} m tall`;
+  $('tracecopy').disabled = !trace.closed;
+}
+
+function setTrace(on) {
+  if (on === trace.on) return;
+  trace.on = on;
+  orbit.enabled = !on;
+  $('tracetog').classList.toggle('on', on);
+  $('tracebar').hidden = !on;
+  traceOv.classList.toggle('active', on);
+  $('frame').style.visibility = on ? 'hidden' : '';
+  $('legend').hidden = on;
+  $('popup').hidden = true;
+  // darker roofs so base footprints read against the land-use ground, like an aerial basemap
+  world.baseMat?.color.set(on ? '#b3afa6' : '#ffffff');
+  if (on) {
+    const bar = $('bar').getBoundingClientRect(); // the top bar wraps on narrow screens
+    $('tracebar').style.top = `${Math.round(bar.bottom + 8)}px`;
+    trace.cx = orbit.target.x; trace.cn = -orbit.target.z;
+    trace.half = THREE.MathUtils.clamp(orbit.r * 0.25, 120, 2500);
+    // hide the extruded proposals so the base footprints under them show; outlines mark them instead
+    world.propMeshes.forEach((m) => { m.visible = false; });
+    traceView();
+  } else {
+    world.propMeshes.forEach((m) => { m.visible = true; });
+    shadowDirty = true;
+    fitShadow(camera, orbit.target, true);
+    $('copybox').hidden = true;
+  }
+  requestRender();
+}
+
+function traceTap(x, y) {
+  if (trace.closed) return;
+  const P = trace.pts.map(([e, n]) => toScreen(e, n));
+  if (P.length >= 3 && Math.hypot(P[0][0] - x, P[0][1] - y) <= 22) trace.closed = true;
+  else {
+    const [e, n] = toLocal(x, y);
+    trace.pts.push([Math.round(e * 100) / 100, Math.round(n * 100) / 100]);
+  }
+  drawTraceOverlay();
+}
+
+function traceZoom(f, x, y) {
+  // zoom about the screen point (x, y)
+  const [e0, n0] = toLocal(x, y);
+  trace.half = THREE.MathUtils.clamp(trace.half * f, 25, 5000);
+  const [e1, n1] = toLocal(x, y);
+  trace.cx += e0 - e1; trace.cn += n0 - n1;
+  traceView();
+}
+
+const tracePair = () => { if (trace.pointers.size < 2) return null; const [a, b] = [...trace.pointers.values()];
+  return { d: Math.hypot(a.x - b.x, a.y - b.y), x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }; };
+traceOv.addEventListener('pointerdown', (e) => {
+  e.preventDefault();
+  try { traceOv.setPointerCapture(e.pointerId); } catch { /* ignore */ }
+  trace.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  trace.tap = trace.pointers.size === 1 ? { x: e.clientX, y: e.clientY, t: performance.now() } : null;
+  trace.prev = tracePair();
+});
+traceOv.addEventListener('pointermove', (e) => {
+  const p = trace.pointers.get(e.pointerId);
+  if (!p) return;
+  const dx = e.clientX - p.x, dy = e.clientY - p.y;
+  p.x = e.clientX; p.y = e.clientY;
+  if (trace.tap && Math.hypot(e.clientX - trace.tap.x, e.clientY - trace.tap.y) > 8) trace.tap = null;
+  if (trace.pointers.size >= 2) {
+    const pr = tracePair();
+    if (trace.prev && pr) {
+      const k = 2 * trace.half / window.innerHeight;
+      trace.cx -= (pr.x - trace.prev.x) * k; trace.cn += (pr.y - trace.prev.y) * k;
+      if (pr.d > 0 && trace.prev.d > 0) traceZoom(trace.prev.d / pr.d, pr.x, pr.y); else traceView();
+    }
+    trace.prev = pr;
+  } else if (!trace.tap) {
+    const k = 2 * trace.half / window.innerHeight;
+    trace.cx -= dx * k; trace.cn += dy * k;
+    traceView();
+  }
+});
+for (const t of ['pointerup', 'pointercancel']) traceOv.addEventListener(t, (e) => {
+  if (!trace.pointers.has(e.pointerId)) return;
+  trace.pointers.delete(e.pointerId);
+  if (e.type === 'pointerup' && trace.tap && trace.pointers.size === 0 && performance.now() - trace.tap.t < 600) traceTap(e.clientX, e.clientY);
+  trace.tap = null;
+  trace.prev = tracePair();
+});
+traceOv.addEventListener('wheel', (e) => { e.preventDefault(); traceZoom(Math.exp(e.deltaY * 0.0015), e.clientX, e.clientY); }, { passive: false });
+traceOv.addEventListener('contextmenu', (e) => e.preventDefault());
+
+function traceFeature(id) {
+  const ring = trace.pts.map(([e, n]) => localToLonLat(e, n).map((v) => Math.round(v * 1e7) / 1e7));
+  if (polyArea(trace.pts) < 0) ring.reverse(); // RFC 7946: exterior ring counter-clockwise
+  ring.push(ring[0]);
+  return { type: 'Feature', properties: { id }, geometry: { type: 'Polygon', coordinates: [ring] } };
+}
+
+$('tracetog').addEventListener('click', () => setTrace(!trace.on));
+$('tracedone').addEventListener('click', () => setTrace(false));
+$('traceundo').addEventListener('click', () => {
+  if (trace.closed) trace.closed = false; else trace.pts.pop();
+  $('copybox').hidden = true;
+  drawTraceOverlay();
+});
+$('traceclear').addEventListener('click', () => { trace.pts = []; trace.closed = false; $('copybox').hidden = true; drawTraceOverlay(); });
+$('tracecopy').addEventListener('click', async () => {
+  const used = world.proposals.map((p) => p.id);
+  const next = 'P' + String(Math.max(0, ...used.map((v) => parseInt(v.replace(/\D/g, ''), 10) || 0)) + 1).padStart(3, '0');
+  const id = (window.prompt('Proposal id for this footprint (must match its proposals.csv row):', next) || '').trim();
+  if (!id) return;
+  const txt = JSON.stringify(traceFeature(id));
+  window.__lastTrace = txt;
+  const box = $('copybox');
+  try {
+    await navigator.clipboard.writeText(txt);
+    box.hidden = true;
+    setStatus(`Copied GeoJSON Feature <b>${esc(id)}</b> (${trace.pts.length} corners). Paste it into the features list of data/proposals.geojson.`);
+  } catch {
+    // no clipboard access (http, or permission refused): show it selected for a manual copy
+    box.value = txt; box.hidden = false; box.focus(); box.select();
+    setStatus('Clipboard unavailable: the GeoJSON is selected in the Trace panel; tap Copy on the selection.');
+  }
+});
 
 // ---------------------------------------------------------------------------
 // Render PNG: tiled, 2× supersampled off-screen render (Safari/iPadOS safe)
@@ -1175,7 +1429,8 @@ async function main() {
   requestRender();
 }
 main().catch((e) => { console.error(e); setStatus(`Failed to load: ${esc(e.message)}`); window.__error = String(e); });
-window.__skyline = { world, camera, orbit, renderPNG, renderView, applyCamera, cameraJSON, requestRender, gpuMemoryMB, heightAt };
+window.__skyline = { world, camera, orbit, renderPNG, renderView, applyCamera, cameraJSON, requestRender, gpuMemoryMB, heightAt,
+  trace, setTrace, traceFeature, localToLonLat };
 </script>
 </body>
 </html>

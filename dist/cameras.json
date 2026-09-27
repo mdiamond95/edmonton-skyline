@@ -1,6 +1,6 @@
 {
  "frame": "position/target = [east_m, north_m, elevation_m_ASL]; east/north are metres from the scope bbox centre in UTM 12N (EPSG:26912), see dist/terrain.json origin. Ground is ~660-690 m downtown, river ~615 m. Use the viewer's 'Copy camera' button to capture a view in this format.",
- "fov_note": "vertical FOV in degrees (render spec: 35); portrait 3:4 renders",
+ "fov_note": "vertical FOV in degrees (render spec: 35); renders are portrait 3:4 (2400x3200) unless a view sets \"aspect\": \"16:9\" (3840x2160)",
  "cameras": [
   {
    "id": "01",
@@ -30,21 +30,24 @@
    "name": "Ice District from the south bank",
    "slug": "ice-district-from-the-south-bank",
    "position": [
-    72,
-    -1990,
-    1566
+    -88,
+    -2502,
+    841
    ],
    "target": [
     -115,
     138,
-    746
+    310
    ],
    "fov": 35,
    "aim": {
-    "landmark": "ice",
-    "bearing": 175,
-    "height_m": 900,
-    "pitch": 21
+    "at": [
+     53.5225,
+     -113.495
+    ],
+    "height_m": 170,
+    "look": "ice",
+    "screen_y": 0.52
    }
   },
   {
@@ -230,21 +233,25 @@
    "name": "Legislature grounds",
    "slug": "legislature-grounds",
    "position": [
-    -902,
-    -1757,
-    1109
+    -1073,
+    -1702,
+    915
    ],
    "target": [
     -813,
     -1252,
-    679
+    794
    ],
    "fov": 35,
    "aim": {
-    "landmark": "legislature",
-    "bearing": 190,
-    "height_m": 450,
-    "pitch": 40
+    "at": [
+     "legislature",
+     210,
+     520
+    ],
+    "height_m": 290,
+    "look": "legislature",
+    "screen_y": -0.5
    }
   },
   {
@@ -274,21 +281,24 @@
    "name": "Garneau / 109 Street",
    "slug": "garneau-109-street",
    "position": [
-    -1207,
-    -3100,
-    1174
+    -1858,
+    -2830,
+    931
    ],
    "target": [
-    -1146,
-    -2410,
-    689
+    -37,
+    -110,
+    436
    ],
    "fov": 35,
    "aim": {
-    "landmark": "garneau",
-    "bearing": 185,
-    "height_m": 500,
-    "pitch": 35
+    "at": [
+     53.519,
+     -113.5215
+    ],
+    "height_m": 260,
+    "look": "core",
+    "screen_y": 0.3
    }
   },
   {
@@ -319,21 +329,25 @@
    "name": "Blatchford",
    "slug": "blatchford",
    "position": [
-    -1390,
-    3486,
-    1565
+    -1748,
+    4014,
+    1120
    ],
    "target": [
-    -1234,
-    2605,
-    670
+    -37,
+    -110,
+    299
    ],
    "fov": 35,
    "aim": {
-    "landmark": "blatchford",
-    "bearing": 350,
-    "height_m": 900,
-    "pitch": 45
+    "at": [
+     "blatchford",
+     340,
+     1500
+    ],
+    "height_m": 450,
+    "look": "core",
+    "screen_y": 0.3
    }
   },
   {
@@ -382,21 +396,25 @@
    "name": "Exhibition Lands & Commonwealth",
    "slug": "exhibition-lands-commonwealth",
    "position": [
-    1166,
-    1466,
-    1461
+    773,
+    855,
+    1044
    ],
    "target": [
-    1994,
-    2046,
-    671
+    1289,
+    1592,
+    778
    ],
    "fov": 35,
    "aim": {
-    "landmark": "exhibition",
-    "bearing": 235,
-    "height_m": 800,
-    "pitch": 38
+    "at": [
+     "stadium",
+     215,
+     900
+    ],
+    "height_m": 380,
+    "look": "stadium",
+    "screen_y": -0.35
    }
   },
   {
@@ -428,8 +446,8 @@
    "slug": "full-extent-aerial",
    "position": [
     0,
-    -9411,
-    16968
+    -6351,
+    11668
    ],
    "target": [
     0,
@@ -440,9 +458,10 @@
    "aim": {
     "landmark": "centre",
     "bearing": 180,
-    "height_m": 16300,
+    "height_m": 11000,
     "pitch": 60
-   }
+   },
+   "aspect": "16:9"
   }
  ],
  "generator": "scripts/set_cameras.py (make cameras); aim = how each view was derived"
