@@ -1,0 +1,185 @@
+{
+ "data_date": "2026-09-28",
+ "renders": [
+  {
+   "id": "01",
+   "name": "City Centre",
+   "file": "01-city-centre_2026-09-28.png",
+   "thumb": "thumbs/01-city-centre_2026-09-28.jpg",
+   "width": 2400,
+   "height": 3200,
+   "bytes": 5973123
+  },
+  {
+   "id": "02",
+   "name": "Ice District from the south bank",
+   "file": "02-ice-district-from-the-south-bank_2026-09-28.png",
+   "thumb": "thumbs/02-ice-district-from-the-south-bank_2026-09-28.jpg",
+   "width": 2400,
+   "height": 3200,
+   "bytes": 2602867
+  },
+  {
+   "id": "03",
+   "name": "Downtown from the west",
+   "file": "03-downtown-from-the-west_2026-09-28.png",
+   "thumb": "thumbs/03-downtown-from-the-west_2026-09-28.jpg",
+   "width": 2400,
+   "height": 3200,
+   "bytes": 4672536
+  },
+  {
+   "id": "04",
+   "name": "Downtown from the north",
+   "file": "04-downtown-from-the-north_2026-09-28.png",
+   "thumb": "thumbs/04-downtown-from-the-north_2026-09-28.jpg",
+   "width": 2400,
+   "height": 3200,
+   "bytes": 4861936
+  },
+  {
+   "id": "05",
+   "name": "Wîhkwêntôwin / Oliver",
+   "file": "05-wihkwentowin-oliver_2026-09-28.png",
+   "thumb": "thumbs/05-wihkwentowin-oliver_2026-09-28.jpg",
+   "width": 2400,
+   "height": 3200,
+   "bytes": 4786582
+  },
+  {
+   "id": "06",
+   "name": "The Quarters & Boyle Street",
+   "file": "06-the-quarters-boyle-street_2026-09-28.png",
+   "thumb": "thumbs/06-the-quarters-boyle-street_2026-09-28.jpg",
+   "width": 2400,
+   "height": 3200,
+   "bytes": 4760671
+  },
+  {
+   "id": "07",
+   "name": "Rossdale & the river bend",
+   "file": "07-rossdale-the-river-bend_2026-09-28.png",
+   "thumb": "thumbs/07-rossdale-the-river-bend_2026-09-28.jpg",
+   "width": 2400,
+   "height": 3200,
+   "bytes": 5264593
+  },
+  {
+   "id": "08",
+   "name": "Station Lands & MacEwan",
+   "file": "08-station-lands-macewan_2026-09-28.png",
+   "thumb": "thumbs/08-station-lands-macewan_2026-09-28.jpg",
+   "width": 2400,
+   "height": 3200,
+   "bytes": 4437018
+  },
+  {
+   "id": "09",
+   "name": "Warehouse District / 104 Street",
+   "file": "09-warehouse-district-104-street_2026-09-28.png",
+   "thumb": "thumbs/09-warehouse-district-104-street_2026-09-28.jpg",
+   "width": 2400,
+   "height": 3200,
+   "bytes": 3370614
+  },
+  {
+   "id": "10",
+   "name": "Jasper Avenue corridor",
+   "file": "10-jasper-avenue-corridor_2026-09-28.png",
+   "thumb": "thumbs/10-jasper-avenue-corridor_2026-09-28.jpg",
+   "width": 2400,
+   "height": 3200,
+   "bytes": 4417541
+  },
+  {
+   "id": "11",
+   "name": "Legislature grounds",
+   "file": "11-legislature-grounds_2026-09-28.png",
+   "thumb": "thumbs/11-legislature-grounds_2026-09-28.jpg",
+   "width": 2400,
+   "height": 3200,
+   "bytes": 3699863
+  },
+  {
+   "id": "12",
+   "name": "Old Strathcona / Whyte Avenue",
+   "file": "12-old-strathcona-whyte-avenue_2026-09-28.png",
+   "thumb": "thumbs/12-old-strathcona-whyte-avenue_2026-09-28.jpg",
+   "width": 2400,
+   "height": 3200,
+   "bytes": 4363725
+  },
+  {
+   "id": "13",
+   "name": "Garneau / 109 Street",
+   "file": "13-garneau-109-street_2026-09-28.png",
+   "thumb": "thumbs/13-garneau-109-street_2026-09-28.jpg",
+   "width": 2400,
+   "height": 3200,
+   "bytes": 3493306
+  },
+  {
+   "id": "14",
+   "name": "Strathcona from the east",
+   "file": "14-strathcona-from-the-east_2026-09-28.png",
+   "thumb": "thumbs/14-strathcona-from-the-east_2026-09-28.jpg",
+   "width": 2400,
+   "height": 3200,
+   "bytes": 6069848
+  },
+  {
+   "id": "15",
+   "name": "Blatchford",
+   "file": "15-blatchford_2026-09-28.png",
+   "thumb": "thumbs/15-blatchford_2026-09-28.jpg",
+   "width": 2400,
+   "height": 3200,
+   "bytes": 3914628
+  },
+  {
+   "id": "16",
+   "name": "From the High Level Bridge",
+   "file": "16-from-the-high-level-bridge_2026-09-28.png",
+   "thumb": "thumbs/16-from-the-high-level-bridge_2026-09-28.jpg",
+   "width": 2400,
+   "height": 3200,
+   "bytes": 1760292
+  },
+  {
+   "id": "17",
+   "name": "From Ada Boulevard",
+   "file": "17-from-ada-boulevard_2026-09-28.png",
+   "thumb": "thumbs/17-from-ada-boulevard_2026-09-28.jpg",
+   "width": 2400,
+   "height": 3200,
+   "bytes": 2457381
+  },
+  {
+   "id": "18",
+   "name": "Exhibition Lands & Commonwealth",
+   "file": "18-exhibition-lands-commonwealth_2026-09-28.png",
+   "thumb": "thumbs/18-exhibition-lands-commonwealth_2026-09-28.jpg",
+   "width": 2400,
+   "height": 3200,
+   "bytes": 5097756
+  },
+  {
+   "id": "19",
+   "name": "Whyte to Downtown",
+   "file": "19-whyte-to-downtown_2026-09-28.png",
+   "thumb": "thumbs/19-whyte-to-downtown_2026-09-28.jpg",
+   "width": 2400,
+   "height": 3200,
+   "bytes": 5466974
+  },
+  {
+   "id": "20",
+   "name": "Full extent aerial",
+   "file": "20-full-extent-aerial_2026-09-28.png",
+   "thumb": "thumbs/20-full-extent-aerial_2026-09-28.jpg",
+   "width": 3840,
+   "height": 2160,
+   "bytes": 8252066
+  }
+ ]
+}

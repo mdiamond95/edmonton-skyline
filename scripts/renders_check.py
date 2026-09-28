@@ -32,9 +32,10 @@ def main():
     else:
         print("WARNING: no last_checked dates in data/proposals.csv; cannot check staleness")
 
-    # renders/renders.json and renders/thumbs/ belong to the gallery page (web/renders.html), not renders
-    files = sorted(p for p in RENDERS.glob("*") if p.is_file() and p.name not in (".gitkeep", "renders.json")) \
-        if RENDERS.exists() else []
+    # renders.json and thumbs/ belong to the gallery page (web/renders.html); render_log.json is the
+    # renderer's seating-check log (scripts/render_views.py). None of them is a render.
+    meta = {".gitkeep", "renders.json", "render_log.json"}
+    files = sorted(p for p in RENDERS.glob("*") if p.is_file() and p.name not in meta) if RENDERS.exists() else []
     if not files:
         print("renders/ is empty")
         return 0
