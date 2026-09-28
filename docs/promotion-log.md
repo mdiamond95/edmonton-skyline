@@ -1,6 +1,6 @@
 # Promotion log (Phase 3B, Phase 3C rules)
 
-Generated 2026-09-28 by `scripts/promote_candidates.py` (`make proposals`). 93 candidates promoted into `data/proposals.csv`; 233 not promoted (175 below the inclusion rule, listed only as a count).
+Generated 2026-09-28 by `scripts/promote_candidates.py` (`make proposals`). 92 candidates promoted into `data/proposals.csv`; 234 not promoted (175 below the inclusion rule, listed only as a count).
 
 ## Dropped (other than the height rule)
 
@@ -37,6 +37,7 @@ Generated 2026-09-28 by `scripts/promote_candidates.py` (`make proposals`). 93 c
 | REZ-DC-21483-357497 | Strathcona/Whyte | (rezoned parcel, 53.51833, -113.49771) | 8 / 27 | area-wide rezoning, not one project: 66,951 m2 over 62 assessment parcels (DC, medium confidence) |
 | REZ-DC1-20460-167505 | Strathcona/Whyte | (rezoned parcel, 53.51972, -113.49660) | ? / ? | no height (still unknown after Phase 3A.5) |
 | 188393939-005 | Strathcona/Whyte | 8523 - 106A STREET NW | 7 / 23 | fewer than 20 dwellings (5) |
+| 368879276-002 | Strathcona/Whyte | 9860 - 83 AVENUE NW | 7 / 23 | skipped by hand: 99 Street Apartment (9860 83 Ave): the 11-dwelling '99 Street Townhomes' building permit at 8305 99 St (2025-06-19) is on the same lot (both 'Plan I8 Blk 75 Lots 1-2'), so this 27-dwelling scheme is dead (removed by Mark's rule, Phase 4) (was P016) |
 | 490809382-002 | Garneau/University | 10958 - 87 AVENUE NW | 7 / 23 | fewer than 20 dwellings (8) |
 | 491021966-002 | Garneau/University | 11148 - 84 AVENUE NW | 7 / 23 | not a new building (alteration, conversion, addition, use change or parking) |
 | 520417913-002 | Garneau/University | 8231 - 111 STREET NW | 7 / 23 | skipped by hand: City of Edmonton Garneau supportive housing (8231 111 St): four storeys, 34 units (https://www.edmonton.ca/sites/default/files/public-files/Supportive-Housing-Garneau-Notification.pdf; storeys per ConstructConnect / GEC Architecture); node needs 6 (was P023) |
@@ -63,7 +64,7 @@ Generated 2026-09-28 by `scripts/promote_candidates.py` (`make proposals`). 93 c
 | 411454341-002 | Other | 8450 - 106A AVENUE NW | 38 / 120 | skipped by hand: Stadium Yards: 6 storeys in node 'Other' is below the rule (removed by Mark, Phase 3C) (was P009) |
 | 476200645-002 | Garneau/University | 10808 - 85 AVENUE NW | 7 / 23 | building permit 2025-01-21: 4 storeys ('To construct STRUCTURAL FRAME, for a 4 STOREY residential apartment building, Garneau Apartment.'), below the rule (was P021) |
 | 613818800-002 | Garneau/University | 11028 - 85 AVENUE NW | 7 / 23 | building permit 2025-11-18: 3 storeys ('To construct a 3-storey (28 dwellings) apartment with basement and rooftop terrace. "The Ethyrial"'), below the rule (was P025) |
-| 392111925-002 | Other | 11425 - ST ALBERT TRAIL NW | 10 / 34 | building permit 2022-07-21: 4 storeys ('To construct FOOTING AND FOUNDATION ONLY for a four story seniors apartment house with underground parkade - Emmanuel Ho'), below the rule (was P013) |
+| 392111925-002 | Other | 11425 - ST ALBERT TRAIL NW | 10 / 34 | building permit 2023-02-07: 4 storeys ('To construct a four story seniors home (101 units) on existing underground parkade - Emmanuel Home West End.'), below the rule (was P013) |
 
 ## Judgment calls
 
@@ -76,9 +77,9 @@ Generated 2026-09-28 by `scripts/promote_candidates.py` (`make proposals`). 93 c
 - `573198770-006` kept although flagged as work on an existing building: revision of a new mixed-use building ('basement removed from project')
 - `392214637-036` kept although flagged as work on an existing building: exterior-material revision of a mixed-use building under construction (-002 is the original DP)
 - `P104` (entered by hand) Connect Centre (ICE District Block BG office tower, complete 2023) entered as `existing` at SkyriseCities' 56.30 m / 16 storeys: it was finished after the LiDAR survey, so base.glb fell back to an OpenStreetMap height tag of 142 m (the old 43-storey / 141 m residential plan). Footprint: that building's base.glb outline, inset 2 m so the 12 m podium it stands on is not hidden with it
+- `P105` (entered by hand) Maclab Garneau (11120 86 Ave, Maclab Development Group; decided by Mark, Phase 4) entered as `construction` at SkyriseCities' 30 storeys / 98.14 m (Under Construction, 2 buildings). Its DP predates 2021, so it was never a candidate, and base.glb showed OpenStreetMap's two planned towers (building:part 108.0 m / 30 floors and 82.5 m / 20 floors). Footprint: those two building:part outlines plus their podiums (the parent outlines minus the towers, OSM 12 m and 16 m), which hides both phantoms and shows the whole project in construction blue. part_heights: east tower 98.1 m, west tower 65.4 m (98.14 x 20 / 30, OSM's floor counts; SkyriseCities gives only the taller one), podiums 12 / 16 m
 - `P011` DP text: 3 towers of 16, 19 and 21 storeys; each tower gets its own height (order along the lot's long axis as listed, not known)
 - `P012` SkyriseCities 'ONE12' (26 m away, Under Construction) 14 storeys / 46.00 m; building permit calls it an existing 14-storey high-rise; LiDAR already shows a 42 m roof here. Above MU h40, but the DP predates Zoning Bylaw 20001, so this is the as-built height, not a scheme
-- `P016` construction status came from an unrelated permit within 40 m (8305 99 St: 11-dwelling '99 Street Townhomes', 2025-06-19); this DP (approved 2021, now 'Other') has no building permit of its own, so approved > 3 years without permit activity = stalled. Height: SkyriseCities '99 Street Apartment' (8301 99 St, same corner, 14 m) 6 storeys / 23.0 m. If the 11-dwelling building is on this lot, the scheme is dead and the row should go
 - `P024` no storeys in the DP or building permits (hoarding only, 2026-05-14), nothing on SkyriseCities; 83 dwellings x ~85 m2 gross on the consolidated 1,773 m2 lot needs ~6 storeys, the most RM h23 allows with a 3.1 m floor; listed unit numbers run to 4xx
 - `P030` SkyriseCities 'Stationlands Residential Towers' 25 storeys / 90.0 m (both towers; Under Construction, forum active 2026-09) + the 12 storeys this DP adds = 37 storeys / 127.2 m (was 37 x 3.1 = 114.7 m, which ignored the taller podium storeys in the 90 m)
 - `P035` 4 buildings / 696 dwellings (student housing): four six-storey mid-rises per Connect CRE and Daily Hive (2026, via search; the sites are blocked from here), SkyriseCities 'Massey Ferguson Building Redevelopment' (21 m) 6 storeys, 4 buildings. Was 12 storeys (dwellings estimate)
@@ -87,3 +88,5 @@ Generated 2026-09-28 by `scripts/promote_candidates.py` (`make proposals`). 93 c
 - `P051` SkyriseCities 'Jasper House' (12021 Jasper Ave, 58 m, forum active 2026-08) 108.00 m = DC 20932 west building 108 m; storeys unknown, 34 kept (108 / 3.1)
 - `P064` DC 21522 allows Area A 100 m / Area B 180 m (the 60 m / 36.6 m read in Phase 3A.5 are the June 2029 sunset fallbacks). SkyriseCities 'Jasper and 115 Street' (pin inside the parcel, 2 buildings, forum active 2026-06) 52 storeys / 170.00 m fits Area B; the second tower is shown at the Area A ceiling. Tallest tower placed nearest the SkyriseCities pin
 - `P065` DC2-1064 allows Area A 140.0 m / Area B 170.0 m (the 58 m read in Phase 3A.5 is the fallback if no permit by June 2029). This DP is Area A; SkyriseCities 'Edmonton Motors Lands Redevelopment' (56 storeys / 170.07 m, forum active 2026-03) is the Area B tower, which has no DP or rezoning since 2021 and is not in the candidates. 140 m / 3.1 = 45 storeys
+- `P072` decided by Mark (Phase 4): status stalled, keep 18 storeys / 77.1 m, on hold; site downzoned 2024 (SkyriseCities status On-Hold; the site went from DC1 to MU h40 f6.5 on 2024-07-08)
+- `P080` newest source: SkyriseCities' last post 2026-08-07 is newer than the rezoning 2026-03-30: 43-storey scheme kept

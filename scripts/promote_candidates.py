@@ -85,6 +85,9 @@ SKIP = {
     "520417913-002": "City of Edmonton Garneau supportive housing (8231 111 St): four storeys, 34 units "
                      "(https://www.edmonton.ca/sites/default/files/public-files/Supportive-Housing-Garneau-Notification.pdf; "
                      "storeys per ConstructConnect / GEC Architecture); node needs 6",
+    "368879276-002": "99 Street Apartment (9860 83 Ave): the 11-dwelling '99 Street Townhomes' building permit at 8305 99 St "
+                     "(2025-06-19) is on the same lot (both 'Plan I8 Blk 75 Lots 1-2'), so this 27-dwelling scheme is dead "
+                     "(removed by Mark's rule, Phase 4)",
 }
 # Zoning-map polygons that carry a DC link but are not that DC's site.
 ZONING_ARTEFACT = {
@@ -120,14 +123,6 @@ CORRECTIONS = {
                           why="SkyriseCities 'ONE12' (26 m away, Under Construction) 14 storeys / 46.00 m; building permit "
                               "calls it an existing 14-storey high-rise; LiDAR already shows a 42 m roof here. Above MU h40, "
                               "but the DP predates Zoning Bylaw 20001, so this is the as-built height, not a scheme"),
-    "368879276-002": dict(name="99 Street Apartment", status="stalled", storeys=6, height_m=23.0, height_confidence="medium",
-                          height_source="skyrisecities",
-                          source_url="https://skyrisecities.com/database/projects/99-street-apartment.26777",
-                          why="construction status came from an unrelated permit within 40 m (8305 99 St: 11-dwelling "
-                              "'99 Street Townhomes', 2025-06-19); this DP (approved 2021, now 'Other') has no building permit "
-                              "of its own, so approved > 3 years without permit activity = stalled. Height: SkyriseCities "
-                              "'99 Street Apartment' (8301 99 St, same corner, 14 m) 6 storeys / 23.0 m. If the 11-dwelling "
-                              "building is on this lot, the scheme is dead and the row should go"),
     "562465177-002": dict(storeys=6, height_m=18.6, height_confidence="medium",
                           height_source="estimate: 83 dwellings on a 1,773 m2 lot under RM h23 (6 storeys x 3.1)",
                           why="no storeys in the DP or building permits (hoarding only, 2026-05-14), nothing on SkyriseCities; "
@@ -180,18 +175,37 @@ CORRECTIONS = {
                               "if no permit by June 2029). This DP is Area A; SkyriseCities 'Edmonton Motors Lands "
                               "Redevelopment' (56 storeys / 170.07 m, forum active 2026-03) is the Area B tower, which has no "
                               "DP or rezoning since 2021 and is not in the candidates. 140 m / 3.1 = 45 storeys"),
+    # Phase 4 (Mark): Artists Quarters stays at its 18-storey scheme, shown as stalled.
+    "REZ-MU-189192": dict(name="Artists Quarters", status="stalled", storeys=18, height_m=77.11, height_confidence="medium",
+                          height_source="skyrisecities 18 storeys / 77.11 m (exceeds current zone ceiling MU h40); "
+                                        "on hold; site downzoned 2024",
+                          source_url="https://skyrisecities.com/database/projects/artists-quarters.18434",
+                          why="decided by Mark (Phase 4): status stalled, keep 18 storeys / 77.1 m, on hold; site downzoned "
+                              "2024 (SkyriseCities status On-Hold; the site went from DC1 to MU h40 f6.5 on 2024-07-08)"),
 }
+
+# Phase 4 (Mark): when a SkyriseCities scheme and a later rezoning disagree, the most recent dated source wins.
+# For a rezoning row that adopted a SkyriseCities scheme above its new zone ceiling, the rezoning date (first
+# on the zoning map) is compared with the project's last forum post each run: a newer rezoning puts the row
+# back to the zone ceiling as an envelope (low); otherwise the scheme stays. See newest_source().
 
 # Rows entered by hand (no candidate_id): why each one is there (written to the promotion log).
 MANUAL_NOTES = {
     "P104": "Connect Centre (ICE District Block BG office tower, complete 2023) entered as `existing` at SkyriseCities' "
             "56.30 m / 16 storeys: it was finished after the LiDAR survey, so base.glb fell back to an OpenStreetMap "
             "height tag of 142 m (the old 43-storey / 141 m residential plan). Footprint: that building's base.glb outline, inset 2 m so the 12 m podium it stands on is not hidden with it",
+    "P105": "Maclab Garneau (11120 86 Ave, Maclab Development Group; decided by Mark, Phase 4) entered as `construction` "
+            "at SkyriseCities' 30 storeys / 98.14 m (Under Construction, 2 buildings). Its DP predates 2021, so it was never a "
+            "candidate, and base.glb showed OpenStreetMap's two planned towers (building:part 108.0 m / 30 floors and "
+            "82.5 m / 20 floors). Footprint: those two building:part outlines plus their podiums (the parent outlines minus "
+            "the towers, OSM 12 m and 16 m), which hides both phantoms and shows the whole project in construction blue. "
+            "part_heights: east tower 98.1 m, west tower 65.4 m (98.14 x 20 / 30, OSM's floor counts; SkyriseCities gives "
+            "only the taller one), podiums 12 / 16 m",
 }
 
-# Rows removed from proposals.csv in Phase 3C: their former ids, for the log.
+# Rows removed from proposals.csv in Phase 3C / Phase 4: their former ids, for the log.
 FORMER_ID = {"411454341-002": "P009", "392111925-002": "P013", "476200645-002": "P021", "520417913-002": "P023",
-             "613818800-002": "P025"}
+             "613818800-002": "P025", "368879276-002": "P016"}
 
 
 def bp_storeys(address):
@@ -242,6 +256,26 @@ def sr_scheme(row, cand, rez_geom, sr_projects):
         if h > float(row["height_m"]) + 1.0 and (best is None or d < best[1]):
             best = (p, d, h)
     return best
+
+
+def newest_source(row, c, calls):
+    """Most recent dated source wins (Mark, Phase 4): a rezoning row carrying a SkyriseCities scheme above its
+    zone ceiling keeps the scheme only if the project's last forum post is on or after the rezoning date."""
+    rez = date.fromisoformat(c["decision_date"][:10]) if c.get("decision_date") else None
+    last = sr_last_post(row["source_url"])
+    if rez is None or last is None:
+        calls.append(f"`{row['id']}` newest source: rezoning {rez or '?'} vs SkyriseCities last post {last or '?'} "
+                     "(a date is missing): scheme kept")
+        return
+    if rez > last:
+        row.update(storeys=c["storeys_final"], height_m=c["height_final_m"], height_confidence=c["height_confidence"],
+                   source_url=c["height_source_url"] or c["url"],
+                   height_source=f"{c['height_source']} (rezoning {rez} is newer than the SkyriseCities scheme's last post {last})")
+        calls.append(f"`{row['id']}` newest source: rezoning {rez} is newer than SkyriseCities' last post {last}: "
+                     f"back to the zone ceiling {row['height_m']} m ({row['height_confidence']})")
+    else:
+        calls.append(f"`{row['id']}` newest source: SkyriseCities' last post {last} is newer than the rezoning {rez}: "
+                     f"{row['storeys']}-storey scheme kept")
 
 
 AUTO_NAME = re.compile(r"^(.*) \((\d+)-storey ([\w-]+)\)$")
@@ -310,6 +344,8 @@ def phase3c(rows, cands, zpolys, sr_projects, calls, dropped):
                                              f"(last activity {last or 'none shown'})")
                     calls.append(f"`{pid}` SkyriseCities '{p['title']}' ({where}) {h:g} m exceeds the {kind}, but its last "
                                  f"forum post is {last or 'not shown'} (> 24 months): {kind} kept, stale scheme noted")
+        if not fix and cid.startswith("REZ-") and row["height_source"].startswith("skyrisecities (exceeds current"):
+            newest_source(row, c, calls)
         m = AUTO_NAME.match(row["name"])
         if m and m.group(2) != row["storeys"] and row["storeys"]:
             row["name"] = f"{m.group(1)} ({row['storeys']}-storey {m.group(3)})"

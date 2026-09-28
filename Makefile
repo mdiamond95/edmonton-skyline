@@ -4,7 +4,7 @@ PYTHON ?= python3
 BASE_GLB_MAX_MB := 25
 DIST_MAX_MB := 60
 
-.PHONY: all fetch candidates candidate-heights proposals build pack site serve renders-check cameras contact-sheet renders compare-footprints test-trace
+.PHONY: all fetch candidates candidate-heights proposals build pack site serve renders-check osm-heights-check cameras contact-sheet renders compare-footprints test-trace
 
 # Full path: `make fetch build serve` (or `make all` for fetch + build).
 all: fetch build
@@ -73,6 +73,11 @@ serve: site
 # List renders/ and flag any older than the current data date (max last_checked).
 renders-check:
 	$(PYTHON) scripts/renders_check.py
+
+# Standing rule (CLAUDE.md): base buildings over 80 m whose height came from an OSM tag, cross-checked
+# against SkyriseCities before every quarterly refresh. Exits 1 if any visible one disagrees.
+osm-heights-check:
+	$(PYTHON) scripts/check_osm_heights.py
 
 # Recompute all 20 views in data/cameras.json from landmark coordinates, then copy to dist/.
 cameras:

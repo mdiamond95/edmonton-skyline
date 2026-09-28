@@ -18,3 +18,14 @@ Apply these to every row; `scripts/promote_candidates.py` (`phase3c()`) and `scr
 - Stadium Yards (P009) is removed: 6 storeys in node Other is below the rule.
 - Multi-tower rows use per-tower heights when known (P011: 16 / 19 / 21 storeys). They are stored as `part_heights` on the GeoJSON feature, and `height_m` stays the tallest.
 - Placement: a single tower from a development permit is centred on the permit's coordinate, still clipped to the lot. A row flagged as on a park first checks the OSM tags: vacant land tagged grass or greenfield is not a park. If it is a genuine park, the footprint is moved off it when the permit coordinate is outside the park. If the lot itself is in a park, the flag stays.
+
+## Phase 4 decisions (Mark)
+
+Implemented in `scripts/promote_candidates.py` (`CORRECTIONS`, `SKIP`, `newest_source()`, `MANUAL_NOTES`) and logged in `docs/promotion-log.md`.
+
+- Most recent dated source wins: when a rezoning row carries a SkyriseCities scheme above its new zone ceiling, the rezoning date (first on the zoning map) is compared with the project's SkyriseCities "Last Post" on every run. A newer rezoning puts the row back to the zone ceiling as an envelope (low); otherwise the scheme stays. P080 The Heights keeps its 43-storey scheme this way (last post 2026-08-07, rezoning 2026-03-30).
+- A development permit whose lot (same legal description) carries a newer building permit for a different, smaller building is dead: the row is removed. P016 went this way (the 11-dwelling '99 Street Townhomes' permit at 8305 99 St is on its lot, Plan I8 Blk 75 Lots 1-2).
+- P072 Artists Quarters: stalled, 18 storeys / 77.1 m, "on hold; site downzoned 2024". P036 and P104 stay as they are.
+- P105 Maclab Garneau (entered by hand): construction, 30 storeys / 98.1 m from SkyriseCities, footprint = the two OpenStreetMap building:part outlines plus their podiums, so both OSM phantom towers (108 m and 82.5 m) are hidden under it; the west tower is 65.4 m (98.14 × 20/30, OSM's floor counts).
+- Standing rule: base buildings over 80 m whose height came from an OSM tag are cross-checked against SkyriseCities before every quarterly refresh (`make osm-heights-check`). A mismatch is fixed with a proposals.csv row and a footprint over the building, never in `fetch_base.py` or `base.glb`.
+- Traced footprints (`footprint_source: traced in viewer <date>`) replace the auto footprint for that id; `make proposals` keeps them.

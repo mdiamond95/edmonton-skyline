@@ -230,8 +230,9 @@ def hide_base_under(proposals, warnings):
                     hide.append(int(k))
                     measured.append(top - bot - 1.0)  # base sits 1 m below ground (fetch_base.py)
                 elif not inside and overlap > 5 and top - bot - 1.0 > ph - 1:
-                    kept.append(round(overlap))  # partly under the footprint and taller: pokes through
+                    kept.append((int(k), round(overlap)))  # partly under the footprint and taller: pokes through
         p["hide_base"] = sorted(hide)
+        kept = [ov for k, ov in kept if k not in hide]   # hidden by another part of the same footprint
         if kept:
             warnings.append(f"{p['id']}: {len(kept)} base building(s) overlap the footprint but stay visible "
                             f"(overlap m2: {kept}) and are taller, so they poke through")

@@ -43,6 +43,8 @@
   select { max-width: 100%; }
   #cam { flex: 1 1 220px; }
   button { cursor: pointer; }
+  #bar a.btn { color: var(--ink); text-decoration: none; border: 1px solid var(--line); border-radius: 8px;
+    padding: 6px 9px; min-height: 34px; box-sizing: border-box; display: inline-flex; align-items: center; }
   button.primary { background: var(--accent); color: #fff; border-color: transparent; font-weight: 600; }
   button:disabled { opacity: 0.5; }
   label.tog { display: inline-flex; gap: 4px; align-items: center; color: var(--muted); white-space: nowrap; }
@@ -103,6 +105,7 @@
   <label class="tog"><input type="checkbox" id="srcdbg"> Height sources</label>
   <label class="tog"><input type="checkbox" id="fpstog"> FPS</label>
   <button id="tracetog" title="Top-down map to draw a proposal footprint">Trace</button>
+  <a class="btn" id="gallery" href="./renders.html" title="The 20 finished renders">Renders</a>
 </div>
 <svg id="traceov" aria-label="Trace footprint"></svg>
 <div class="panel" id="tracebar" hidden>
