@@ -32,7 +32,9 @@ def main():
     else:
         print("WARNING: no last_checked dates in data/proposals.csv; cannot check staleness")
 
-    files = sorted(p for p in RENDERS.glob("*") if p.is_file() and p.name != ".gitkeep") if RENDERS.exists() else []
+    # renders/renders.json and renders/thumbs/ belong to the gallery page (web/renders.html), not renders
+    files = sorted(p for p in RENDERS.glob("*") if p.is_file() and p.name not in (".gitkeep", "renders.json")) \
+        if RENDERS.exists() else []
     if not files:
         print("renders/ is empty")
         return 0

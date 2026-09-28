@@ -10,6 +10,10 @@ iPad produces.
   make contact-sheet     # 600x800 previews of all 20 views -> docs/contact-sheet/ + docs/contact-sheet.png
   make renders           # 2400x3200 renders -> renders/NN-slug_YYYY-MM-DD.png (data date)
 
+With --dated (make renders) each new render replaces that camera's older renders/NN-*.png, and the
+gallery page (web/renders.html) is refreshed: renders/thumbs/<name>.jpg (600 px wide previews, so the
+iPad does not pull 20 full-size PNGs) and renders/renders.json (the newest render per camera).
+
   scripts/render_views.py --views 01,03 --size 600x800 --out /tmp/x --dist data/raw/compare/city
 
 three.js is loaded from cdnjs like on the iPad. If cdnjs is unreachable (some sandboxes), the
@@ -152,6 +156,34 @@ def compact_png(png_bytes):
     return o.getvalue()
 
 
+def write_gallery(out, cams, data_date):
+    """renders/renders.json + renders/thumbs/*.jpg for web/renders.html: the newest render of each camera."""
+    from PIL import Image
+    thumbs = out / "thumbs"
+    thumbs.mkdir(exist_ok=True)
+    items = []
+    for c in sorted(cams, key=lambda c: c["id"]):
+        pngs = sorted(out.glob(f"{c['id']}-{c['slug']}_*.png"))
+        if not pngs:
+            continue
+        png = pngs[-1]
+        thumb = thumbs / (png.stem + ".jpg")
+        with Image.open(png) as im:
+            size = im.size
+            t = im.convert("RGB")
+            t.thumbnail((600, 600 * size[1] // size[0]), Image.LANCZOS)
+            t.save(thumb, "JPEG", quality=82, optimize=True, progressive=True)
+        items.append({"id": c["id"], "name": c["name"], "file": png.name, "thumb": f"thumbs/{thumb.name}",
+                      "width": size[0], "height": size[1], "bytes": png.stat().st_size})
+    keep = {i["thumb"].split("/", 1)[1] for i in items}
+    for t in thumbs.glob("*.jpg"):
+        if t.name not in keep:
+            t.unlink()
+    (out / "renders.json").write_text(json.dumps({"data_date": data_date, "renders": items}, indent=1,
+                                                 ensure_ascii=False) + "\n", encoding="utf-8")
+    print(f"Gallery -> {out / 'renders.json'} ({len(items)} renders)")
+
+
 def contact_sheet(items, path, cols=5, thumb=(300, 400), compact=False):
     from PIL import Image, ImageDraw, ImageFont
     rows = (len(items) + cols - 1) // cols
@@ -264,6 +296,11 @@ def main():
             png = base64.b64decode(data_url.split(",", 1)[1])
             name = f"{c['id']}-{c['slug']}" + (f"_{info['date']}" if args.dated else "") + ".png"
             path = out / name
+            if args.dated:   # the new render replaces this camera's older ones (make renders-check)
+                for old in out.glob(f"{c['id']}-*.png"):
+                    if old.name != name:
+                        old.unlink()
+                        print(f"  removed older render {old.name}")
             path.write_bytes(compact_png(png) if args.compact else png)
             sky = sky_fraction(png)
             results.append({"id": c["id"], "name": c["name"], "file": str(path.relative_to(ROOT) if path.is_relative_to(ROOT) else path),
@@ -271,6 +308,8 @@ def main():
             print(f"  {c['id']} {c['name']:<40} {w}x{h} {time.time() - t1:5.1f}s  background/sky {100 * sky:4.1f}%  -> {path}")
         browser.close()
     srv.shutdown()
+    if args.dated:
+        write_gallery(out, info["cams"], info["date"])
     if args.sheet:
         contact_sheet([(r["id"], r["name"], ROOT / r["file"] if not Path(r["file"]).is_absolute() else r["file"])
                        for r in results], Path(args.sheet), compact=args.compact)

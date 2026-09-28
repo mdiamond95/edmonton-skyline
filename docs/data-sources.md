@@ -255,4 +255,24 @@ Found along the way:
   base buildings over 80 m with OSM heights all check out against SkyriseCities (The Augustana 95.7 vs 96.0 m,
   Encore Tower 134.4 vs 138.0 m, Glenora Park 85.1 vs 82.0 m, Falcon Tower One, which is hidden under P010) except
   **Maclab Garneau** (87 Ave / 112 St): Under Construction, 30 storeys / 98.14 m, but not in `proposals.csv`
-  (its DP predates 2021), so it shows as two grey towers at OSM's 108.4 m and 82.8 m. Left for a later pass.
+  (its DP predates 2021), so it shows as two grey towers at OSM's 108.4 m and 82.8 m. Fixed in Phase 4 (P105).
+
+## Final corrections (Phase 4, 2026-09-28)
+
+Mark's decisions are in CLAUDE.md ("Phase 4 decisions") and each change is in `docs/promotion-log.md`.
+
+| Row | Evidence | Result |
+|---|---|---|
+| P016 99 Street Apartment | DP `368879276-002` (9860 83 Ave) and building permit 2025-06-19 at 8305 99 St ('99 Street Townhomes', 11 dwellings) both carry the legal description "Plan I8 Blk 75 Lots 1-2" (`2ccn-pwtu`, `24uj-dj8v`) | removed: same lot, the 27-dwelling scheme is dead |
+| P072 Artists Quarters | SkyriseCities: On-Hold, 18 storeys / 77.11 m, last post 2026-06-30; site rezoned DC1 -> MU h40 f6.5 on 2024-07-08 | stalled, 18 storeys / 77.1 m (medium), traced footprint |
+| P080 The Heights | rezoning DC2 (1089) -> RM h28 first on the zoning map 2026-03-30; SkyriseCities 'The Heights' last post 2026-08-07 (Pre-Construction, 43 storeys / 130.14 m) | the newer source is SkyriseCities: 43-storey scheme kept (medium) |
+| P105 Maclab Garneau | SkyriseCities 'Maclab Garneau' (`maclab-garneau.35623`, 11120 86 Ave, Under Construction, 2 buildings, 30 storeys / 98.14 m, last post 2026-06-13); OSM building:part ways 1409368149 (30 floors, 108 m) and 1409368151 (20 floors, 82.5 m) via Overture 2026-09-23.1 | new `construction` row; footprint = the two OSM part outlines (hides both phantoms); part_heights 98.1 m east / 65.4 m west (98.14 x 20 / 30) |
+| P057, P060, P071, P072 | traced by Mark in the viewer (Trace mode) | `footprint_source: traced in viewer 2026-09-28`; no needs_trace rows left |
+
+SkyriseCities also has a second, empty 'Maclab Garneau' entry (`maclab-garneau.35637`, no coordinates, last post
+2020); it is a duplicate and is ignored.
+
+**Standing rule: OSM heights over 80 m.** `make osm-heights-check` (`scripts/check_osm_heights.py`) lists every base
+building over 80 m whose height came from an OSM tag, whether a proposal footprint hides it, and the nearest
+SkyriseCities project within 80 m. It exits 1 when a visible one has no project nearby or differs by more than 10%.
+Run it before every quarterly refresh.

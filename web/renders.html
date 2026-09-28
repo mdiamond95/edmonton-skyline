@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Skyline Renders</title>
+<style>
+  :root {
+    --bg: #E9ECEE;
+    --card: #FAFAF8;
+    --ink: #1d1d1f;
+    --muted: #5f5f63;
+    --line: rgba(0, 0, 0, 0.12);
+    --accent: #2F6FB0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #161618;
+      --card: #1f1f22;
+      --ink: #f2f2f4;
+      --muted: #a6a6ab;
+      --line: rgba(255, 255, 255, 0.14);
+      --accent: #7FB2E5;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #161618;
+    --card: #1f1f22;
+    --ink: #f2f2f4;
+    --muted: #a6a6ab;
+    --line: rgba(255, 255, 255, 0.14);
+    --accent: #7FB2E5;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-text-size-adjust: 100%; }
+  main { max-width: 1200px; margin: 0 auto;
+    padding: max(20px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 40px max(16px, env(safe-area-inset-left)); }
+  header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; margin-bottom: 14px; }
+  h1 { font-size: 22px; margin: 0; }
+  header p { margin: 0; color: var(--muted); }
+  a { color: var(--accent); }
+  .back { margin-left: auto; font-weight: 600; text-decoration: none; border: 1px solid var(--line);
+    border-radius: 8px; padding: 6px 10px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0 0 18px; color: var(--muted); font-size: 13px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 13px; height: 13px; border-radius: 3px; border: 1px solid rgba(0, 0, 0, 0.25); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+    display: flex; flex-direction: column; text-decoration: none; color: inherit; }
+  .card.wide { grid-column: 1 / -1; }
+  .card img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; background: var(--line); }
+  .card.wide img { aspect-ratio: 16 / 9; }
+  .card div { padding: 8px 10px 10px; }
+  .card b { display: block; font-size: 14px; }
+  .card small { color: var(--muted); font-variant-numeric: tabular-nums; }
+  #msg { color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Edmonton Future Skyline: renders</h1>
+    <p id="date"></p>
+    <a class="back" href="./index.html">Open the 3D viewer</a>
+  </header>
+  <div class="legend">
+    <span><i style="background:#E4E3DF"></i>existing</span>
+    <span><i style="background:#4E8FD1"></i>under construction</span>
+    <span><i style="background:#A995C9"></i>approved</span>
+    <span><i style="background:#E59CA5"></i>proposed</span>
+    <span><i style="background:rgba(228,227,223,0.25)"></i>stalled</span>
+    <span>translucent = height ceiling, no confirmed design</span>
+  </div>
+  <p id="msg">Loading…</p>
+  <div class="grid" id="grid"></div>
+</main>
+<script>
+  // renders/renders.json is written by `make renders` (scripts/render_views.py --dated): the newest
+  // render of each of the 20 cameras, with a small JPEG preview in renders/thumbs/.
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  fetch('./renders/renders.json', { cache: 'no-cache' })
+    .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then((m) => {
+      document.getElementById('date').textContent = m.data_date ? `Data as of ${m.data_date}` : '';
+      document.getElementById('msg').hidden = true;
+      document.getElementById('grid').innerHTML = m.renders.map((r) => {
+        const wide = r.width > r.height;
+        return `<a class="card${wide ? ' wide' : ''}" href="./renders/${encodeURIComponent(r.file)}" target="_blank" rel="noopener">
+          <img src="./renders/${esc(r.thumb)}" alt="${esc(r.name)}" loading="lazy" width="${wide ? 600 : 450}" height="${wide ? 338 : 600}">
+          <div><b>${esc(r.id)} · ${esc(r.name)}</b>
+          <small>${r.width}×${r.height} PNG · ${(r.bytes / 1048576).toFixed(1)} MB</small></div></a>`;
+      }).join('');
+    })
+    .catch(() => { document.getElementById('msg').textContent = 'No renders yet: run make renders.'; });
+</script>
+</body>
+</html>
