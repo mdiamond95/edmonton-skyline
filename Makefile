@@ -4,7 +4,7 @@ PYTHON ?= python3
 BASE_GLB_MAX_MB := 25
 DIST_MAX_MB := 60
 
-.PHONY: all fetch candidates candidate-heights proposals build pack site serve renders-check osm-heights-check cameras contact-sheet renders compare-footprints test-trace
+.PHONY: all fetch candidates candidate-heights proposals build pack site serve renders-check osm-heights-check cameras contact-sheet renders renders-archive compare-footprints test-trace
 
 # Full path: `make fetch build serve` (or `make all` for fetch + build).
 all: fetch build
@@ -95,6 +95,12 @@ test-trace:
 renders:
 	$(PYTHON) scripts/render_views.py --size 2400x3200 --out renders --dated
 	$(PYTHON) scripts/renders_check.py
+
+# Snapshot renders/ to a GitHub Release (tag renders-<data-date>) before `make renders` overwrites it
+# in place. Run this, then `make renders`. Needs `gh` authenticated (GITHUB_TOKEN/GH_TOKEN, e.g.
+# Codespaces' default); no-ops if renders/ is empty or that tag already exists.
+renders-archive:
+	$(PYTHON) scripts/archive_renders.py
 
 # City of Edmonton vs OSM/Overture footprints over the downtown core (writes data/raw/compare/).
 compare-footprints:

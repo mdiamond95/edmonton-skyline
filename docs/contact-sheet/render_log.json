@@ -1413,7 +1413,7 @@
    "id": "13",
    "name": "Garneau / 109 Street",
    "file": "docs/contact-sheet/13-garneau-109-street.png",
-   "sky_pct": 30.8
+   "sky_pct": 31.1
   },
   {
    "id": "14",
@@ -1437,7 +1437,7 @@
    "id": "17",
    "name": "From Ada Boulevard",
    "file": "docs/contact-sheet/17-from-ada-boulevard.png",
-   "sky_pct": 48.0
+   "sky_pct": 21.8
   },
   {
    "id": "18",
@@ -1455,7 +1455,7 @@
    "id": "20",
    "name": "Full extent aerial",
    "file": "docs/contact-sheet/20-full-extent-aerial.png",
-   "sky_pct": 41.0
+   "sky_pct": 14.0
   }
  ]
 }
