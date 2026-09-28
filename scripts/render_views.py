@@ -44,37 +44,45 @@ THREE_NPM = f"https://registry.npmjs.org/three/-/three-{THREE_VERSION}.tgz"
 
 # Runs in the page: is each proposal seated on the terrain, is its top at ground + height_m, and
 # does any base building still poke through it (a vertex of a non-hidden building inside the
-# footprint that is higher than the proposal's top)?
+# footprint that is higher than the proposal's top)? Multi-tower footprints are checked tower by
+# tower; the worst part is reported.
 PROPOSAL_CHECK = """() => {
   const { world } = window.__skyline;
   const inPoly = (x, y, ring) => { let c = false; for (let i = 0, j = ring.length - 2; i < ring.length; j = i, i += 2) {
     const xi = ring[i], yi = ring[i + 1], xj = ring[j], yj = ring[j + 1];
     if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) c = !c; } return c; };
   const hidden = new Set(world.proposals.flatMap((p) => p.hide_base || []));
+  const T = world.table;
   return world.propMeshes.map((m) => {
-    const p = m.userData.proposal, ring = p.footprint[0][0];
-    m.geometry.computeBoundingBox();
-    const bb = m.geometry.boundingBox;
-    let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
-    for (let i = 0; i < ring.length; i += 2) { x0 = Math.min(x0, ring[i]); x1 = Math.max(x1, ring[i]); y0 = Math.min(y0, ring[i + 1]); y1 = Math.max(y1, ring[i + 1]); }
-    let gmin = Infinity, gmax = -Infinity;
-    for (let x = x0; x <= x1; x += 1) for (let y = y0; y <= y1; y += 1) if (inPoly(x, y, ring)) {
-      const g = world.heights ? window.__skyline.heightAt(x, -y) : 0; gmin = Math.min(gmin, g); gmax = Math.max(gmax, g); }
-    const ground = []; for (let i = 0; i < ring.length; i += 2) ground.push(window.__skyline.heightAt(ring[i], -ring[i + 1]));
-    ground.sort((a, b) => a - b);
-    const T = world.table; let visible = 0;
-    for (let b = 0; b < T.length / 4; b++) {
-      if (hidden.has(b)) continue;
-      const pos = world.buildings[T[b * 4]].geometry.attributes.position.array;
-      for (let v = T[b * 4 + 1]; v < T[b * 4 + 1] + T[b * 4 + 2]; v++) {
-        const x = pos[v * 3], y = -pos[v * 3 + 2];
-        if (x < x0 + 0.5 || x > x1 - 0.5 || y < y0 + 0.5 || y > y1 - 0.5) continue;
-        if (inPoly(x, y, ring) && pos[v * 3 + 1] > window.__skyline.heightAt(x, -y) + 1 && pos[v * 3 + 1] > bb.max.y) { visible++; break; }
+    const p = m.userData.proposal;
+    // every part (tower) of the footprint on its own: seated, top at its ground + height_m, nothing poking through
+    const parts = p.footprint.map((poly, k) => {
+      const ring = poly[0], part = (m.userData.parts || [])[k] || {};
+      let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+      for (let i = 0; i < ring.length; i += 2) { x0 = Math.min(x0, ring[i]); x1 = Math.max(x1, ring[i]); y0 = Math.min(y0, ring[i + 1]); y1 = Math.max(y1, ring[i + 1]); }
+      let gmin = Infinity, gmax = -Infinity;
+      for (let x = x0; x <= x1; x += 1) for (let y = y0; y <= y1; y += 1) if (inPoly(x, y, ring)) {
+        const g = window.__skyline.heightAt(x, -y); gmin = Math.min(gmin, g); gmax = Math.max(gmax, g); }
+      const ground = []; for (let i = 0; i < ring.length; i += 2) ground.push(window.__skyline.heightAt(ring[i], -ring[i + 1]));
+      ground.sort((a, b) => a - b);
+      let visible = 0;
+      for (let b = 0; b < T.length / 4; b++) {
+        if (hidden.has(b)) continue;
+        const pos = world.buildings[T[b * 4]].geometry.attributes.position.array;
+        for (let v = T[b * 4 + 1]; v < T[b * 4 + 1] + T[b * 4 + 2]; v++) {
+          const x = pos[v * 3], y = -pos[v * 3 + 2];
+          if (x < x0 + 0.5 || x > x1 - 0.5 || y < y0 + 0.5 || y > y1 - 0.5) continue;
+          if (inPoly(x, y, ring) && pos[v * 3 + 1] > window.__skyline.heightAt(x, -y) + 1 && pos[v * 3 + 1] > part.top) { visible++; break; }
+        }
       }
-    }
-    return { id: p.id, status: p.status, height_m: p.height_m, base: bb.min.y, top: bb.max.y,
-             ground_min: gmin, ground_max: gmax, ground_ref: ground[Math.floor(ground.length / 2)],
-             hidden: (p.hide_base || []).length, poking_through: visible };
+      return { base: part.base, top: part.top, ground_min: gmin, ground_max: gmax,
+               ground_ref: ground[Math.floor(ground.length / 2)], poking_through: visible };
+    });
+    const bad = (q) => Math.max(q.base - q.ground_min, Math.abs(q.top - q.ground_ref - p.height_m));
+    const w = parts.reduce((a, q) => (bad(q) > bad(a) ? q : a), parts[0]);
+    return { id: p.id, status: p.status, height_m: p.height_m, parts: parts.length, base: w.base, top: w.top,
+             ground_min: w.ground_min, ground_max: w.ground_max, ground_ref: w.ground_ref,
+             hidden: (p.hide_base || []).length, poking_through: parts.reduce((s, q) => s + q.poking_through, 0) };
   });
 }"""
 

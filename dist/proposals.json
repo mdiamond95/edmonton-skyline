@@ -1,5 +1,5 @@
 {
- "data_date": "2026-09-27",
+ "data_date": "2026-09-28",
  "status_colours": {
   "existing": "#E4E3DF",
   "construction": "#4E8FD1",
@@ -15,8 +15,12 @@
    "address": "10220 103 Ave NW",
    "status": "existing",
    "height_m": 250.8,
-   "height_source": "height_m",
+   "height_source": "official (Wikipedia, incl. spire)",
+   "height_confidence": "high",
    "storeys": 66,
+   "footprint_source": "OpenStreetMap building:part via Overture Maps",
+   "trace_reason": "",
+   "candidate_id": "",
    "developer": "Katz Group / ICE District Properties",
    "source_url": "https://en.wikipedia.org/wiki/Stantec_Tower",
    "last_checked": "2026-09-27",
@@ -50,33 +54,268 @@
    "replaced_height_m": 189.1
   },
   {
-   "id": "P002",
-   "name": "PLACEHOLDER \u2013 The Quarters tower",
-   "address": "102 Ave NW & 96 St NW (approx.)",
+   "id": "P006",
+   "name": "The Trax",
+   "address": "10054 79 Avenue NW",
+   "status": "existing",
+   "height_m": 24.08,
+   "height_source": "skyrisecities (as built)",
+   "height_confidence": "high",
+   "storeys": 6,
+   "footprint_source": "auto: Direct Control polygon (DC2); lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "392456153-002",
+   "developer": "Beck Developments",
+   "source_url": "https://skyrisecities.com/database/projects/trax.38015",
+   "last_checked": "2026-09-28",
+   "lat": 53.515442,
+   "lon": -113.490624,
+   "local": [
+    174.89,
+    -3297.62
+   ],
+   "footprint": [
+    [
+     [
+      205.7,
+      -3326.3,
+      207.92,
+      -3279.73,
+      133.74,
+      -3277.14,
+      132.12,
+      -3323.43
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P007",
+   "name": "Douglas Manor Addition",
+   "address": "10757 83 Avenue NW",
+   "status": "existing",
+   "height_m": 23.0,
+   "height_source": "skyrisecities (as built)",
+   "height_confidence": "high",
+   "storeys": 6,
+   "footprint_source": "auto: Direct Control polygon (DC1); base-building outline(s) in the lot (official height replaces LiDAR)",
+   "trace_reason": "",
+   "candidate_id": "408272142-002",
+   "developer": "ROIS Investments",
+   "source_url": "https://skyrisecities.com/database/projects/douglas-manor-addition.42245",
+   "last_checked": "2026-09-28",
+   "lat": 53.518819,
+   "lon": -113.509039,
+   "local": [
+    -1032.61,
+    -2879.18
+   ],
+   "footprint": [
+    [
+     [
+      -1027.11,
+      -2892.11,
+      -1026.02,
+      -2866.61,
+      -1038.11,
+      -2866.04,
+      -1039.2,
+      -2891.68
+     ]
+    ]
+   ],
+   "hide_base": [
+    14753
+   ],
+   "replaced_height_m": 11.3
+  },
+  {
+   "id": "P008",
+   "name": "Oliver Crossing",
+   "address": "10312 111 Street NW",
+   "status": "existing",
+   "height_m": 21.0,
+   "height_source": "skyrisecities (as built)",
+   "height_confidence": "high",
+   "storeys": 7,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 4877 m2; base-building outline(s) in the lot (official height replaces LiDAR)",
+   "trace_reason": "",
+   "candidate_id": "386491616-002",
+   "developer": "",
+   "source_url": "https://skyrisecities.com/database/projects/oliver-crossing.46965",
+   "last_checked": "2026-09-28",
+   "lat": 53.545196,
+   "lon": -113.512633,
+   "local": [
+    -1167.31,
+    62.88
+   ],
+   "footprint": [
+    [
+     [
+      -1148.86,
+      9.45,
+      -1144.78,
+      110.74,
+      -1180.52,
+      112.15,
+      -1184.6,
+      10.85
+     ]
+    ]
+   ],
+   "hide_base": [
+    34909
+   ],
+   "replaced_height_m": 12.4
+  },
+  {
+   "id": "P009",
+   "name": "Stadium Yards",
+   "address": "8450 106A Avenue NW",
+   "status": "existing",
+   "height_m": 18.6,
+   "height_source": "skyrisecities storeys x 3.1",
+   "height_confidence": "high",
+   "storeys": 6,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 6557 m2; base-building outline(s) in the lot (official height replaces LiDAR)",
+   "trace_reason": "",
+   "candidate_id": "411454341-002",
+   "developer": "Rohit Communities",
+   "source_url": "https://skyrisecities.com/database/projects/stadium-yards.39328",
+   "last_checked": "2026-09-28",
+   "lat": 53.55731,
+   "lon": -113.472797,
+   "local": [
+    1518.38,
+    1317.82
+   ],
+   "footprint": [
+    [
+     [
+      1520.81,
+      1267.56,
+      1557.9,
+      1330.39,
+      1566.6,
+      1347.86,
+      1518.91,
+      1371.81,
+      1466.86,
+      1302.22
+     ]
+    ]
+   ],
+   "hide_base": [
+    43832
+   ],
+   "replaced_height_m": 19.7
+  },
+  {
+   "id": "P010",
+   "name": "Falcon Tower One",
+   "address": "10027 104 Street NW",
    "status": "construction",
-   "height_m": 100.0,
-   "height_source": "height_m",
-   "storeys": 32,
-   "developer": "TBD (placeholder)",
-   "source_url": "https://data.edmonton.ca/",
-   "last_checked": "2026-09-27",
-   "lat": 53.54401,
-   "lon": -113.48506,
+   "height_m": 89.9,
+   "height_source": "dp_description",
+   "height_confidence": "high",
+   "storeys": 29,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 2005 m2; 750 m2 residential floorplate centred on the lot",
+   "trace_reason": "",
+   "candidate_id": "326906292-013",
+   "developer": "Langham Developments Limited",
+   "source_url": "https://data.edmonton.ca/resource/2ccn-pwtu.json?city_file_number=326906292-013",
+   "last_checked": "2026-09-28",
+   "lat": 53.539577,
+   "lon": -113.498719,
    "local": [
-    654.62,
-    -133.14
+    -267.53,
+    -594.51
    ],
    "footprint": [
     [
      [
-      638.62,
-      -149.14,
-      670.62,
-      -149.14,
-      670.62,
-      -117.14,
-      638.62,
-      -117.14
+      -290.7,
+      -604.84,
+      -259.49,
+      -605.69,
+      -258.83,
+      -581.69,
+      -290.04,
+      -580.84
+     ]
+    ]
+   ],
+   "hide_base": [
+    29004,
+    32931
+   ],
+   "replaced_height_m": 89.8
+  },
+  {
+   "id": "P011",
+   "name": "10455 81 Avenue NW (21-storey residential)",
+   "address": "10455 81 Avenue NW",
+   "status": "construction",
+   "height_m": 65.1,
+   "height_source": "dp_description",
+   "height_confidence": "high",
+   "storeys": 21,
+   "footprint_source": "auto: Direct Control polygon (DC2); 3 x 750 m2 residential floorplate on the lot's long axis",
+   "trace_reason": "",
+   "candidate_id": "364536438-002",
+   "developer": "",
+   "source_url": "https://data.edmonton.ca/resource/2ccn-pwtu.json?city_file_number=364536438-002",
+   "last_checked": "2026-09-28",
+   "lat": 53.516709,
+   "lon": -113.499396,
+   "local": [
+    -401.66,
+    -3136.33
+   ],
+   "footprint": [
+    [
+     [
+      -382.79,
+      -3157.38,
+      -364.86,
+      -3158.01,
+      -364.62,
+      -3151.33,
+      -364.53,
+      -3148.66,
+      -351.26,
+      -3149.12,
+      -350.75,
+      -3134.47,
+      -381.95,
+      -3133.38
+     ]
+    ],
+    [
+     [
+      -395.49,
+      -3132.9,
+      -426.7,
+      -3131.81,
+      -427.54,
+      -3155.81,
+      -396.34,
+      -3156.91
+     ]
+    ],
+    [
+     [
+      -440.24,
+      -3131.33,
+      -471.44,
+      -3130.24,
+      -472.28,
+      -3154.24,
+      -441.08,
+      -3155.34
      ]
     ]
    ],
@@ -84,33 +323,828 @@
    "replaced_height_m": null
   },
   {
-   "id": "P003",
-   "name": "PLACEHOLDER \u2013 Warehouse District tower",
-   "address": "103 Ave NW & 106 St NW (approx.)",
+   "id": "P012",
+   "name": "11141 84 Avenue NW (12-storey residential)",
+   "address": "11141 84 Avenue NW",
+   "status": "construction",
+   "height_m": 40.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 12,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 2251 m2; 750 m2 residential floorplate centred on the lot",
+   "trace_reason": "",
+   "candidate_id": "392214637-036",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/mixed-use-zones/280-mu-mixed-use-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.519781,
+   "lon": -113.520207,
+   "local": [
+    -1769.08,
+    -2746.04
+   ],
+   "footprint": [
+    [
+     [
+      -1768.98,
+      -2763.28,
+      -1768.26,
+      -2732.05,
+      -1792.28,
+      -2731.52,
+      -1792.99,
+      -2762.73
+     ]
+    ]
+   ],
+   "hide_base": [
+    14297
+   ],
+   "replaced_height_m": 42.4
+  },
+  {
+   "id": "P013",
+   "name": "11425 St Albert Trail NW (10-storey residential)",
+   "address": "11425 St Albert Trail NW",
+   "status": "construction",
+   "height_m": 34.0,
+   "height_source": "dc_text",
+   "height_confidence": "medium",
+   "storeys": 10,
+   "footprint_source": "needs_trace",
+   "trace_reason": "lot 10,814 m2 > 8,000 m2 for a single building",
+   "candidate_id": "392111925-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/dc2-1138",
+   "last_checked": "2026-09-28",
+   "lat": 53.564187,
+   "lon": -113.54349,
+   "local": [
+    -3135.89,
+    2247.65
+   ],
+   "footprint": [
+    [
+     [
+      -3210.89,
+      2215.56,
+      -3113.04,
+      2184.38,
+      -3100.73,
+      2185.6,
+      -3098.28,
+      2190.13,
+      -3096.34,
+      2190.05,
+      -3051.96,
+      2235.07,
+      -3240.51,
+      2279.95,
+      -3247.7,
+      2275.95
+     ]
+    ]
+   ],
+   "hide_base": [
+    48576
+   ],
+   "replaced_height_m": 12.8
+  },
+  {
+   "id": "P014",
+   "name": "8709 118 Street NW (9-storey residential)",
+   "address": "8709 118 Street NW",
+   "status": "construction",
+   "height_m": 29.9,
+   "height_source": "dc_text",
+   "height_confidence": "medium",
+   "storeys": 9,
+   "footprint_source": "auto: Direct Control polygon (DC); lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "394179076-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/dc-21179",
+   "last_checked": "2026-09-28",
+   "lat": 53.523262,
+   "lon": -113.533766,
+   "local": [
+    -2654.04,
+    -2327.0
+   ],
+   "footprint": [
+    [
+     [
+      -2632.01,
+      -2362.21,
+      -2630.63,
+      -2305.76,
+      -2685.24,
+      -2303.51,
+      -2687.28,
+      -2360.93,
+      -2632.05,
+      -2363.39
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P015",
+   "name": "8615 108 Street NW (8-storey residential)",
+   "address": "8615 108 Street NW",
+   "status": "construction",
+   "height_m": 25.0,
+   "height_source": "dc_text",
+   "height_confidence": "medium",
+   "storeys": 8,
+   "footprint_source": "auto: Direct Control polygon (DC); lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "430142719-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/dc-21463",
+   "last_checked": "2026-09-28",
+   "lat": 53.522209,
+   "lon": -113.508327,
+   "local": [
+    -972.13,
+    -2503.8
+   ],
+   "footprint": [
+    [
+     [
+      -998.46,
+      -2482.94,
+      -1000.11,
+      -2529.8,
+      -956.14,
+      -2531.84,
+      -954.48,
+      -2484.49
+     ]
+    ]
+   ],
+   "hide_base": [
+    21696,
+    21699,
+    21700,
+    21704
+   ],
+   "replaced_height_m": 6.2
+  },
+  {
+   "id": "P016",
+   "name": "9860 83 Avenue NW (7-storey residential)",
+   "address": "9860 83 Avenue NW",
+   "status": "construction",
+   "height_m": 23.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 7,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 807 m2; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "368879276-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.519214,
+   "lon": -113.485932,
+   "local": [
+    500.57,
+    -2888.96
+   ],
+   "footprint": [
+    [
+     [
+      495.38,
+      -2865.39,
+      493.91,
+      -2896.12,
+      510.02,
+      -2896.77,
+      511.2,
+      -2866.0
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P017",
+   "name": "10563 116 Street NW (5-storey office)",
+   "address": "10563 116 Street NW",
+   "status": "construction",
+   "height_m": 23.0,
+   "height_source": "dc_text",
+   "height_confidence": "medium",
+   "storeys": 5,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 1741 m2; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "373385231-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/dc2-671",
+   "last_checked": "2026-09-28",
+   "lat": 53.549066,
+   "lon": -113.520779,
+   "local": [
+    -1691.68,
+    512.38
+   ],
+   "footprint": [
+    [
+     [
+      -1669.04,
+      519.41,
+      -1723.65,
+      521.34,
+      -1724.21,
+      502.59,
+      -1670.3,
+      500.69,
+      -1668.57,
+      507.38
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P018",
+   "name": "11329 University Avenue NW (7-storey residential)",
+   "address": "11329 University Avenue NW",
+   "status": "construction",
+   "height_m": 23.0,
+   "height_source": "dc_text",
+   "height_confidence": "medium",
+   "storeys": 7,
+   "footprint_source": "auto: Direct Control polygon (DC2); lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "411836852-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/dc2-1152",
+   "last_checked": "2026-09-28",
+   "lat": 53.515838,
+   "lon": -113.524442,
+   "local": [
+    -2065.34,
+    -3174.64
+   ],
+   "footprint": [
+    [
+     [
+      -2056.62,
+      -3130.48,
+      -2084.2,
+      -3121.01,
+      -2086.97,
+      -3199.24,
+      -2043.22,
+      -3200.4,
+      -2041.03,
+      -3157.11,
+      -2040.49,
+      -3141.85
+     ]
+    ]
+   ],
+   "hide_base": [
+    12999
+   ],
+   "replaced_height_m": 5.6
+  },
+  {
+   "id": "P019",
+   "name": "10015 113 Street NW (7-storey residential)",
+   "address": "10015 113 Street NW",
+   "status": "construction",
+   "height_m": 23.0,
+   "height_source": "dc_text",
+   "height_confidence": "medium",
+   "storeys": 7,
+   "footprint_source": "auto: Direct Control polygon (DC2); lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "463489487-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/dc2-1232",
+   "last_checked": "2026-09-28",
+   "lat": 53.539157,
+   "lon": -113.515261,
+   "local": [
+    -1365.12,
+    -602.63
+   ],
+   "footprint": [
+    [
+     [
+      -1358.55,
+      -635.49,
+      -1343.36,
+      -635.75,
+      -1341.53,
+      -583.87,
+      -1348.46,
+      -583.62,
+      -1396.15,
+      -581.94,
+      -1397.99,
+      -634.1
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P020",
+   "name": "11419 University Avenue NW (7-storey residential)",
+   "address": "11419 University Avenue NW",
+   "status": "construction",
+   "height_m": 23.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 7,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 713 m2; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "471410672-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.516311,
+   "lon": -113.526779,
+   "local": [
+    -2218.39,
+    -3116.54
+   ],
+   "footprint": [
+    [
+     [
+      -2204.69,
+      -3123.44,
+      -2202.43,
+      -3123.65,
+      -2183.51,
+      -3121.14,
+      -2177.29,
+      -3107.71,
+      -2201.77,
+      -3100.97
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P021",
+   "name": "10808 85 Avenue NW (7-storey residential)",
+   "address": "10808 85 Avenue NW",
+   "status": "construction",
+   "height_m": 23.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 7,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 1618 m2; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "476200645-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.521265,
+   "lon": -113.509794,
+   "local": [
+    -1073.06,
+    -2605.37
+   ],
+   "footprint": [
+    [
+     [
+      -1083.77,
+      -2631.88,
+      -1074.13,
+      -2633.04,
+      -1064.55,
+      -2632.58,
+      -1049.43,
+      -2629.36,
+      -1047.98,
+      -2591.42,
+      -1072.53,
+      -2585.03,
+      -1082.09,
+      -2586.81
+     ]
+    ]
+   ],
+   "hide_base": [
+    14732,
+    14742,
+    14747,
+    21719,
+    21725,
+    21728
+   ],
+   "replaced_height_m": 9.4
+  },
+  {
+   "id": "P022",
+   "name": "8521 106A Street NW (7-storey residential)",
+   "address": "8521 106A Street NW",
+   "status": "construction",
+   "height_m": 23.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 7,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 1212 m2; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "503378470-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.52157,
+   "lon": -113.504602,
+   "local": [
+    -727.74,
+    -2583.56
+   ],
+   "footprint": [
+    [
+     [
+      -752.01,
+      -2578.43,
+      -751.98,
+      -2595.24,
+      -709.77,
+      -2596.72,
+      -707.93,
+      -2584.92,
+      -707.79,
+      -2580.94,
+      -709.3,
+      -2572.33,
+      -750.11,
+      -2570.73
+     ]
+    ]
+   ],
+   "hide_base": [
+    21662,
+    21663,
+    21664,
+    21666,
+    21667,
+    21669
+   ],
+   "replaced_height_m": 7.1
+  },
+  {
+   "id": "P023",
+   "name": "8231 111 Street NW (7-storey residential)",
+   "address": "8231 111 Street NW",
+   "status": "construction",
+   "height_m": 23.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 7,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 810 m2; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "520417913-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.518833,
+   "lon": -113.517516,
+   "local": [
+    -1594.44,
+    -2857.79
+   ],
+   "footprint": [
+    [
+     [
+      -1608.83,
+      -2870.73,
+      -1594.06,
+      -2871.26,
+      -1592.82,
+      -2838.06,
+      -1595.37,
+      -2837.75,
+      -1607.68,
+      -2838.32
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P024",
+   "name": "10521 78 Avenue NW (7-storey residential)",
+   "address": "10521 78 Avenue NW",
+   "status": "construction",
+   "height_m": 23.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 7,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 2019 m2; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "562465177-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.513967,
+   "lon": -113.501599,
+   "local": [
+    -558.4,
+    -3436.17
+   ],
+   "footprint": [
+    [
+     [
+      -574.58,
+      -3410.04,
+      -576.12,
+      -3452.14,
+      -562.11,
+      -3455.8,
+      -555.96,
+      -3456.02,
+      -547.75,
+      -3454.52,
+      -546.13,
+      -3410.1,
+      -560.85,
+      -3408.38,
+      -569.83,
+      -3407.98
+     ]
+    ]
+   ],
+   "hide_base": [
+    11666,
+    11670,
+    11676,
+    11683,
+    11684
+   ],
+   "replaced_height_m": 6.9
+  },
+  {
+   "id": "P025",
+   "name": "11028 85 Avenue NW (7-storey residential)",
+   "address": "11028 85 Avenue NW",
+   "status": "construction",
+   "height_m": 23.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 7,
+   "footprint_source": "auto: 2 adjacent assessment-parcel cells merged (1052 m2); lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "613818800-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.521267,
+   "lon": -113.516369,
+   "local": [
+    -1508.85,
+    -2589.77
+   ],
+   "footprint": [
+    [
+     [
+      -1521.99,
+      -2616.14,
+      -1508.17,
+      -2616.41,
+      -1506.44,
+      -2569.72,
+      -1520.24,
+      -2568.93
+     ]
+    ]
+   ],
+   "hide_base": [
+    21935,
+    21936,
+    21941,
+    21942
+   ],
+   "replaced_height_m": 8.0
+  },
+  {
+   "id": "P026",
+   "name": "Abbey Park Residences",
+   "address": "10231 120 Street NW",
+   "status": "construction",
+   "height_m": 22.86,
+   "height_source": "skyrisecities",
+   "height_confidence": "high",
+   "storeys": 6,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 3840 m2; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "391153549-002",
+   "developer": "Abbey Lane Homes",
+   "source_url": "https://skyrisecities.com/database/projects/abbey-park-residences.21477",
+   "last_checked": "2026-09-28",
+   "lat": 53.543648,
+   "lon": -113.528127,
+   "local": [
+    -2199.79,
+    -72.95
+   ],
+   "footprint": [
+    [
+     [
+      -2232.76,
+      -87.12,
+      -2229.43,
+      -93.7,
+      -2188.18,
+      -95.2,
+      -2179.82,
+      -89.03,
+      -2177.27,
+      -60.62,
+      -2185.4,
+      -42.15,
+      -2226.44,
+      -40.67,
+      -2231.38,
+      -53.14
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P027",
+   "name": "Garneau Park",
+   "address": "11041 86 Avenue NW",
+   "status": "construction",
+   "height_m": 22.0,
+   "height_source": "dc_text",
+   "height_confidence": "medium",
+   "storeys": 7,
+   "footprint_source": "auto: Direct Control polygon (DC2); lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "370375510-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/dc2-1154",
+   "last_checked": "2026-09-28",
+   "lat": 53.521679,
+   "lon": -113.516747,
+   "local": [
+    -1532.28,
+    -2543.06
+   ],
+   "footprint": [
+    [
+     [
+      -1494.34,
+      -2524.24,
+      -1494.11,
+      -2517.68,
+      -1568.35,
+      -2515.06,
+      -1570.58,
+      -2561.64,
+      -1495.75,
+      -2564.28
+     ]
+    ]
+   ],
+   "hide_base": [
+    21949
+   ],
+   "replaced_height_m": 8.1
+  },
+  {
+   "id": "P028",
+   "name": "Dhaliwal 83",
+   "address": "10021 83 Avenue NW",
+   "status": "construction",
+   "height_m": 18.6,
+   "height_source": "dp_description",
+   "height_confidence": "high",
+   "storeys": 6,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 1214 m2; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "372600869-067",
+   "developer": "",
+   "source_url": "https://data.edmonton.ca/resource/2ccn-pwtu.json?city_file_number=372600869-067",
+   "last_checked": "2026-09-28",
+   "lat": 53.518783,
+   "lon": -113.489842,
+   "local": [
+    239.72,
+    -2927.84
+   ],
+   "footprint": [
+    [
+     [
+      230.6,
+      -2903.86,
+      228.7,
+      -2943.59,
+      243.15,
+      -2944.15,
+      249.3,
+      -2943.03,
+      250.8,
+      -2905.11,
+      236.49,
+      -2902.15
+     ]
+    ]
+   ],
+   "hide_base": [
+    15271,
+    15273,
+    15278,
+    15279
+   ],
+   "replaced_height_m": 7.0
+  },
+  {
+   "id": "P029",
+   "name": "10318 116 Street NW (6-storey residential)",
+   "address": "10318 116 Street NW",
+   "status": "construction",
+   "height_m": 18.6,
+   "height_source": "dp_description",
+   "height_confidence": "high",
+   "storeys": 6,
+   "footprint_source": "auto: Direct Control polygon (DC2); lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "460162731-002",
+   "developer": "",
+   "source_url": "https://data.edmonton.ca/resource/2ccn-pwtu.json?city_file_number=460162731-002",
+   "last_checked": "2026-09-28",
+   "lat": 53.544926,
+   "lon": -113.521827,
+   "local": [
+    -1777.41,
+    54.39
+   ],
+   "footprint": [
+    [
+     [
+      -1801.58,
+      23.06,
+      -1745.96,
+      21.09,
+      -1743.89,
+      72.91,
+      -1780.88,
+      74.22,
+      -1799.74,
+      74.89
+     ]
+    ]
+   ],
+   "hide_base": [
+    34812,
+    34814,
+    34817
+   ],
+   "replaced_height_m": 7.8
+  },
+  {
+   "id": "P030",
+   "name": "Stationlands Residential Towers (east tower)",
+   "address": "10445 101 Street NW",
    "status": "approved",
-   "height_m": 117.8,
-   "height_source": "storeys x 3.1",
-   "storeys": 38,
-   "developer": "TBD (placeholder)",
-   "source_url": "https://data.edmonton.ca/",
-   "last_checked": "2026-09-27",
-   "lat": 53.54485,
-   "lon": -113.50237,
+   "height_m": 114.7,
+   "height_source": "skyrisecities + dp_description",
+   "height_confidence": "low",
+   "storeys": 37,
+   "footprint_source": "needs_trace",
+   "trace_reason": "lot 8,369 m2 > 8,000 m2 for a single building",
+   "candidate_id": "315143826-064",
+   "developer": "",
+   "source_url": "https://data.edmonton.ca/resource/2ccn-pwtu.json?city_file_number=315143826-064",
+   "last_checked": "2026-09-28",
+   "lat": 53.547702,
+   "lon": -113.49212,
    "local": [
-    -488.8,
-    0.45
+    201.3,
+    293.84
    ],
    "footprint": [
     [
      [
-      -504.81,
-      -15.54,
-      -472.8,
-      -15.54,
-      -472.8,
-      16.45,
-      -504.8,
-      16.45
+      184.55,
+      282.02,
+      215.71,
+      279.94,
+      217.31,
+      303.9,
+      186.16,
+      305.98
      ]
     ]
    ],
@@ -118,33 +1152,921 @@
    "replaced_height_m": null
   },
   {
-   "id": "P004",
-   "name": "PLACEHOLDER \u2013 Rossdale tower",
-   "address": "Rossdale Rd NW & 104 St NW (approx.)",
+   "id": "P031",
+   "name": "Falcon Tower Two",
+   "address": "10330 100 Avenue NW",
+   "status": "approved",
+   "height_m": 108.5,
+   "height_source": "dp_description",
+   "height_confidence": "high",
+   "storeys": 35,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 2208 m2; 750 m2 residential floorplate centred on the lot",
+   "trace_reason": "",
+   "candidate_id": "640711594-002",
+   "developer": "Langham Developments Limited",
+   "source_url": "https://data.edmonton.ca/resource/2ccn-pwtu.json?city_file_number=640711594-002",
+   "last_checked": "2026-09-28",
+   "lat": 53.539167,
+   "lon": -113.498716,
+   "local": [
+    -268.93,
+    -640.12
+   ],
+   "footprint": [
+    [
+     [
+      -260.72,
+      -633.01,
+      -291.93,
+      -631.91,
+      -292.78,
+      -655.91,
+      -261.57,
+      -657.01
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P032",
+   "name": "Kingsway Crossing",
+   "address": "10809 111 Avenue NW",
+   "status": "approved",
+   "height_m": 45.11,
+   "height_source": "skyrisecities",
+   "height_confidence": "high",
+   "storeys": 14,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 4321 m2; 750 m2 residential floorplate centred on the lot",
+   "trace_reason": "",
+   "candidate_id": "615671213-002",
+   "developer": "Fourcha Group",
+   "source_url": "https://skyrisecities.com/database/projects/kingsway-crossing.20303",
+   "last_checked": "2026-09-28",
+   "lat": 53.558551,
+   "lon": -113.507494,
+   "local": [
+    -774.56,
+    1536.23
+   ],
+   "footprint": [
+    [
+     [
+      -792.25,
+      1533.11,
+      -761.05,
+      1532.04,
+      -760.22,
+      1556.05,
+      -791.43,
+      1557.12
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P033",
+   "name": "10154 108 Street NW (12-storey residential)",
+   "address": "10154 108 Street NW",
+   "status": "approved",
+   "height_m": 37.2,
+   "height_source": "dwellings_estimate",
+   "height_confidence": "low",
+   "storeys": 12,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 4189 m2; 750 m2 residential floorplate centred on the lot",
+   "trace_reason": "",
+   "candidate_id": "580337331-002",
+   "developer": "",
+   "source_url": "https://data.edmonton.ca/resource/2ccn-pwtu.json?city_file_number=580337331-002",
+   "last_checked": "2026-09-28",
+   "lat": 53.541947,
+   "lon": -113.507117,
+   "local": [
+    -814.63,
+    -311.36
+   ],
+   "footprint": [
+    [
+     [
+      -795.59,
+      -307.6,
+      -825.81,
+      -299.75,
+      -831.85,
+      -323.0,
+      -801.63,
+      -330.85
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P034",
+   "name": "11110 108 Street NW (12-storey residential)",
+   "address": "11110 108 Street NW",
+   "status": "approved",
+   "height_m": 37.2,
+   "height_source": "dwellings_estimate",
+   "height_confidence": "low",
+   "storeys": 12,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 8373 m2; 2 x 750 m2 residential floorplate on the lot's long axis",
+   "trace_reason": "",
+   "candidate_id": "582144501-002",
+   "developer": "",
+   "source_url": "https://data.edmonton.ca/resource/2ccn-pwtu.json?city_file_number=582144501-002",
+   "last_checked": "2026-09-28",
+   "lat": 53.559515,
+   "lon": -113.507391,
+   "local": [
+    -763.96,
+    1643.21
+   ],
+   "footprint": [
+    [
+     [
+      -731.24,
+      1603.73,
+      -734.6,
+      1634.77,
+      -758.48,
+      1632.19,
+      -755.12,
+      1601.14
+     ]
+    ],
+    [
+     [
+      -736.84,
+      1655.47,
+      -740.2,
+      1686.52,
+      -764.08,
+      1683.93,
+      -760.72,
+      1652.88
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P035",
+   "name": "10314 106 Street NW (12-storey residential)",
+   "address": "10314 106 Street NW",
+   "status": "approved",
+   "height_m": 37.2,
+   "height_source": "dwellings_estimate",
+   "height_confidence": "low",
+   "storeys": 12,
+   "footprint_source": "auto: 2 adjacent assessment-parcel cells merged (8959 m2); 4 x 750 m2 residential floorplate on the lot's long axis",
+   "trace_reason": "",
+   "candidate_id": "640132008-002",
+   "developer": "",
+   "source_url": "https://data.edmonton.ca/resource/2ccn-pwtu.json?city_file_number=640132008-002",
+   "last_checked": "2026-09-28",
+   "lat": 53.54519,
+   "lon": -113.503436,
+   "local": [
+    -558.09,
+    40.75
+   ],
+   "footprint": [
+    [
+     [
+      -561.76,
+      146.64,
+      -562.85,
+      115.43,
+      -538.85,
+      114.58,
+      -537.75,
+      145.79
+     ]
+    ],
+    [
+     [
+      -563.26,
+      103.67,
+      -564.36,
+      72.46,
+      -540.35,
+      71.62,
+      -539.26,
+      102.83
+     ]
+    ],
+    [
+     [
+      -564.77,
+      60.71,
+      -565.86,
+      29.5,
+      -541.86,
+      28.65,
+      -540.76,
+      59.86
+     ]
+    ],
+    [
+     [
+      -566.27,
+      17.74,
+      -567.37,
+      -13.47,
+      -543.36,
+      -14.3,
+      -542.27,
+      16.9
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P036",
+   "name": "10305 104 Avenue NW (12-storey residential)",
+   "address": "10305 104 Avenue NW",
+   "status": "approved",
+   "height_m": 37.2,
+   "height_source": "dwellings_estimate",
+   "height_confidence": "low",
+   "storeys": 12,
+   "footprint_source": "needs_trace",
+   "trace_reason": "lot 8,949 m2 > 8,000 m2 for a single building",
+   "candidate_id": "655770701-002",
+   "developer": "",
+   "source_url": "https://data.edmonton.ca/resource/2ccn-pwtu.json?city_file_number=655770701-002",
+   "last_checked": "2026-09-28",
+   "lat": 53.545587,
+   "lon": -113.497396,
+   "local": [
+    -156.43,
+    70.85
+   ],
+   "footprint": [
+    [
+     [
+      -126.35,
+      20.69,
+      -95.43,
+      16.33,
+      -92.07,
+      40.11,
+      -122.99,
+      44.48
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P037",
+   "name": "10440 83 Avenue NW (9-storey residential)",
+   "address": "10440 83 Avenue NW",
+   "status": "approved",
+   "height_m": 30.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 9,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 5598 m2; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "640573623-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/mixed-use-zones/280-mu-mixed-use-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.519409,
+   "lon": -113.498998,
+   "local": [
+    -364.74,
+    -2836.96
+   ],
+   "footprint": [
+    [
+     [
+      -389.22,
+      -2786.86,
+      -390.0,
+      -2807.21,
+      -359.74,
+      -2860.2,
+      -349.37,
+      -2859.25,
+      -333.74,
+      -2827.91,
+      -343.29,
+      -2786.71,
+      -364.07,
+      -2782.79
+     ]
+    ]
+   ],
+   "hide_base": [
+    15064
+   ],
+   "replaced_height_m": 7.0
+  },
+  {
+   "id": "P038",
+   "name": "9916 89 Avenue NW (9-storey residential)",
+   "address": "9916 89 Avenue NW",
+   "status": "approved",
+   "height_m": 28.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 9,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 3530 m2; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "520258098-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.524787,
+   "lon": -113.486795,
+   "local": [
+    465.01,
+    -2267.13
+   ],
+   "footprint": [
+    [
+     [
+      442.48,
+      -2292.31,
+      475.11,
+      -2296.19,
+      491.9,
+      -2291.13,
+      495.03,
+      -2267.28,
+      461.91,
+      -2247.13,
+      461.76,
+      -2251.37,
+      444.49,
+      -2250.77,
+      439.49,
+      -2255.18
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P039",
+   "name": "10319 113 Street NW (9-storey residential)",
+   "address": "10319 113 Street NW",
+   "status": "approved",
+   "height_m": 28.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 9,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 2092 m2; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "539084752-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.545196,
+   "lon": -113.515253,
+   "local": [
+    -1340.86,
+    69.01
+   ],
+   "footprint": [
+    [
+     [
+      -1320.07,
+      84.4,
+      -1360.39,
+      85.83,
+      -1361.52,
+      53.74,
+      -1321.2,
+      52.3
+     ]
+    ]
+   ],
+   "hide_base": [
+    34889,
+    34892
+   ],
+   "replaced_height_m": 7.8
+  },
+  {
+   "id": "P040",
+   "name": "9511 103 Avenue NW (9-storey residential)",
+   "address": "9511 103 Avenue NW",
+   "status": "approved",
+   "height_m": 28.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 9,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 598 m2; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "573198770-006",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.546789,
+   "lon": -113.480058,
+   "local": [
+    996.75,
+    164.39
+   ],
+   "footprint": [
+    [
+     [
+      1007.4,
+      181.09,
+      983.23,
+      174.49,
+      983.87,
+      172.29,
+      991.35,
+      160.97,
+      1010.77,
+      167.59
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P041",
+   "name": "9708 104 Street NW (9-storey residential)",
+   "address": "9708 104 Street NW",
+   "status": "approved",
+   "height_m": 28.0,
+   "height_source": "dc_text",
+   "height_confidence": "medium",
+   "storeys": 9,
+   "footprint_source": "auto: Direct Control polygon (DC); lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "644762729-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/dc-21393",
+   "last_checked": "2026-09-28",
+   "lat": 53.53445,
+   "lon": -113.499773,
+   "local": [
+    -357.38,
+    -1162.29
+   ],
+   "footprint": [
+    [
+     [
+      -379.08,
+      -1134.47,
+      -381.55,
+      -1204.87,
+      -381.71,
+      -1209.36,
+      -326.72,
+      -1212.11,
+      -322.84,
+      -1136.44,
+      -333.71,
+      -1136.06
+     ]
+    ]
+   ],
+   "hide_base": [
+    28601,
+    28602,
+    28606,
+    28607
+   ],
+   "replaced_height_m": 7.9
+  },
+  {
+   "id": "P042",
+   "name": "10164 108 Street NW (9-storey residential)",
+   "address": "10164 108 Street NW",
+   "status": "approved",
+   "height_m": 27.9,
+   "height_source": "dwellings_estimate",
+   "height_confidence": "low",
+   "storeys": 9,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 2779 m2; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "500496662-002",
+   "developer": "",
+   "source_url": "https://data.edmonton.ca/resource/2ccn-pwtu.json?city_file_number=500496662-002",
+   "last_checked": "2026-09-28",
+   "lat": 53.542615,
+   "lon": -113.507117,
+   "local": [
+    -812.02,
+    -237.06
+   ],
+   "footprint": [
+    [
+     [
+      -855.57,
+      -224.44,
+      -822.35,
+      -263.82,
+      -795.62,
+      -264.78,
+      -793.05,
+      -260.45,
+      -788.69,
+      -248.51,
+      -787.63,
+      -241.25,
+      -830.31,
+      -207.64
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P043",
+   "name": "10123 106 Street",
+   "address": "10123 106 Street NW",
+   "status": "approved",
+   "height_m": 24.0,
+   "height_source": "skyrisecities",
+   "height_confidence": "high",
+   "storeys": 7,
+   "footprint_source": "auto: 2 adjacent assessment-parcel cells merged (4175 m2); lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "583643528-002",
+   "developer": "Westrich Pacific Corp.",
+   "source_url": "https://skyrisecities.com/database/projects/10123-106-street.38847",
+   "last_checked": "2026-09-28",
+   "lat": 53.541875,
+   "lon": -113.502387,
+   "local": [
+    -501.56,
+    -330.39
+   ],
+   "footprint": [
+    [
+     [
+      -527.14,
+      -351.37,
+      -488.14,
+      -353.83,
+      -476.15,
+      -330.89,
+      -421.39,
+      -323.45,
+      -525.31,
+      -299.44
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P044",
+   "name": "9846 82 Avenue NW (7-storey residential)",
+   "address": "9846 82 Avenue NW",
+   "status": "approved",
+   "height_m": 23.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 7,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 811 m2; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "495889729-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.518367,
+   "lon": -113.484612,
+   "local": [
+    584.78,
+    -2986.22
+   ],
+   "footprint": [
+    [
+     [
+      580.52,
+      -2976.04,
+      579.65,
+      -3008.37,
+      588.97,
+      -3009.43,
+      594.61,
+      -3008.26,
+      595.96,
+      -2977.9,
+      592.2,
+      -2976.5,
+      586.44,
+      -2975.66,
+      585.74,
+      -2975.64
+     ]
+    ]
+   ],
+   "hide_base": [
+    15534
+   ],
+   "replaced_height_m": 5.9
+  },
+  {
+   "id": "P045",
+   "name": "10506 81 Avenue NW (7-storey residential)",
+   "address": "10506 81 Avenue NW",
+   "status": "approved",
+   "height_m": 23.0,
+   "height_source": "dc_text",
+   "height_confidence": "medium",
+   "storeys": 7,
+   "footprint_source": "auto: Direct Control polygon (DC); lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "537159828-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/dc-20921",
+   "last_checked": "2026-09-28",
+   "lat": 53.517358,
+   "lon": -113.500984,
+   "local": [
+    -504.39,
+    -3060.45
+   ],
+   "footprint": [
+    [
+     [
+      -473.96,
+      -3089.25,
+      -472.3,
+      -3041.98,
+      -478.29,
+      -3041.55,
+      -526.02,
+      -3039.87,
+      -527.69,
+      -3087.36
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P046",
+   "name": "10207 115 Street NW (7-storey residential)",
+   "address": "10207 115 Street NW",
+   "status": "approved",
+   "height_m": 23.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 7,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 1392 m2; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "631109821-007",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.543269,
+   "lon": -113.518933,
+   "local": [
+    -1592.22,
+    -136.69
+   ],
+   "footprint": [
+    [
+     [
+      -1613.67,
+      -129.05,
+      -1613.59,
+      -155.89,
+      -1579.33,
+      -157.26,
+      -1575.47,
+      -136.34,
+      -1576.99,
+      -130.37
+     ]
+    ]
+   ],
+   "hide_base": [
+    33167
+   ],
+   "replaced_height_m": 8.0
+  },
+  {
+   "id": "P047",
+   "name": "11024 85 Avenue NW (7-storey residential)",
+   "address": "11024 85 Avenue NW",
+   "status": "approved",
+   "height_m": 23.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 7,
+   "footprint_source": "auto: 2 adjacent assessment-parcel cells merged (809 m2); lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "645866239-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.521267,
+   "lon": -113.516219,
+   "local": [
+    -1498.91,
+    -2590.12
+   ],
+   "footprint": [
+    [
+     [
+      -1500.23,
+      -2613.72,
+      -1494.87,
+      -2613.5,
+      -1488.88,
+      -2614.44,
+      -1487.37,
+      -2573.4,
+      -1498.74,
+      -2573.25
+     ]
+    ]
+   ],
+   "hide_base": [
+    21926,
+    21927,
+    21929
+   ],
+   "replaced_height_m": 8.7
+  },
+  {
+   "id": "P048",
+   "name": "9608 103 Avenue NW (7-storey residential)",
+   "address": "9608 103 Avenue NW",
+   "status": "approved",
+   "height_m": 23.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 7,
+   "footprint_source": "auto: 6 adjacent assessment-parcel cells merged (1844 m2); lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "653953886-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/mixed-use-zones/280-mu-mixed-use-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.546528,
+   "lon": -113.483879,
+   "local": [
+    742.63,
+    144.18
+   ],
+   "footprint": [
+    [
+     [
+      742.16,
+      139.82,
+      758.36,
+      139.75,
+      740.67,
+      127.47,
+      751.52,
+      94.98,
+      775.75,
+      101.05,
+      762.63,
+      152.08,
+      739.92,
+      146.41
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P049",
+   "name": "9862 90 Avenue NW (6-storey residential)",
+   "address": "9862 90 Avenue NW",
+   "status": "approved",
+   "height_m": 18.6,
+   "height_source": "dp_description",
+   "height_confidence": "high",
+   "storeys": 6,
+   "footprint_source": "needs_trace",
+   "trace_reason": "90% of the footprint on park / water land use",
+   "candidate_id": "641972652-002",
+   "developer": "",
+   "source_url": "https://data.edmonton.ca/resource/2ccn-pwtu.json?city_file_number=641972652-002",
+   "last_checked": "2026-09-28",
+   "lat": 53.525471,
+   "lon": -113.48589,
+   "local": [
+    527.65,
+    -2193.15
+   ],
+   "footprint": [
+    [
+     [
+      523.47,
+      -2156.02,
+      525.42,
+      -2169.99,
+      521.55,
+      -2191.91,
+      559.32,
+      -2193.23,
+      554.5,
+      -2180.66,
+      553.48,
+      -2171.28,
+      555.55,
+      -2161.64,
+      558.05,
+      -2157.32
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P050",
+   "name": "10301 104 Street NW (51-storey mixed-use)",
+   "address": "near 10301 104 Street NW",
    "status": "proposed",
-   "height_m": 145.0,
-   "height_source": "height_m",
-   "storeys": 45,
-   "developer": "TBD (placeholder)",
-   "source_url": "https://data.edmonton.ca/",
-   "last_checked": "2026-09-27",
-   "lat": 53.53475,
-   "lon": -113.49872,
+   "height_m": 160.0,
+   "height_source": "dc_text",
+   "height_confidence": "medium",
+   "storeys": 51,
+   "footprint_source": "auto: rezoned zoning polygon; 850 m2 mixed-use floorplate centred on the lot (DC maximum floor plate 850 m2)",
+   "trace_reason": "",
+   "candidate_id": "REZ-DC1-19860-167448",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/dc1-19860",
+   "last_checked": "2026-09-28",
+   "lat": 53.54486,
+   "lon": -113.498777,
    "local": [
-    -286.44,
-    -1131.37
+    -250.75,
+    -6.8
    ],
    "footprint": [
     [
      [
-      -302.44,
-      -1147.37,
-      -270.44,
-      -1147.37,
-      -270.44,
-      -1115.37,
-      -302.44,
-      -1115.38
+      -267.89,
+      -18.83,
+      -234.67,
+      -20.24,
+      -233.59,
+      5.3,
+      -266.8,
+      6.71
+     ]
+    ]
+   ],
+   "hide_base": [
+    35016
+   ],
+   "replaced_height_m": 15.3
+  },
+  {
+   "id": "P051",
+   "name": "12021 Jasper Avenue NW (34-storey mixed-use)",
+   "address": "near 12021 Jasper Avenue NW",
+   "status": "proposed",
+   "height_m": 108.0,
+   "height_source": "dc_text",
+   "height_confidence": "medium",
+   "storeys": 34,
+   "footprint_source": "auto: rezoned zoning polygon; 750 m2 residential floorplate centred on the lot",
+   "trace_reason": "",
+   "candidate_id": "REZ-DC-20932-173298",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/dc-20932",
+   "last_checked": "2026-09-28",
+   "lat": 53.54049,
+   "lon": -113.530164,
+   "local": [
+    -2347.22,
+    -419.39
+   ],
+   "footprint": [
+    [
+     [
+      -2357.56,
+      -414.86,
+      -2326.35,
+      -415.89,
+      -2325.55,
+      -391.88,
+      -2356.76,
+      -390.85
      ]
     ]
    ],
@@ -152,38 +2074,2255 @@
    "replaced_height_m": null
   },
   {
-   "id": "P005",
-   "name": "PLACEHOLDER \u2013 Station Lands tower",
-   "address": "105 Ave NW & 99 St NW (approx.)",
-   "status": "stalled",
-   "height_m": 128.0,
-   "height_source": "height_m",
-   "storeys": 40,
-   "developer": "TBD (placeholder)",
-   "source_url": "https://data.edmonton.ca/",
-   "last_checked": "2026-09-27",
-   "lat": 53.54788,
-   "lon": -113.49042,
+   "id": "P052",
+   "name": "10004 112 Street NW (33-storey residential)",
+   "address": "10004 112 Street NW",
+   "status": "proposed",
+   "height_m": 102.3,
+   "height_source": "dp_description",
+   "height_confidence": "high",
+   "storeys": 33,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 2075 m2; 750 m2 residential floorplate centred on the lot",
+   "trace_reason": "",
+   "candidate_id": "673041335-002",
+   "developer": "",
+   "source_url": "https://data.edmonton.ca/resource/2ccn-pwtu.json?city_file_number=673041335-002",
+   "last_checked": "2026-09-28",
+   "lat": 53.539157,
+   "lon": -113.514479,
    "local": [
-    314.6,
-    309.69
+    -1313.31,
+    -604.46
    ],
    "footprint": [
     [
      [
-      298.6,
-      293.69,
-      330.6,
-      293.69,
-      330.6,
-      325.69,
-      298.6,
-      325.7
+      -1324.36,
+      -624.98,
+      -1293.16,
+      -626.1,
+      -1292.29,
+      -602.1,
+      -1323.5,
+      -600.97
      ]
     ]
    ],
    "hide_base": [],
    "replaced_height_m": null
+  },
+  {
+   "id": "P053",
+   "name": "10060 115 Street NW (27-storey mixed-use)",
+   "address": "near 10060 115 Street NW",
+   "status": "proposed",
+   "height_m": 85.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 27,
+   "footprint_source": "auto: rezoned zoning polygon; 1500 m2 mixed-use floorplate centred on the lot",
+   "trace_reason": "",
+   "candidate_id": "REZ-MU-262397",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/mixed-use-zones/280-mu-mixed-use-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.540159,
+   "lon": -113.519923,
+   "local": [
+    -1670.05,
+    -480.27
+   ],
+   "footprint": [
+    [
+     [
+      -1647.23,
+      -462.42,
+      -1691.36,
+      -460.86,
+      -1692.57,
+      -494.8,
+      -1648.44,
+      -496.36
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P054",
+   "name": "10435 125 Street NW (27-storey mixed-use)",
+   "address": "near 10435 125 Street NW",
+   "status": "proposed",
+   "height_m": 85.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 27,
+   "footprint_source": "auto: rezoned zoning polygon; 1500 m2 mixed-use floorplate centred on the lot",
+   "trace_reason": "",
+   "candidate_id": "REZ-MU-262404",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/mixed-use-zones/280-mu-mixed-use-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.547596,
+   "lon": -113.537222,
+   "local": [
+    -2786.64,
+    387.58
+   ],
+   "footprint": [
+    [
+     [
+      -2763.95,
+      403.9,
+      -2808.08,
+      405.47,
+      -2809.29,
+      371.52,
+      -2765.16,
+      369.95
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P055",
+   "name": "10517 124 Street NW (27-storey mixed-use)",
+   "address": "near 10517 124 Street NW",
+   "status": "proposed",
+   "height_m": 85.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 27,
+   "footprint_source": "auto: rezoned zoning polygon; 1500 m2 mixed-use floorplate centred on the lot",
+   "trace_reason": "",
+   "candidate_id": "REZ-MU-272834",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/mixed-use-zones/280-mu-mixed-use-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.548428,
+   "lon": -113.535454,
+   "local": [
+    -2666.24,
+    475.94
+   ],
+   "footprint": [
+    [
+     [
+      -2650.55,
+      433.12,
+      -2649.23,
+      477.27,
+      -2683.18,
+      478.27,
+      -2684.5,
+      434.13
+     ]
+    ]
+   ],
+   "hide_base": [
+    39223,
+    39229
+   ],
+   "replaced_height_m": 7.7
+  },
+  {
+   "id": "P056",
+   "name": "The Clancy",
+   "address": "10410 103 Avenue NW",
+   "status": "proposed",
+   "height_m": 82.8,
+   "height_source": "dp_description",
+   "height_confidence": "high",
+   "storeys": 26,
+   "footprint_source": "auto: Direct Control polygon (DC2); 750 m2 residential floorplate centred on the lot",
+   "trace_reason": "",
+   "candidate_id": "343021915-002",
+   "developer": "",
+   "source_url": "https://data.edmonton.ca/resource/2ccn-pwtu.json?city_file_number=343021915-002",
+   "last_checked": "2026-09-28",
+   "lat": 53.544845,
+   "lon": -113.499763,
+   "local": [
+    -316.12,
+    -6.17
+   ],
+   "footprint": [
+    [
+     [
+      -327.77,
+      -23.32,
+      -296.57,
+      -24.42,
+      -295.73,
+      -0.41,
+      -326.93,
+      0.69
+     ]
+    ]
+   ],
+   "hide_base": [
+    35008
+   ],
+   "replaced_height_m": 8.6
+  },
+  {
+   "id": "P057",
+   "name": "11010 101 Street NW (24-storey mixed-use)",
+   "address": "near 11010 101 Street NW",
+   "status": "proposed",
+   "height_m": 75.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 24,
+   "footprint_source": "needs_trace",
+   "trace_reason": "lot 8,761 m2 > 8,000 m2 for a single building",
+   "candidate_id": "REZ-MU-177029",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/mixed-use-zones/280-mu-mixed-use-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.557401,
+   "lon": -113.49463,
+   "local": [
+    72.85,
+    1378.39
+   ],
+   "footprint": [
+    [
+     [
+      96.23,
+      1395.24,
+      52.1,
+      1396.78,
+      50.91,
+      1362.83,
+      95.04,
+      1361.28
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P058",
+   "name": "10177 125 Street NW (24-storey mixed-use)",
+   "address": "near 10177 125 Street NW",
+   "status": "proposed",
+   "height_m": 75.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 24,
+   "footprint_source": "auto: rezoned zoning polygon; 1500 m2 mixed-use floorplate centred on the lot",
+   "trace_reason": "",
+   "candidate_id": "REZ-MU-263107",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/mixed-use-zones/280-mu-mixed-use-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.542772,
+   "lon": -113.537677,
+   "local": [
+    -2835.91,
+    -147.87
+   ],
+   "footprint": [
+    [
+     [
+      -2858.23,
+      -157.7,
+      -2814.11,
+      -159.27,
+      -2812.9,
+      -125.32,
+      -2857.02,
+      -123.75
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P059",
+   "name": "10540 112 Street NW (22-storey residential)",
+   "address": "10540 112 Street NW",
+   "status": "proposed",
+   "height_m": 70.0,
+   "height_source": "dc_text",
+   "height_confidence": "medium",
+   "storeys": 22,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 14859 m2; 3 x 750 m2 residential floorplate on the lot's long axis",
+   "trace_reason": "",
+   "candidate_id": "551052981-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/dc1-20433",
+   "last_checked": "2026-09-28",
+   "lat": 53.549029,
+   "lon": -113.51487,
+   "local": [
+    -1300.43,
+    494.42
+   ],
+   "footprint": [
+    [
+     [
+      -1296.38,
+      439.71,
+      -1293.11,
+      470.77,
+      -1317.0,
+      473.28,
+      -1320.26,
+      442.23
+     ]
+    ],
+    [
+     [
+      -1292.34,
+      478.0,
+      -1289.08,
+      509.06,
+      -1312.96,
+      511.57,
+      -1316.23,
+      480.52
+     ]
+    ],
+    [
+     [
+      -1288.31,
+      516.3,
+      -1285.05,
+      547.35,
+      -1308.93,
+      549.87,
+      -1312.2,
+      518.81
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P060",
+   "name": "Blatchford rezoned parcel (20-storey mixed-use)",
+   "address": "rezoned parcel at 53.56681, -113.51110",
+   "status": "proposed",
+   "height_m": 65.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 20,
+   "footprint_source": "needs_trace",
+   "trace_reason": "lot 13,253 m2 > 8,000 m2 for a single building",
+   "candidate_id": "REZ-MU-271095",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/mixed-use-zones/280-mu-mixed-use-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.566805,
+   "lon": -113.511103,
+   "local": [
+    -981.17,
+    2462.68
+   ],
+   "footprint": [
+    [
+     [
+      -997.17,
+      2485.67,
+      -999.16,
+      2441.55,
+      -965.23,
+      2440.02,
+      -963.24,
+      2484.14
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P061",
+   "name": "10236 123 Street NW (20-storey residential)",
+   "address": "near 10236 123 Street NW",
+   "status": "proposed",
+   "height_m": 65.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 20,
+   "footprint_source": "auto: rezoned zoning polygon; 750 m2 residential floorplate centred on the lot",
+   "trace_reason": "",
+   "candidate_id": "REZ-RL-177268",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/250-rl-large-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.544351,
+   "lon": -113.534558,
+   "local": [
+    -2623.03,
+    20.39
+   ],
+   "footprint": [
+    [
+     [
+      -2606.97,
+      31.94,
+      -2638.17,
+      33.05,
+      -2639.02,
+      9.05,
+      -2607.82,
+      7.94
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P062",
+   "name": "10329 116 Street NW (20-storey residential)",
+   "address": "near 10329 116 Street NW",
+   "status": "proposed",
+   "height_m": 65.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 20,
+   "footprint_source": "auto: rezoned zoning polygon; 750 m2 residential floorplate centred on the lot",
+   "trace_reason": "",
+   "candidate_id": "REZ-RL-272896",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/250-rl-large-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.545407,
+   "lon": -113.520833,
+   "local": [
+    -1709.67,
+    105.55
+   ],
+   "footprint": [
+    [
+     [
+      -1725.32,
+      104.56,
+      -1694.12,
+      103.45,
+      -1693.27,
+      127.46,
+      -1724.47,
+      128.56
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P063",
+   "name": "12415 Jasper Avenue NW (20-storey residential)",
+   "address": "near 12415 Jasper Avenue NW",
+   "status": "proposed",
+   "height_m": 65.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 20,
+   "footprint_source": "needs_trace",
+   "trace_reason": "100% of the footprint on park / water land use",
+   "candidate_id": "REZ-RL-379095",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/250-rl-large-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.541591,
+   "lon": -113.537329,
+   "local": [
+    -2817.53,
+    -280.04
+   ],
+   "footprint": [
+    [
+     [
+      -2796.72,
+      -275.89,
+      -2825.92,
+      -264.85,
+      -2834.42,
+      -287.32,
+      -2805.21,
+      -298.35
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P064",
+   "name": "11456 Jasper Avenue NW (19-storey mixed-use)",
+   "address": "near 11456 Jasper Avenue NW",
+   "status": "proposed",
+   "height_m": 60.0,
+   "height_source": "dc_text",
+   "height_confidence": "medium",
+   "storeys": 19,
+   "footprint_source": "auto: rezoned zoning polygon; 2 x 750 m2 residential floorplate on the lot's long axis",
+   "trace_reason": "",
+   "candidate_id": "REZ-DC-21522-359895",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/dc-21522",
+   "last_checked": "2026-09-28",
+   "lat": 53.541231,
+   "lon": -113.518877,
+   "local": [
+    -1596.53,
+    -363.49
+   ],
+   "footprint": [
+    [
+     [
+      -1588.58,
+      -386.56,
+      -1587.39,
+      -355.36,
+      -1611.39,
+      -354.43,
+      -1612.58,
+      -385.64
+     ]
+    ],
+    [
+     [
+      -1586.43,
+      -330.25,
+      -1585.23,
+      -299.06,
+      -1609.23,
+      -298.13,
+      -1610.43,
+      -329.33
+     ]
+    ]
+   ],
+   "hide_base": [
+    33165
+   ],
+   "replaced_height_m": 16.6
+  },
+  {
+   "id": "P065",
+   "name": "10035 115 Street NW (18-storey residential)",
+   "address": "10035 115 Street NW",
+   "status": "proposed",
+   "height_m": 58.0,
+   "height_source": "dc_text",
+   "height_confidence": "medium",
+   "storeys": 18,
+   "footprint_source": "needs_trace",
+   "trace_reason": "lot 8,824 m2 > 8,000 m2 for a single building",
+   "candidate_id": "362851822-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/dc2-1064",
+   "last_checked": "2026-09-28",
+   "lat": 53.540015,
+   "lon": -113.51915,
+   "local": [
+    -1619.4,
+    -498.09
+   ],
+   "footprint": [
+    [
+     [
+      -1592.14,
+      -471.54,
+      -1591.03,
+      -440.34,
+      -1615.04,
+      -439.49,
+      -1616.14,
+      -470.69
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P066",
+   "name": "10931 74 Street NW (17-storey mixed-use)",
+   "address": "near 10931 74 Street NW",
+   "status": "proposed",
+   "height_m": 55.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 17,
+   "footprint_source": "auto: rezoned zoning polygon; 635 m2 mixed-use floorplate centred on the lot (capped at 70% of the lot)",
+   "trace_reason": "",
+   "candidate_id": "REZ-UI-350695",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/open-space-and-urban-services-zones/2210-ui-urban-institution-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.560947,
+   "lon": -113.447746,
+   "local": [
+    3191.29,
+    1664.99
+   ],
+   "footprint": [
+    [
+     [
+      3220.56,
+      1595.47,
+      3214.62,
+      1623.59,
+      3192.99,
+      1619.04,
+      3198.92,
+      1590.91
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P067",
+   "name": "HYS Centre North",
+   "address": "near 11042 101 Street NW",
+   "status": "proposed",
+   "height_m": 50.9,
+   "height_source": "skyrisecities",
+   "height_confidence": "medium",
+   "storeys": 16,
+   "footprint_source": "auto: rezoned zoning polygon; 1500 m2 mixed-use floorplate centred on the lot",
+   "trace_reason": "",
+   "candidate_id": "REZ-MU-353501",
+   "developer": "Beljan Development",
+   "source_url": "https://skyrisecities.com/database/projects/hys-centre-north.30587",
+   "last_checked": "2026-09-28",
+   "lat": 53.558045,
+   "lon": -113.494174,
+   "local": [
+    105.55,
+    1448.96
+   ],
+   "footprint": [
+    [
+     [
+      121.75,
+      1426.27,
+      123.3,
+      1470.4,
+      89.35,
+      1471.59,
+      87.81,
+      1427.46
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P068",
+   "name": "10395 112 Street NW (16-storey mixed-use)",
+   "address": "near 10395 112 Street NW",
+   "status": "proposed",
+   "height_m": 50.0,
+   "height_source": "dc_text",
+   "height_confidence": "medium",
+   "storeys": 16,
+   "footprint_source": "auto: rezoned zoning polygon; 900 m2 mixed-use floorplate centred on the lot (DC maximum floor plate 900 m2)",
+   "trace_reason": "",
+   "candidate_id": "REZ-DC2-1177-272818",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/dc2-1177",
+   "last_checked": "2026-09-28",
+   "lat": 53.54582,
+   "lon": -113.513429,
+   "local": [
+    -1217.58,
+    134.14
+   ],
+   "footprint": [
+    [
+     [
+      -1228.16,
+      162.71,
+      -1229.36,
+      128.53,
+      -1203.07,
+      127.6,
+      -1201.86,
+      161.79
+     ]
+    ]
+   ],
+   "hide_base": [
+    34905
+   ],
+   "replaced_height_m": 6.0
+  },
+  {
+   "id": "P069",
+   "name": "10168 106 Street NW (16-storey mixed-use)",
+   "address": "near 10168 106 Street NW",
+   "status": "proposed",
+   "height_m": 50.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 16,
+   "footprint_source": "auto: rezoned zoning polygon; 775 m2 mixed-use floorplate centred on the lot (capped at 70% of the lot)",
+   "trace_reason": "",
+   "candidate_id": "REZ-UW-167208",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-3-special-area-zones/downtown-special-area/324-uw-urban-warehouse-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.54255,
+   "lon": -113.503372,
+   "local": [
+    -564.17,
+    -253.02
+   ],
+   "footprint": [
+    [
+     [
+      -589.24,
+      -259.86,
+      -539.61,
+      -261.88,
+      -538.98,
+      -246.28,
+      -588.6,
+      -244.27
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P070",
+   "name": "Devonshire",
+   "address": "10135 118 Street NW",
+   "status": "proposed",
+   "height_m": 45.0,
+   "height_source": "dc_text",
+   "height_confidence": "high",
+   "storeys": 14,
+   "footprint_source": "auto: Direct Control polygon (DC2); 750 m2 residential floorplate centred on the lot",
+   "trace_reason": "",
+   "candidate_id": "461919270-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/dc2-1229",
+   "last_checked": "2026-09-28",
+   "lat": 53.541956,
+   "lon": -113.52445,
+   "local": [
+    -1962.88,
+    -269.78
+   ],
+   "footprint": [
+    [
+     [
+      -1983.36,
+      -282.73,
+      -1952.16,
+      -283.83,
+      -1951.31,
+      -259.83,
+      -1982.51,
+      -258.72
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P071",
+   "name": "10506 121 Street NW (12-storey mixed-use)",
+   "address": "near 10506 121 Street NW",
+   "status": "proposed",
+   "height_m": 40.0,
+   "height_source": "dc_text",
+   "height_confidence": "medium",
+   "storeys": 12,
+   "footprint_source": "needs_trace",
+   "trace_reason": "lot 38,912 m2 > 8,000 m2 for a single building",
+   "candidate_id": "REZ-DC-21128-273495",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/dc-21128",
+   "last_checked": "2026-09-28",
+   "lat": 53.547899,
+   "lon": -113.531659,
+   "local": [
+    -2416.96,
+    408.16
+   ],
+   "footprint": [
+    [
+     [
+      -2441.12,
+      439.47,
+      -2441.37,
+      395.31,
+      -2407.4,
+      395.13,
+      -2407.16,
+      439.28
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P072",
+   "name": "10212 96 Street NW (12-storey mixed-use)",
+   "address": "near 10212 96 Street NW",
+   "status": "proposed",
+   "height_m": 40.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 12,
+   "footprint_source": "needs_trace",
+   "trace_reason": "lot 8,094 m2 > 8,000 m2 for a single building",
+   "candidate_id": "REZ-MU-189192",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/mixed-use-zones/280-mu-mixed-use-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.545166,
+   "lon": -113.48293,
+   "local": [
+    800.21,
+    -9.49
+   ],
+   "footprint": [
+    [
+     [
+      784.35,
+      4.21,
+      790.88,
+      -22.53,
+      814.54,
+      -16.78,
+      816.04,
+      -23.02,
+      835.3,
+      -18.31,
+      827.25,
+      14.69
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P073",
+   "name": "10508 105 Street NW (10-storey hotel)",
+   "address": "10508 105 Street NW",
+   "status": "proposed",
+   "height_m": 31.0,
+   "height_source": "dp_description",
+   "height_confidence": "high",
+   "storeys": 10,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 1395 m2; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "182643777-002",
+   "developer": "",
+   "source_url": "https://data.edmonton.ca/resource/2ccn-pwtu.json?city_file_number=182643777-002",
+   "last_checked": "2026-09-28",
+   "lat": 53.54848,
+   "lon": -113.501608,
+   "local": [
+    -424.14,
+    402.41
+   ],
+   "footprint": [
+    [
+     [
+      -435.62,
+      400.05,
+      -434.68,
+      391.62,
+      -402.45,
+      371.16,
+      -397.23,
+      384.02,
+      -401.63,
+      384.17,
+      -400.64,
+      408.43,
+      -433.87,
+      409.6
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P074",
+   "name": "10315 120 Street NW (9-storey residential)",
+   "address": "10315 120 Street NW",
+   "status": "proposed",
+   "height_m": 28.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 9,
+   "footprint_source": "needs_trace",
+   "trace_reason": "lot too narrow (footprint about 6 m wide); 89% of the footprint on park / water land use",
+   "candidate_id": "667385957-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.545203,
+   "lon": -113.528127,
+   "local": [
+    -2193.65,
+    100.0
+   ],
+   "footprint": [
+    [
+     [
+      -2173.86,
+      102.65,
+      -2221.67,
+      104.36,
+      -2221.89,
+      97.26,
+      -2175.16,
+      95.59
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P075",
+   "name": "10053 Jasper Avenue NW (9-storey mixed-use)",
+   "address": "near 10053 Jasper Avenue NW",
+   "status": "proposed",
+   "height_m": 28.0,
+   "height_source": "dc_text",
+   "height_confidence": "medium",
+   "storeys": 9,
+   "footprint_source": "auto: rezoned zoning polygon; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "REZ-DC-21176-220993",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/dc-21176",
+   "last_checked": "2026-09-28",
+   "lat": 53.540692,
+   "lon": -113.492172,
+   "local": [
+    170.56,
+    -485.7
+   ],
+   "footprint": [
+    [
+     [
+      176.48,
+      -462.46,
+      176.11,
+      -450.21,
+      160.56,
+      -451.19,
+      161.19,
+      -463.48,
+      164.57,
+      -509.47,
+      176.81,
+      -508.56,
+      179.94,
+      -508.2
+     ]
+    ]
+   ],
+   "hide_base": [
+    32814
+   ],
+   "replaced_height_m": 18.3
+  },
+  {
+   "id": "P076",
+   "name": "12415 102 Avenue NW (9-storey mixed-use)",
+   "address": "near 12415 102 Avenue NW",
+   "status": "proposed",
+   "height_m": 28.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 9,
+   "footprint_source": "auto: rezoned zoning polygon; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "REZ-MU-267495",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/mixed-use-zones/280-mu-mixed-use-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.542829,
+   "lon": -113.53634,
+   "local": [
+    -2747.11,
+    -144.69
+   ],
+   "footprint": [
+    [
+     [
+      -2721.93,
+      -172.87,
+      -2720.3,
+      -127.15,
+      -2772.6,
+      -125.29,
+      -2774.02,
+      -165.11,
+      -2774.23,
+      -171.0,
+      -2729.8,
+      -172.59
+     ]
+    ]
+   ],
+   "hide_base": [
+    33386
+   ],
+   "replaced_height_m": 8.1
+  },
+  {
+   "id": "P077",
+   "name": "10408 78 Avenue NW (9-storey mixed-use)",
+   "address": "near 10408 78 Avenue NW",
+   "status": "proposed",
+   "height_m": 28.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 9,
+   "footprint_source": "auto: rezoned zoning polygon; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "REZ-MU-410395",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/mixed-use-zones/280-mu-mixed-use-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.514521,
+   "lon": -113.498055,
+   "local": [
+    -321.3,
+    -3382.8
+   ],
+   "footprint": [
+    [
+     [
+      -344.51,
+      -3363.61,
+      -345.91,
+      -3403.43,
+      -346.16,
+      -3410.64,
+      -298.44,
+      -3411.92,
+      -296.81,
+      -3365.28
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P078",
+   "name": "11003 111 Avenue NW (9-storey residential)",
+   "address": "near 11003 111 Avenue NW",
+   "status": "proposed",
+   "height_m": 28.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 9,
+   "footprint_source": "auto: rezoned zoning polygon; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "REZ-RM-176736",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.558495,
+   "lon": -113.510722,
+   "local": [
+    -988.54,
+    1537.54
+   ],
+   "footprint": [
+    [
+     [
+      -1018.19,
+      1510.52,
+      -968.21,
+      1508.76,
+      -960.61,
+      1508.49,
+      -960.31,
+      1517.03,
+      -959.35,
+      1563.21,
+      -958.84,
+      1577.47,
+      -1015.75,
+      1579.48,
+      -1016.51,
+      1558.01
+     ]
+    ]
+   ],
+   "hide_base": [
+    46240,
+    46241,
+    46245,
+    46247,
+    46249,
+    46251
+   ],
+   "replaced_height_m": 5.3
+  },
+  {
+   "id": "P079",
+   "name": "7100 Ada Boulevard NW (9-storey residential)",
+   "address": "near 7100 Ada Boulevard NW",
+   "status": "proposed",
+   "height_m": 28.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 9,
+   "footprint_source": "auto: rezoned zoning polygon; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "REZ-RM-201791",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.561253,
+   "lon": -113.445388,
+   "local": [
+    3348.61,
+    1693.66
+   ],
+   "footprint": [
+    [
+     [
+      3413.43,
+      1701.98,
+      3384.3,
+      1738.91,
+      3340.66,
+      1722.01,
+      3300.45,
+      1707.24,
+      3315.37,
+      1665.54,
+      3371.94,
+      1686.39
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P080",
+   "name": "10015 111 Street NW (9-storey residential)",
+   "address": "near 10015 111 Street NW",
+   "status": "proposed",
+   "height_m": 28.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 9,
+   "footprint_source": "auto: rezoned zoning polygon; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "REZ-RM-369095",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.53924,
+   "lon": -113.51165,
+   "local": [
+    -1125.56,
+    -601.85
+   ],
+   "footprint": [
+    [
+     [
+      -1151.57,
+      -559.41,
+      -1154.48,
+      -641.81,
+      -1099.53,
+      -643.74,
+      -1096.64,
+      -561.85
+     ]
+    ]
+   ],
+   "hide_base": [
+    28857,
+    33083
+   ],
+   "replaced_height_m": 8.7
+  },
+  {
+   "id": "P081",
+   "name": "9225 99 Street NW (9-storey residential)",
+   "address": "near 9225 99 Street NW",
+   "status": "proposed",
+   "height_m": 28.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 9,
+   "footprint_source": "auto: rezoned zoning polygon; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "REZ-RM-397895",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.528027,
+   "lon": -113.485024,
+   "local": [
+    594.96,
+    -1910.87
+   ],
+   "footprint": [
+    [
+     [
+      626.84,
+      -1888.67,
+      576.1,
+      -1886.18,
+      541.3,
+      -1955.32,
+      589.65,
+      -1957.01,
+      600.39,
+      -1934.45,
+      625.21,
+      -1935.31
+     ]
+    ]
+   ],
+   "hide_base": [
+    23018,
+    23020,
+    23024,
+    23027,
+    23028,
+    23032,
+    23033,
+    23034,
+    23051,
+    23061,
+    23064
+   ],
+   "replaced_height_m": 8.8
+  },
+  {
+   "id": "P082",
+   "name": "The Artisan",
+   "address": "8307 109 Street NW",
+   "status": "proposed",
+   "height_m": 27.9,
+   "height_source": "dp_description",
+   "height_confidence": "high",
+   "storeys": 9,
+   "footprint_source": "auto: 4 adjacent assessment-parcel cells merged (2043 m2); lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "657889764-002",
+   "developer": "Kota Contracting",
+   "source_url": "https://data.edmonton.ca/resource/2ccn-pwtu.json?city_file_number=657889764-002",
+   "last_checked": "2026-09-28",
+   "lat": 53.519366,
+   "lon": -113.511262,
+   "local": [
+    -1177.81,
+    -2813.15
+   ],
+   "footprint": [
+    [
+     [
+      -1173.39,
+      -2839.84,
+      -1162.21,
+      -2840.4,
+      -1158.65,
+      -2841.36,
+      -1145.1,
+      -2842.18,
+      -1143.3,
+      -2794.94,
+      -1176.64,
+      -2794.5,
+      -1178.29,
+      -2837.67
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P083",
+   "name": "10131 95 Street NW (9-storey residential)",
+   "address": "10131 95 Street NW",
+   "status": "proposed",
+   "height_m": 27.9,
+   "height_source": "dwellings_estimate",
+   "height_confidence": "low",
+   "storeys": 9,
+   "footprint_source": "auto: 3 adjacent assessment-parcel cells merged (1088 m2); lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "670577173-002",
+   "developer": "",
+   "source_url": "https://data.edmonton.ca/resource/2ccn-pwtu.json?city_file_number=670577173-002",
+   "last_checked": "2026-09-28",
+   "lat": 53.544181,
+   "lon": -113.477726,
+   "local": [
+    1141.13,
+    -131.06
+   ],
+   "footprint": [
+    [
+     [
+      1118.28,
+      -120.54,
+      1122.46,
+      -137.6,
+      1147.78,
+      -127.56,
+      1158.44,
+      -146.52,
+      1154.61,
+      -116.53,
+      1148.34,
+      -114.26
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P084",
+   "name": "9666 Jasper Avenue NW (7-storey mixed-use)",
+   "address": "near 9666 Jasper Avenue NW",
+   "status": "proposed",
+   "height_m": 24.5,
+   "height_source": "dc_text",
+   "height_confidence": "medium",
+   "storeys": 7,
+   "footprint_source": "auto: rezoned zoning polygon; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "REZ-DC-20908-204599",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/dc-20908",
+   "last_checked": "2026-09-28",
+   "lat": 53.542789,
+   "lon": -113.484379,
+   "local": [
+    694.99,
+    -270.52
+   ],
+   "footprint": [
+    [
+     [
+      698.67,
+      -293.25,
+      711.44,
+      -287.21,
+      692.82,
+      -251.03,
+      679.05,
+      -254.35
+     ]
+    ]
+   ],
+   "hide_base": [
+    32695
+   ],
+   "replaced_height_m": 11.5
+  },
+  {
+   "id": "P085",
+   "name": "9521 103A Avenue NW (7-storey residential)",
+   "address": "9521 103A Avenue NW",
+   "status": "proposed",
+   "height_m": 23.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 7,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 2993 m2; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "189323110-001",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.547348,
+   "lon": -113.481772,
+   "local": [
+    885.38,
+    230.52
+   ],
+   "footprint": [
+    [
+     [
+      860.03,
+      251.31,
+      869.79,
+      212.22,
+      870.68,
+      211.96,
+      883.17,
+      210.83,
+      899.12,
+      214.84,
+      907.89,
+      221.95,
+      898.15,
+      260.87
+     ]
+    ]
+   ],
+   "hide_base": [
+    35182
+   ],
+   "replaced_height_m": 16.2
+  },
+  {
+   "id": "P086",
+   "name": "Riverdale Lookout",
+   "address": "9321 101A Avenue NW",
+   "status": "proposed",
+   "height_m": 23.0,
+   "height_source": "dc_text",
+   "height_confidence": "high",
+   "storeys": 7,
+   "footprint_source": "auto: Direct Control polygon (DC); lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "383000571-002",
+   "developer": "Initia Developments",
+   "source_url": "https://zoningbylaw.edmonton.ca/dc-20837",
+   "last_checked": "2026-09-28",
+   "lat": 53.54439,
+   "lon": -113.475766,
+   "local": [
+    1271.78,
+    -112.33
+   ],
+   "footprint": [
+    [
+     [
+      1268.1,
+      -121.85,
+      1287.7,
+      -119.6,
+      1279.82,
+      -96.28,
+      1261.92,
+      -98.77
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P087",
+   "name": "10219 112 Street NW (7-storey residential)",
+   "address": "10219 112 Street NW",
+   "status": "proposed",
+   "height_m": 23.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 7,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 696 m2; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "508606638-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.54361,
+   "lon": -113.513416,
+   "local": [
+    -1225.4,
+    -111.68
+   ],
+   "footprint": [
+    [
+     [
+      -1244.8,
+      -106.28,
+      -1244.08,
+      -116.15,
+      -1216.02,
+      -117.16,
+      -1213.5,
+      -103.52,
+      -1243.39,
+      -102.44
+     ]
+    ]
+   ],
+   "hide_base": [
+    33096
+   ],
+   "replaced_height_m": 7.0
+  },
+  {
+   "id": "P088",
+   "name": "10818 84 Avenue NW (7-storey residential)",
+   "address": "10818 84 Avenue NW",
+   "status": "proposed",
+   "height_m": 23.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 7,
+   "footprint_source": "auto: 2 adjacent assessment-parcel cells merged (810 m2); lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "639387018-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.520312,
+   "lon": -113.510329,
+   "local": [
+    -1112.26,
+    -2710.11
+   ],
+   "footprint": [
+    [
+     [
+      -1120.92,
+      -2729.44,
+      -1109.54,
+      -2729.72,
+      -1105.45,
+      -2729.19,
+      -1104.06,
+      -2699.11,
+      -1108.56,
+      -2697.94,
+      -1119.72,
+      -2697.31
+     ]
+    ]
+   ],
+   "hide_base": [
+    14699
+   ],
+   "replaced_height_m": 5.9
+  },
+  {
+   "id": "P089",
+   "name": "9550 103 Avenue NW (7-storey residential)",
+   "address": "9550 103 Avenue NW",
+   "status": "proposed",
+   "height_m": 23.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 7,
+   "footprint_source": "auto: 3 adjacent assessment-parcel cells merged (1792 m2); lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "660875144-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/mixed-use-zones/280-mu-mixed-use-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.546843,
+   "lon": -113.482356,
+   "local": [
+    844.74,
+    175.7
+   ],
+   "footprint": [
+    [
+     [
+      816.07,
+      240.33,
+      826.9,
+      197.02,
+      835.43,
+      196.56,
+      848.35,
+      144.97,
+      860.2,
+      152.17,
+      849.27,
+      195.8,
+      837.09,
+      193.74,
+      824.89,
+      242.53
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P090",
+   "name": "9724 82 Avenue NW (7-storey residential)",
+   "address": "9724 82 Avenue NW",
+   "status": "proposed",
+   "height_m": 23.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 7,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 1420 m2; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "663229139-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.518365,
+   "lon": -113.480855,
+   "local": [
+    833.8,
+    -2995.12
+   ],
+   "footprint": [
+    [
+     [
+      823.72,
+      -2982.13,
+      822.56,
+      -3020.94,
+      831.89,
+      -3022.87,
+      847.16,
+      -3021.77,
+      848.82,
+      -2984.39,
+      844.15,
+      -2982.37,
+      836.55,
+      -2980.8,
+      829.39,
+      -2980.94
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P091",
+   "name": "7903 108 Street NW (7-storey residential)",
+   "address": "7903 108 Street NW",
+   "status": "proposed",
+   "height_m": 23.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 7,
+   "footprint_source": "auto: 3 adjacent assessment-parcel cells merged (2423 m2); lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "665171270-002",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.515478,
+   "lon": -113.509124,
+   "local": [
+    -1051.33,
+    -3250.57
+   ],
+   "footprint": [
+    [
+     [
+      -1031.02,
+      -3275.56,
+      -1007.41,
+      -3276.01,
+      -1005.89,
+      -3237.27,
+      -1054.93,
+      -3236.76,
+      -1056.28,
+      -3272.83,
+      -1036.69,
+      -3273.84
+     ]
+    ]
+   ],
+   "hide_base": [
+    11979,
+    11980,
+    11986,
+    11987,
+    11996,
+    11997,
+    12004,
+    12005,
+    12021
+   ],
+   "replaced_height_m": 8.2
+  },
+  {
+   "id": "P092",
+   "name": "11650 111 Avenue NW (7-storey mixed-use)",
+   "address": "near 11650 111 Avenue NW",
+   "status": "proposed",
+   "height_m": 23.0,
+   "height_source": "dc_text",
+   "height_confidence": "medium",
+   "storeys": 7,
+   "footprint_source": "auto: rezoned zoning polygon; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "REZ-DC2-1222-171832",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/dc2-1222",
+   "last_checked": "2026-09-28",
+   "lat": 53.559168,
+   "lon": -113.524567,
+   "local": [
+    -1902.74,
+    1644.82
+   ],
+   "footprint": [
+    [
+     [
+      -1948.09,
+      1677.88,
+      -1950.23,
+      1617.45,
+      -1857.28,
+      1614.57,
+      -1855.24,
+      1672.19,
+      -1945.62,
+      1674.96
+     ]
+    ]
+   ],
+   "hide_base": [
+    46781,
+    46788,
+    46798,
+    46803,
+    46813,
+    46831,
+    46839,
+    46850,
+    46851,
+    46857,
+    46862
+   ],
+   "replaced_height_m": 6.2
+  },
+  {
+   "id": "P093",
+   "name": "9640 Jasper Avenue NW (7-storey mixed-use)",
+   "address": "near 9640 Jasper Avenue NW",
+   "status": "proposed",
+   "height_m": 23.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 7,
+   "footprint_source": "auto: rezoned zoning polygon; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "REZ-MU-189202",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/mixed-use-zones/280-mu-mixed-use-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.543255,
+   "lon": -113.483223,
+   "local": [
+    773.38,
+    -221.36
+   ],
+   "footprint": [
+    [
+     [
+      810.25,
+      -214.37,
+      801.54,
+      -179.4,
+      738.43,
+      -195.45,
+      747.79,
+      -232.08,
+      746.36,
+      -237.29,
+      725.77,
+      -242.56,
+      733.69,
+      -274.92
+     ]
+    ]
+   ],
+   "hide_base": [
+    32691,
+    32692
+   ],
+   "replaced_height_m": 6.8
+  },
+  {
+   "id": "P094",
+   "name": "9336 Jasper Avenue NW (7-storey mixed-use)",
+   "address": "near 9336 Jasper Avenue NW",
+   "status": "proposed",
+   "height_m": 23.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 7,
+   "footprint_source": "auto: rezoned zoning polygon; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "REZ-MU-189205",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/mixed-use-zones/280-mu-mixed-use-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.546723,
+   "lon": -113.477483,
+   "local": [
+    1167.06,
+    151.11
+   ],
+   "footprint": [
+    [
+     [
+      1142.94,
+      170.33,
+      1153.64,
+      135.02,
+      1155.79,
+      127.14,
+      1172.59,
+      131.94,
+      1201.93,
+      175.22,
+      1198.46,
+      186.55
+     ]
+    ]
+   ],
+   "hide_base": [
+    35306
+   ],
+   "replaced_height_m": 11.4
+  },
+  {
+   "id": "P095",
+   "name": "11833 102 Avenue NW (7-storey mixed-use)",
+   "address": "near 11833 102 Avenue NW",
+   "status": "proposed",
+   "height_m": 23.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 7,
+   "footprint_source": "auto: rezoned zoning polygon; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "REZ-MU-191184",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/mixed-use-zones/280-mu-mixed-use-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.542873,
+   "lon": -113.52604,
+   "local": [
+    -2064.59,
+    -164.05
+   ],
+   "footprint": [
+    [
+     [
+      -2058.8,
+      -177.73,
+      -2057.85,
+      -150.93,
+      -2070.39,
+      -150.48,
+      -2071.35,
+      -177.29
+     ]
+    ]
+   ],
+   "hide_base": [
+    33270
+   ],
+   "replaced_height_m": 7.1
+  },
+  {
+   "id": "P096",
+   "name": "10932 87 Avenue NW (7-storey mixed-use)",
+   "address": "near 10932 87 Avenue NW",
+   "status": "proposed",
+   "height_m": 23.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 7,
+   "footprint_source": "auto: rezoned zoning polygon; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "REZ-MU-265495",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/mixed-use-zones/280-mu-mixed-use-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.523177,
+   "lon": -113.51369,
+   "local": [
+    -1323.79,
+    -2383.61
+   ],
+   "footprint": [
+    [
+     [
+      -1376.5,
+      -2410.48,
+      -1270.8,
+      -2414.21,
+      -1269.13,
+      -2367.05,
+      -1377.14,
+      -2363.24,
+      -1378.55,
+      -2403.17,
+      -1378.8,
+      -2410.4
+     ]
+    ]
+   ],
+   "hide_base": [
+    21768,
+    21774,
+    21791,
+    21801,
+    21804,
+    21817,
+    21827,
+    21828,
+    21847,
+    21864
+   ],
+   "replaced_height_m": 8.7
+  },
+  {
+   "id": "P097",
+   "name": "11214 116 Street NW (7-storey residential)",
+   "address": "near 11214 116 Street NW",
+   "status": "proposed",
+   "height_m": 23.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 7,
+   "footprint_source": "auto: rezoned zoning polygon; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "REZ-RM-176883",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.56154,
+   "lon": -113.521894,
+   "local": [
+    -1716.38,
+    1902.36
+   ],
+   "footprint": [
+    [
+     [
+      -1681.71,
+      1874.44,
+      -1681.05,
+      1908.57,
+      -1690.01,
+      1908.89,
+      -1751.27,
+      1910.64,
+      -1751.77,
+      1896.6,
+      -1719.99,
+      1895.47,
+      -1720.64,
+      1876.9,
+      -1691.02,
+      1875.85
+     ]
+    ]
+   ],
+   "hide_base": [
+    46643
+   ],
+   "replaced_height_m": 7.6
+  },
+  {
+   "id": "P098",
+   "name": "8730 116 Street NW (7-storey residential)",
+   "address": "near 8730 116 Street NW",
+   "status": "proposed",
+   "height_m": 23.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 7,
+   "footprint_source": "auto: rezoned zoning polygon; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "REZ-RM-177257",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.524311,
+   "lon": -113.53115,
+   "local": [
+    -2476.51,
+    -2216.49
+   ],
+   "footprint": [
+    [
+     [
+      -2504.87,
+      -2240.1,
+      -2459.22,
+      -2242.05,
+      -2449.9,
+      -2242.38,
+      -2448.13,
+      -2192.46,
+      -2503.12,
+      -2190.8
+     ]
+    ]
+   ],
+   "hide_base": [
+    22052,
+    22053,
+    22056,
+    22065,
+    22069
+   ],
+   "replaced_height_m": 6.8
+  },
+  {
+   "id": "P099",
+   "name": "10835 84 Avenue NW (7-storey residential)",
+   "address": "near 10835 84 Avenue NW",
+   "status": "proposed",
+   "height_m": 23.0,
+   "height_source": "zone_max",
+   "height_confidence": "low",
+   "storeys": 7,
+   "footprint_source": "auto: rezoned zoning polygon; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "REZ-RM-272845",
+   "developer": "",
+   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "last_checked": "2026-09-28",
+   "lat": 53.519771,
+   "lon": -113.511009,
+   "local": [
+    -1159.45,
+    -2768.69
+   ],
+   "footprint": [
+    [
+     [
+      -1177.36,
+      -2787.44,
+      -1142.91,
+      -2788.65,
+      -1141.53,
+      -2749.39,
+      -1141.28,
+      -2742.16,
+      -1158.56,
+      -2741.55,
+      -1168.5,
+      -2741.2,
+      -1175.72,
+      -2740.95
+     ]
+    ]
+   ],
+   "hide_base": [
+    14655,
+    14656,
+    14659,
+    14660,
+    14665,
+    14666,
+    14670,
+    14671
+   ],
+   "replaced_height_m": 8.2
+  },
+  {
+   "id": "P100",
+   "name": "9244 Jasper Avenue NW (6-storey residential)",
+   "address": "9244 Jasper Avenue NW",
+   "status": "proposed",
+   "height_m": 18.6,
+   "height_source": "dp_description",
+   "height_confidence": "high",
+   "storeys": 6,
+   "footprint_source": "auto: 2 adjacent assessment-parcel cells merged (951 m2); lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "642947438-002",
+   "developer": "",
+   "source_url": "https://data.edmonton.ca/resource/2ccn-pwtu.json?city_file_number=642947438-002",
+   "last_checked": "2026-09-28",
+   "lat": 53.547907,
+   "lon": -113.476252,
+   "local": [
+    1253.19,
+    279.96
+   ],
+   "footprint": [
+    [
+     [
+      1238.99,
+      282.43,
+      1238.57,
+      264.18,
+      1246.29,
+      259.03,
+      1258.82,
+      263.24,
+      1266.67,
+      278.87,
+      1268.39,
+      286.76,
+      1264.66,
+      289.94
+     ]
+    ]
+   ],
+   "hide_base": [
+    35317
+   ],
+   "replaced_height_m": 7.4
+  },
+  {
+   "id": "P101",
+   "name": "2704 Blatchford Road NW (6-storey residential)",
+   "address": "2704 Blatchford Road NW",
+   "status": "proposed",
+   "height_m": 18.6,
+   "height_source": "dp_description",
+   "height_confidence": "high",
+   "storeys": 6,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 2734 m2; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "648686740-002",
+   "developer": "",
+   "source_url": "https://data.edmonton.ca/resource/2ccn-pwtu.json?city_file_number=648686740-002",
+   "last_checked": "2026-09-28",
+   "lat": 53.56954,
+   "lon": -113.517484,
+   "local": [
+    -1392.89,
+    2781.79
+   ],
+   "footprint": [
+    [
+     [
+      -1398.95,
+      2832.02,
+      -1401.2,
+      2830.24,
+      -1405.69,
+      2774.92,
+      -1398.6,
+      2766.34,
+      -1348.28,
+      2756.69,
+      -1345.94,
+      2757.58,
+      -1338.56,
+      2763.04,
+      -1358.75,
+      2787.8
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P102",
+   "name": "7704 Yorke Mews NW (6-storey residential)",
+   "address": "7704 Yorke Mews NW",
+   "status": "proposed",
+   "height_m": 18.6,
+   "height_source": "dp_description",
+   "height_confidence": "high",
+   "storeys": 6,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 2715 m2; lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "648757765-002",
+   "developer": "",
+   "source_url": "https://data.edmonton.ca/resource/2ccn-pwtu.json?city_file_number=648757765-002",
+   "last_checked": "2026-09-28",
+   "lat": 53.570167,
+   "lon": -113.518393,
+   "local": [
+    -1450.6,
+    2853.66
+   ],
+   "footprint": [
+    [
+     [
+      -1466.77,
+      2875.86,
+      -1465.84,
+      2848.36,
+      -1461.32,
+      2842.79,
+      -1405.02,
+      2834.87,
+      -1401.96,
+      2837.28,
+      -1443.35,
+      2891.37,
+      -1444.7,
+      2893.02
+     ]
+    ]
+   ],
+   "hide_base": [],
+   "replaced_height_m": null
+  },
+  {
+   "id": "P103",
+   "name": "Sedona",
+   "address": "10209 100 Avenue NW",
+   "status": "stalled",
+   "height_m": 35.0,
+   "height_source": "dc_text",
+   "height_confidence": "high",
+   "storeys": 11,
+   "footprint_source": "auto: Direct Control polygon (DC2); lot inset 3 m",
+   "trace_reason": "",
+   "candidate_id": "454482517-002",
+   "developer": "ProCura Real Estate Services",
+   "source_url": "https://zoningbylaw.edmonton.ca/dc2-1217",
+   "last_checked": "2026-09-28",
+   "lat": 53.538456,
+   "lon": -113.496092,
+   "local": [
+    -97.86,
+    -725.29
+   ],
+   "footprint": [
+    [
+     [
+      -121.54,
+      -752.53,
+      -67.58,
+      -754.11,
+      -66.77,
+      -731.06,
+      -65.27,
+      -688.2,
+      -119.19,
+      -685.5
+     ]
+    ]
+   ],
+   "hide_base": [
+    29037,
+    29039
+   ],
+   "replaced_height_m": 18.9
   }
  ],
  "base_glb": {

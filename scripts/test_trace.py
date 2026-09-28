@@ -82,6 +82,8 @@ def main():
             return page.evaluate("(() => { const t = window.__skyline.trace; return {on: t.on, cx: t.cx, cn: t.cn, half: t.half, "
                                  "pts: t.pts, closed: t.closed, orbit: window.__skyline.orbit.enabled}; })()")
 
+        legend = page.inner_text("#legend")
+        check("legend explains translucent envelopes", "translucent = height ceiling, no confirmed design" in legend)
         page.tap("#tracetog")
         page.wait_for_timeout(500)
         s0 = state()
@@ -89,6 +91,25 @@ def main():
         n_out = page.evaluate("document.querySelectorAll('#traceov polygon').length")
         n_prop = page.evaluate("window.__skyline.world.proposals.length")
         check("existing proposal footprints outlined", n_out >= n_prop, f"{n_out} outlines for {n_prop} proposals")
+        # needs_trace list: filled, Jump centres the view on that footprint, Next moves on
+        todo = page.evaluate("window.__skyline.world.proposals.filter((p) => p.footprint_source === 'needs_trace').map((p) => p.id)")
+        opts = page.evaluate("[...document.querySelectorAll('#tracelist option')].map((o) => o.value)")
+        check("needs_trace list lists every needs_trace id in order", bool(todo) and opts == todo and page.is_visible("#tracejump"),
+              f"{len(opts)} listed")
+        if todo:
+            page.tap("#tracejump")
+            page.wait_for_timeout(300)
+            sj = page.evaluate("""(() => { const t = window.__skyline.trace, p = window.__skyline.world.proposals.find((q) => q.id === t.target);
+                const r = p.footprint[0][0]; let x = 0, y = 0; for (let i = 0; i < r.length; i += 2) { x += r[i]; y += r[i + 1]; }
+                return { target: t.target, cx: t.cx, cn: t.cn, half: t.half, fx: 2 * x / r.length, fy: 2 * y / r.length }; })()""")
+            check("Jump to centres the view on the first needs_trace footprint", sj["target"] == todo[0]
+                  and abs(sj["cx"] - sj["fx"]) < sj["half"] * 0.5 and abs(sj["cn"] - sj["fy"]) < sj["half"] * 0.5,
+                  f"{sj['target']}, view {2 * sj['half']:.0f} m tall")
+            page.tap("#tracenext")
+            page.wait_for_timeout(300)
+            nxt = page.evaluate("window.__skyline.trace.target")
+            check("Next moves to the following needs_trace id", nxt == todo[1 % len(todo)], nxt)
+            s0 = state()   # the view moved: pan / zoom checks start from here
 
         drag((600, 400), (500, 300))
         s1 = state()
@@ -139,6 +160,7 @@ def main():
         if feat:
             ring = feat["geometry"]["coordinates"][0]
             check("id prompt answered -> properties.id", feat["properties"].get("id") == "P900")
+            check("traced feature carries a non-auto footprint_source", str(feat["properties"].get("footprint_source", "")).startswith("traced in viewer"))
             g = shape(feat["geometry"])
             check("valid closed polygon, 4 corners, inside the bbox", g.is_valid and len(ring) == 5 and ring[0] == ring[-1]
                   and all(LON_MIN < lon < LON_MAX and LAT_MIN < lat < LAT_MAX for lon, lat in ring))

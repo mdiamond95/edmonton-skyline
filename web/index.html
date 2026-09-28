@@ -51,6 +51,7 @@
     text-transform: uppercase; letter-spacing: .04em; }
   #legend div { display: flex; align-items: center; gap: 8px; margin: 3px 0; }
   #legend i { width: 14px; height: 14px; border-radius: 3px; border: 1px solid rgba(0, 0, 0, 0.25); flex: none; }
+  #legend .env { max-width: 190px; font-size: 12px; line-height: 1.25; color: var(--muted); }
   #legend .date { color: var(--muted); font-size: 12px; margin-top: 6px; }
   #popup { max-width: min(320px, calc(100vw - 24px)); pointer-events: auto; -webkit-user-select: text; user-select: text; }
   #popup h3 { margin: 0 0 4px; font-size: 15px; }
@@ -111,8 +112,13 @@
   <button id="tracecopy" class="primary" disabled>Copy GeoJSON</button>
   <button id="tracedone">Done</button>
   <span id="traceinfo"></span>
+  <span id="tracetodo" hidden>
+    <select id="tracelist" aria-label="Footprints to trace"></select>
+    <button id="tracejump">Jump to</button>
+    <button id="tracenext">Next</button>
+  </span>
   <span class="hint">Tap corners; tap the first corner to close. Drag to pan, pinch or scroll to zoom.
-    Outlines are the footprints already in proposals.geojson.</span>
+    Outlines are the footprints already in proposals.geojson; the list holds the needs_trace ones, in order.</span>
   <textarea id="copybox" hidden readonly></textarea>
 </div>
 <div class="panel" id="fps" hidden></div>
@@ -129,6 +135,7 @@ import * as THREE from 'three';
 // ---------------------------------------------------------------------------
 const DIST = './dist/';
 const STATUS_ORDER = ['existing', 'construction', 'approved', 'proposed', 'stalled'];
+const ENVELOPE_OPACITY = 0.5; // height_confidence = low (docs/scope.md render spec)
 const STATUS_HEX = { existing: '#E4E3DF', construction: '#4E8FD1', approved: '#A995C9',
   proposed: '#E59CA5', stalled: '#E4E3DF' };
 const STATUS_LABEL = { existing: 'Existing', construction: 'Under construction', approved: 'Approved',
@@ -691,26 +698,57 @@ async function buildProposals() {
   const pj = await getJSON('proposals.json');
   world.proposals = pj.proposals;
   world.dataDate = pj.data_date;
-  const mats = {};
-  for (const s of STATUS_ORDER) mats[s] = matte(STATUS_HEX[s], s === 'stalled' ? { transparent: true, opacity: 0.25, depthWrite: false } : {});
+  // height_confidence = low: an envelope (height ceiling, no confirmed design) in the status colour at
+  // 50% opacity with its edges drawn. It receives shadows but casts none, and stays out of the SSAO
+  // depth pass like every transparent mesh. Stalled rows keep their 25%.
+  const mats = {}, envMats = {}, edgeMats = {};
+  for (const s of STATUS_ORDER) {
+    mats[s] = matte(STATUS_HEX[s], s === 'stalled' ? { transparent: true, opacity: 0.25, depthWrite: false } : {});
+    envMats[s] = matte(STATUS_HEX[s], { transparent: true, opacity: s === 'stalled' ? 0.25 : ENVELOPE_OPACITY, depthWrite: false });
+    edgeMats[s] = new THREE.LineBasicMaterial({ color: new THREE.Color(STATUS_HEX[s]).multiplyScalar(0.72), transparent: true, opacity: 0.85 });
+  }
   for (const p of pj.proposals) {
-    let ground = [], shapes = [];
+    // Each part (tower) of a footprint is seated on its own ground: the top is the median ground
+    // along its outline + height_m; the bottom goes 1.5 m below the lowest terrain anywhere under it
+    // (outline and an interior grid), so no sliver of ground shows under a big footprint on a slope.
+    const parts = [], geoms = [];
     for (const poly of p.footprint) {
       const toV = (ring) => { const v = []; for (let i = 0; i < ring.length; i += 2) v.push(new THREE.Vector2(ring[i], ring[i + 1])); return v; };
       const sh = new THREE.Shape(toV(poly[0]));
       for (let k = 1; k < poly.length; k++) sh.holes.push(new THREE.Path(toV(poly[k])));
-      shapes.push(sh);
-      for (let i = 0; i < poly[0].length; i += 2) ground.push(heightAt(poly[0][i], -poly[0][i + 1]));
+      const edge = [];
+      let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+      for (let i = 0; i < poly[0].length; i += 2) {
+        const x = poly[0][i], y = poly[0][i + 1];
+        edge.push(heightAt(x, -y));
+        x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y);
+      }
+      edge.sort((a, b) => a - b);
+      let lo = edge[0];
+      const step = Math.max(1, Math.max(x1 - x0, y1 - y0) / 40);
+      for (let x = x0 + step / 2; x < x1; x += step) for (let y = y0 + step / 2; y < y1; y += step) {
+        if (pointInPoly(x, y, poly)) lo = Math.min(lo, heightAt(x, -y));
+      }
+      const base = lo - 1.5, ref = edge[Math.floor(edge.length / 2)];
+      const g = new THREE.ExtrudeGeometry(sh, { depth: ref + p.height_m - base, bevelEnabled: false });
+      g.rotateX(-Math.PI / 2);
+      g.translate(0, base, 0);
+      geoms.push(g);
+      parts.push({ base, ref, top: ref + p.height_m });
     }
-    ground.sort((a, b) => a - b);
-    const base = ground[0] - 1.5, ref = ground[Math.floor(ground.length / 2)];
-    const g = new THREE.ExtrudeGeometry(shapes, { depth: ref + p.height_m - base, bevelEnabled: false });
-    g.rotateX(-Math.PI / 2);
-    g.translate(0, base, 0);
-    const mesh = new THREE.Mesh(g, mats[p.status]);
-    mesh.castShadow = p.status !== 'stalled';
+    const g = geoms.length === 1 ? geoms[0] : mergeGeoms(geoms);
+    const envelope = p.height_confidence === 'low';
+    const mesh = new THREE.Mesh(g, (envelope ? envMats : mats)[p.status]);
+    mesh.castShadow = p.status !== 'stalled' && !envelope;
     mesh.receiveShadow = true;
     mesh.userData.proposal = p;
+    mesh.userData.parts = parts;
+    if (envelope) {
+      mesh.renderOrder = 1;
+      const edges = new THREE.LineSegments(new THREE.EdgesGeometry(g, 30), edgeMats[p.status]);
+      edges.raycast = () => {};
+      mesh.add(edges);
+    }
     scene.add(mesh);
     world.propMeshes.push(mesh);
   }
@@ -964,6 +1002,7 @@ function buildLegend() {
   const el = $('legend');
   el.innerHTML = '<h2>Status</h2>' + STATUS_ORDER.map((s) =>
     `<div><i style="background:${STATUS_HEX[s]};${s === 'stalled' ? 'opacity:.25' : ''}"></i>${STATUS_LABEL[s]}</div>`).join('') +
+    `<div class="env"><i style="background:${STATUS_HEX.proposed};opacity:${ENVELOPE_OPACITY};border-style:dashed"></i>translucent = height ceiling, no confirmed design</div>` +
     (world.dataDate ? `<div class="date">Data as of ${world.dataDate}</div>` : '');
 }
 
@@ -1033,7 +1072,10 @@ orbit.onTap = (x, y) => {
   const url = /^https?:\/\//.test(p.source_url) ? p.source_url : '';
   pop.innerHTML = `<button class="x" aria-label="Close">✕</button><h3>${esc(p.name)}</h3><table>
     <tr><td>Status</td><td><i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${STATUS_HEX[p.status]};${p.status === 'stalled' ? 'opacity:.25;' : ''}border:1px solid #0003"></i> ${STATUS_LABEL[p.status]}</td></tr>
-    <tr><td>Height</td><td>${p.height_m.toFixed(0)} m${p.storeys ? ` · ${p.storeys} storeys` : ''}</td></tr>
+    <tr><td>Height</td><td>${p.height_m.toFixed(0)} m${p.storeys ? ` · ${p.storeys} storeys` : ''}${p.height_confidence === 'low' ? ' (ceiling)' : ''}</td></tr>
+    ${p.height_confidence ? `<tr><td>Confidence</td><td>${esc(p.height_confidence)}</td></tr>` : ''}
+    ${p.height_source ? `<tr><td>Height from</td><td>${esc(p.height_source)}</td></tr>` : ''}
+    ${p.footprint_source ? `<tr><td>Footprint</td><td>${esc(p.footprint_source.replace(/^auto: /, 'auto · '))}${p.trace_reason ? ` (${esc(p.trace_reason)})` : ''}</td></tr>` : ''}
     ${p.address ? `<tr><td>Address</td><td>${esc(p.address)}</td></tr>` : ''}
     ${p.developer ? `<tr><td>Developer</td><td>${esc(p.developer)}</td></tr>` : ''}
     <tr><td>Source</td><td>${url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(url)}</a>` : esc(p.source_url)}</td></tr>
@@ -1050,7 +1092,8 @@ orbit.onTap = (x, y) => {
 // drawing a new proposal footprint by tapping its corners; exports a GeoJSON Feature (WGS84)
 // ready to paste into data/proposals.geojson.
 // ---------------------------------------------------------------------------
-const trace = { on: false, cx: 0, cn: 0, half: 400, pts: [], closed: false, pointers: new Map(), tap: null, prev: null };
+const trace = { on: false, cx: 0, cn: 0, half: 400, pts: [], closed: false, pointers: new Map(), tap: null, prev: null,
+  target: null };
 const orthoCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 1, 20000);
 orthoCam.up.set(0, 0, -1); // north up
 const traceOv = $('traceov');
@@ -1116,12 +1159,15 @@ function drawTraceOverlay() {
   // proposal footprints already placed (status colour outline + id)
   for (const p of world.proposals) {
     const col = p.status === 'existing' ? '#3FA7B5' : p.status === 'stalled' ? '#777' : STATUS_HEX[p.status];
+    const tgt = p.id === trace.target;
     let lx = 0, ly = 0, cnt = 0;
     for (const poly of p.footprint) for (const ring of poly) {
       const d = [];
       for (let i = 0; i < ring.length; i += 2) { const [x, y] = toScreen(ring[i], ring[i + 1]); d.push(`${x.toFixed(1)},${y.toFixed(1)}`);
         if (ring === poly[0]) { lx += x; ly += y; cnt++; } }
-      parts.push(`<polygon points="${d.join(' ')}" fill="${col}" fill-opacity="0.18" stroke="${col}" stroke-width="2"/>`);
+      parts.push(tgt
+        ? `<polygon points="${d.join(' ')}" fill="${col}" fill-opacity="0.12" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="6 4"/>`
+        : `<polygon points="${d.join(' ')}" fill="${col}" fill-opacity="0.18" stroke="${col}" stroke-width="2"/>`);
     }
     if (cnt) parts.push(`<text x="${(lx / cnt).toFixed(1)}" y="${(ly / cnt).toFixed(1)}" text-anchor="middle" dy="4" fill="#1d1d1f">${esc(p.id)}</text>`);
   }
@@ -1160,6 +1206,7 @@ function setTrace(on) {
     $('tracebar').style.top = `${Math.round(bar.bottom + 8)}px`;
     trace.cx = orbit.target.x; trace.cn = -orbit.target.z;
     trace.half = THREE.MathUtils.clamp(orbit.r * 0.25, 120, 2500);
+    fillTraceList();
     // hide the extruded proposals so the base footprints under them show; outlines mark them instead
     world.propMeshes.forEach((m) => { m.visible = false; });
     traceView();
@@ -1235,10 +1282,47 @@ function traceFeature(id) {
   const ring = trace.pts.map(([e, n]) => localToLonLat(e, n).map((v) => Math.round(v * 1e7) / 1e7));
   if (polyArea(trace.pts) < 0) ring.reverse(); // RFC 7946: exterior ring counter-clockwise
   ring.push(ring[0]);
-  return { type: 'Feature', properties: { id }, geometry: { type: 'Polygon', coordinates: [ring] } };
+  const day = new Date().toISOString().slice(0, 10);
+  // any footprint_source not starting with "auto:" / "needs_trace" is kept by scripts/auto_footprints.py
+  return { type: 'Feature', properties: { id, footprint_source: `traced in viewer ${day}` }, geometry: { type: 'Polygon', coordinates: [ring] } };
+}
+
+// needs_trace list: footprints auto_footprints.py could not place with confidence, in id order
+function traceTodo() { return (world.proposals || []).filter((p) => p.footprint_source === 'needs_trace'); }
+
+function fillTraceList() {
+  const todo = traceTodo(), sel = $('tracelist');
+  $('tracetodo').hidden = !todo.length;
+  const keep = sel.value;
+  sel.innerHTML = todo.map((p) => `<option value="${esc(p.id)}">${esc(p.id)} · ${esc(p.address || p.name)}</option>`).join('');
+  if (keep && todo.some((p) => p.id === keep)) sel.value = keep;
+}
+
+function jumpTo(id) {
+  const p = world.proposals.find((q) => q.id === id);
+  if (!p) return;
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  for (const poly of p.footprint) for (let i = 0; i < poly[0].length; i += 2) {
+    x0 = Math.min(x0, poly[0][i]); x1 = Math.max(x1, poly[0][i]); y0 = Math.min(y0, poly[0][i + 1]); y1 = Math.max(y1, poly[0][i + 1]);
+  }
+  trace.target = id;
+  trace.pts = []; trace.closed = false; $('copybox').hidden = true;
+  trace.cx = (x0 + x1) / 2; trace.cn = (y0 + y1) / 2;
+  trace.half = THREE.MathUtils.clamp(Math.max(x1 - x0, y1 - y0) * 1.6, 70, 600);
+  $('tracelist').value = id;
+  setStatus(`<b>${esc(p.id)}</b> ${esc(p.name)} · ${esc(p.address)} · ${p.storeys ? `${p.storeys} storeys · ` : ''}needs trace: ${esc(p.trace_reason || '')}. ` +
+    'Dashed red = the auto footprint in use now; trace the real one, then Copy GeoJSON.');
+  traceView();
 }
 
 $('tracetog').addEventListener('click', () => setTrace(!trace.on));
+$('tracejump').addEventListener('click', () => jumpTo($('tracelist').value));
+$('tracenext').addEventListener('click', () => {
+  const todo = traceTodo();
+  if (!todo.length) return;
+  const k = todo.findIndex((p) => p.id === trace.target);
+  jumpTo(todo[(k + 1) % todo.length].id);
+});
 $('tracedone').addEventListener('click', () => setTrace(false));
 $('traceundo').addEventListener('click', () => {
   if (trace.closed) trace.closed = false; else trace.pts.pop();
@@ -1249,7 +1333,7 @@ $('traceclear').addEventListener('click', () => { trace.pts = []; trace.closed =
 $('tracecopy').addEventListener('click', async () => {
   const used = world.proposals.map((p) => p.id);
   const next = 'P' + String(Math.max(0, ...used.map((v) => parseInt(v.replace(/\D/g, ''), 10) || 0)) + 1).padStart(3, '0');
-  const id = (window.prompt('Proposal id for this footprint (must match its proposals.csv row):', next) || '').trim();
+  const id = (window.prompt('Proposal id for this footprint (must match its proposals.csv row):', trace.target || next) || '').trim();
   if (!id) return;
   const txt = JSON.stringify(traceFeature(id));
   window.__lastTrace = txt;
@@ -1257,7 +1341,7 @@ $('tracecopy').addEventListener('click', async () => {
   try {
     await navigator.clipboard.writeText(txt);
     box.hidden = true;
-    setStatus(`Copied GeoJSON Feature <b>${esc(id)}</b> (${trace.pts.length} corners). Paste it into the features list of data/proposals.geojson.`);
+    setStatus(`Copied GeoJSON Feature <b>${esc(id)}</b> (${trace.pts.length} corners). Paste it into the features list of data/proposals.geojson, then run <code>make proposals</code> (it replaces the auto footprint for ${esc(id)}).`);
   } catch {
     // no clipboard access (http, or permission refused): show it selected for a manual copy
     box.value = txt; box.hidden = false; box.focus(); box.select();

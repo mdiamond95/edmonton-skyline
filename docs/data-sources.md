@@ -135,10 +135,9 @@ LiDAR survey (they show as ground or as a stump) are entered this way. The build
 → official change, e.g. Stantec Tower 189.1 m → 250.8 m. The lists depend on the exact `base.glb`, so
 `make fetch` reruns the build; the viewer falls back to its own test if they don't match.
 
-`data/proposals.csv` currently holds 5 **placeholder** rows, one per status. P002–P005 are real open
-lots (checked against LiDAR and footprints) with invented heights. Their `source_url` points at the
-City portal until each row is researched. P001 (Stantec Tower, existing) uses its OSM `building:part`
-footprint and the published 250.8 m height.
+`data/proposals.csv` holds P001 (Stantec Tower, existing, its OSM `building:part` footprint and the
+published 250.8 m) plus the candidates promoted in Phase 3B (below). The Phase 1 placeholder rows
+P002–P005 are gone.
 
 ## Candidates (Phase 3A, 2026-09-27)
 
@@ -184,3 +183,46 @@ Metres ↔ storeys use scope.md's 3.1 m (residential) and 4.0 m (office-only DPs
 **DC 21437** (Central McDougall / Queen Mary Park, Bylaw 20989 schedules) carries no regulation text, only
 schedule maps, so its sites fall through to the later sources. SkyriseCities forum threads are never read
 (robots.txt disallows the Edmonton forum).
+
+## Proposals from candidates (Phase 3B, 2026-09-28)
+
+`make proposals` runs `scripts/promote_candidates.py`, then `scripts/auto_footprints.py`, then `make build`.
+
+**Promotion** applies the scope.md inclusion rule to `storeys_final` / `height_final_m` and writes
+`data/proposals.csv` with four new columns: `height_confidence`, `height_source`, `footprint_source`,
+`candidate_id`. Names come from the DP text ("(Falcon Tower Two)") or the SkyriseCities match, else
+"<address> (<storeys>-storey <use>)"; rezonings, which have no address, take the nearest civic address from
+Parcel Addresses `ut27-nrpn` (text coordinates: queried with `latitude::number between …`). Developers are
+read from the matched SkyriseCities project page. Once a row is in the CSV it is kept as edited; a rerun only
+adds new candidates (`make proposals REBUILD=1` regenerates them). Every drop and judgment call:
+`docs/promotion-log.md`.
+
+**Lots.** The City stopped publishing parcel polygons in November 2021 (legal and title parcel mapping moved
+to AltaLIS; the note is on every parcel dataset). What is left on data.edmonton.ca:
+
+| Dataset | ID | Used for |
+|---|---|---|
+| Land Parcels_Assessment Parcels (Point) | `dm3i-bp8w` | centroid + recorded area of every assessment parcel (43,927 in the bbox) |
+| Zoning Bylaw Map – History, latest snapshot | `67p2-r285` | zoning polygons: follow lot lines, leave out roads and lanes; rezoned sites |
+| Parcel Addresses | `ut27-nrpn` | nearest civic address for rezoning rows |
+
+A permit's lot is the Voronoi cell of its nearest parcel centroid, clipped to the zoning polygon holding it,
+scaled down to the recorded parcel area when it spills into the road, with slivers under 8 m removed. When
+the permit's dwellings need more land (≈ 90 m² per dwelling over its storeys at 60% coverage), adjacent cells
+in the same zoning polygon are merged in (never another row's own parcel). A rezoning takes its rezoned
+polygon; a permit inside a site-specific Direct Control polygon (≤ 15,000 m², no other row in it) takes the
+DC polygon. Fallbacks: hull of base buildings within 15 m, then a 30 × 30 m square. The reconstructed lots
+are written to `data/raw/footprints/lots.geojson` for checking.
+
+**Footprints** follow the brief (existing: the building's own base outline in the lot; ≤ 11 storeys: lot inset
+3 m, ≤ 8 vertices; ≥ 12: 750 m² residential / 1,500 m² office, hotel or mixed-use floorplates, N on the long
+axis, ≤ 70% of the lot, or the DC's own maximum tower floor plate when its text states one). `needs_trace`:
+no lot found, one building on > 8,000 m², > 10% on park / water land use, or narrower than about 8 m. Per-row
+detail: `docs/footprints-report.md`. Traced features (the viewer's Copy GeoJSON adds
+`footprint_source: traced in viewer <date>`) are pasted into `data/proposals.geojson`; `make proposals`
+keeps them and drops the auto footprint for that id.
+
+**Viewer.** `height_confidence = low` rows are envelopes: status colour at 50% opacity with drawn edges;
+they receive shadows but cast none (a ceiling is not a building) and stay out of the SSAO depth pass. Each
+tower of a multi-tower footprint is seated on its own ground, and the bottom goes 1.5 m below the lowest
+terrain anywhere under it. Trace mode lists the needs_trace rows with Jump to / Next.

@@ -5,6 +5,9 @@ Also validates data/cameras.json and copies it to dist/cameras.json (the site on
 serves web/, dist/ and renders/). Exits 1 on any validation error.
 
 Height fallback when height_m is blank: storeys x 3.1 m (scope.md residential rate).
+height_confidence (high / medium / low) is required; the viewer draws `low` rows as translucent
+envelopes (a height ceiling, no confirmed design). footprint_source = needs_trace rows are listed in
+the viewer's Trace mode for manual tracing.
 Rows without a footprint in the GeoJSON get a 30 m square around lat/lon (warning).
 
 Base buildings under a footprint (docs/scope.md): every base building in dist/base.glb with
@@ -36,7 +39,8 @@ from common import (DATA, STATUS_HEX, STATUSES, local_extent, to_local, to_wgs84
 
 DIST = common.DIST
 COLUMNS = ["id", "name", "address", "lat", "lon", "height_m", "storeys", "status", "developer",
-           "source_url", "last_checked"]
+           "source_url", "last_checked", "height_confidence", "height_source", "footprint_source", "candidate_id"]
+CONFIDENCES = ("high", "medium", "low")
 
 
 def slugify(name):
@@ -97,14 +101,17 @@ def build_proposals(errors, warnings):
                 storeys = int(r["storeys"])
             except ValueError:
                 errors.append(f"{where}: storeys not an integer")
-        height, hsrc = None, "height_m"
+        height, hsrc = None, r["height_source"].strip()
         if r["height_m"].strip():
             try:
                 height = float(r["height_m"])
             except ValueError:
                 errors.append(f"{where}: height_m not numeric")
         elif storeys:
-            height, hsrc = storeys * 3.1, "storeys x 3.1"
+            height, hsrc = storeys * 3.1, (hsrc + "; " if hsrc else "") + "storeys x 3.1"
+        conf = r["height_confidence"].strip().lower()
+        if conf not in CONFIDENCES:
+            errors.append(f"{where}: height_confidence '{r['height_confidence']}' not in {{{','.join(CONFIDENCES)}}}")
         if not height or height <= 0:
             errors.append(f"{where}: needs height_m or storeys")
             continue
@@ -114,6 +121,7 @@ def build_proposals(errors, warnings):
             dates.append(date.fromisoformat(r["last_checked"].strip()))
         except ValueError:
             errors.append(f"{where}: last_checked must be YYYY-MM-DD")
+        fprops = (feats.get(pid) or {}).get("properties") or {}
         if pid in feats:
             geom = shape(feats[pid]["geometry"])
             if not geom.is_valid or geom.geom_type not in ("Polygon", "MultiPolygon"):
@@ -130,7 +138,9 @@ def build_proposals(errors, warnings):
             warnings.append(f"{where}: outside scope bbox")
         out.append({
             "id": pid, "name": r["name"].strip(), "address": r["address"].strip(), "status": status,
-            "height_m": round(height, 2), "height_source": hsrc, "storeys": storeys,
+            "height_m": round(height, 2), "height_source": hsrc, "height_confidence": conf, "storeys": storeys,
+            "footprint_source": r["footprint_source"].strip() or fprops.get("footprint_source", ""),
+            "trace_reason": fprops.get("trace_reason", ""), "candidate_id": r["candidate_id"].strip(),
             "developer": r["developer"].strip(), "source_url": r["source_url"].strip(),
             "last_checked": r["last_checked"].strip(), "lat": lat, "lon": lon,
             "local": [round(e, 2), round(nn, 2)], "footprint": local_rings(geom),
@@ -256,10 +266,14 @@ def main():
         return 1
     write_json(DIST / "proposals.json", proposals, indent=1)
     write_json(DIST / "cameras.json", cams, indent=1)
-    by = {}
+    by, low, nt = {}, 0, []
     for p in proposals["proposals"]:
         by[p["status"]] = by.get(p["status"], 0) + 1
-    print(f"dist/proposals.json: {len(proposals['proposals'])} proposals {by}, data date {proposals['data_date']}")
+        low += p["height_confidence"] == "low"
+        if p["footprint_source"] == "needs_trace":
+            nt.append(p["id"])
+    print(f"dist/proposals.json: {len(proposals['proposals'])} proposals {by}, data date {proposals['data_date']}; "
+          f"{low} low-confidence (envelopes), {len(nt)} needs_trace {' '.join(nt)}")
     for p in proposals["proposals"]:
         hb = p.get("hide_base")
         if hb is None:

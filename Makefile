@@ -4,7 +4,7 @@ PYTHON ?= python3
 BASE_GLB_MAX_MB := 25
 DIST_MAX_MB := 60
 
-.PHONY: all fetch candidates candidate-heights build pack site serve renders-check cameras contact-sheet renders compare-footprints test-trace
+.PHONY: all fetch candidates candidate-heights proposals build pack site serve renders-check cameras contact-sheet renders compare-footprints test-trace
 
 # Full path: `make fetch build serve` (or `make all` for fetch + build).
 all: fetch build
@@ -29,6 +29,14 @@ candidates:
 # Heights only, on the existing data/candidates.csv -> adds storeys_final, height_final_m, height_source, ...
 candidate-heights:
 	$(PYTHON) scripts/fill_heights.py
+
+# Candidates meeting the scope.md inclusion rule -> data/proposals.csv (rows already there are kept as
+# edited; REBUILD=1 regenerates them), then auto footprints -> data/proposals.geojson (traced / manual
+# features kept), then build. Log: docs/promotion-log.md, docs/footprints-report.md.
+proposals:
+	$(PYTHON) scripts/promote_candidates.py $(if $(REBUILD),--rebuild)
+	$(PYTHON) scripts/auto_footprints.py
+	$(MAKE) build
 
 # proposals.csv + proposals.geojson -> dist/proposals.json; data/cameras.json -> dist/cameras.json
 build:
