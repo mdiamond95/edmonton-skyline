@@ -172,48 +172,6 @@
    "replaced_height_m": 12.4
   },
   {
-   "id": "P009",
-   "name": "Stadium Yards",
-   "address": "8450 106A Avenue NW",
-   "status": "existing",
-   "height_m": 18.6,
-   "height_source": "skyrisecities storeys x 3.1",
-   "height_confidence": "high",
-   "storeys": 6,
-   "footprint_source": "auto: Voronoi cell of assessment parcel 6557 m2; base-building outline(s) in the lot (official height replaces LiDAR)",
-   "trace_reason": "",
-   "candidate_id": "411454341-002",
-   "developer": "Rohit Communities",
-   "source_url": "https://skyrisecities.com/database/projects/stadium-yards.39328",
-   "last_checked": "2026-09-28",
-   "lat": 53.55731,
-   "lon": -113.472797,
-   "local": [
-    1518.38,
-    1317.82
-   ],
-   "footprint": [
-    [
-     [
-      1520.81,
-      1267.56,
-      1557.9,
-      1330.39,
-      1566.6,
-      1347.86,
-      1518.91,
-      1371.81,
-      1466.86,
-      1302.22
-     ]
-    ]
-   ],
-   "hide_base": [
-    43832
-   ],
-   "replaced_height_m": 19.7
-  },
-  {
    "id": "P010",
    "name": "Falcon Tower One",
    "address": "10027 104 Street NW",
@@ -222,7 +180,7 @@
    "height_source": "dp_description",
    "height_confidence": "high",
    "storeys": 29,
-   "footprint_source": "auto: Voronoi cell of assessment parcel 2005 m2; 750 m2 residential floorplate centred on the lot",
+   "footprint_source": "auto: Voronoi cell of assessment parcel 2005 m2; 750 m2 residential floorplate on the permit coordinate",
    "trace_reason": "",
    "candidate_id": "326906292-013",
    "developer": "Langham Developments Limited",
@@ -237,14 +195,14 @@
    "footprint": [
     [
      [
-      -290.7,
-      -604.84,
-      -259.49,
-      -605.69,
-      -258.83,
-      -581.69,
-      -290.04,
-      -580.84
+      -283.47,
+      -606.09,
+      -252.25,
+      -606.94,
+      -251.6,
+      -582.93,
+      -282.81,
+      -582.08
      ]
     ]
    ],
@@ -263,7 +221,7 @@
    "height_source": "dp_description",
    "height_confidence": "high",
    "storeys": 21,
-   "footprint_source": "auto: Direct Control polygon (DC2); 3 x 750 m2 residential floorplate on the lot's long axis",
+   "footprint_source": "auto: Direct Control polygon (DC2); 3 x 750 m2 residential floorplate on the lot's long axis (tower heights 49.6 / 58.9 / 65.1 m)",
    "trace_reason": "",
    "candidate_id": "364536438-002",
    "developer": "",
@@ -319,23 +277,28 @@
      ]
     ]
    ],
+   "part_heights": [
+    49.6,
+    58.9,
+    65.1
+   ],
    "hide_base": [],
    "replaced_height_m": null
   },
   {
    "id": "P012",
-   "name": "11141 84 Avenue NW (12-storey residential)",
+   "name": "ONE12",
    "address": "11141 84 Avenue NW",
    "status": "construction",
-   "height_m": 40.0,
-   "height_source": "zone_max",
-   "height_confidence": "low",
-   "storeys": 12,
-   "footprint_source": "auto: Voronoi cell of assessment parcel 2251 m2; 750 m2 residential floorplate centred on the lot",
+   "height_m": 46.0,
+   "height_source": "skyrisecities 46.00 m + building permit 2024-10-31 ('existing 14 storey high-rise - ONE12 Tower')",
+   "height_confidence": "high",
+   "storeys": 14,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 2251 m2; 750 m2 residential floorplate on the permit coordinate",
    "trace_reason": "",
    "candidate_id": "392214637-036",
    "developer": "",
-   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/mixed-use-zones/280-mu-mixed-use-zone",
+   "source_url": "https://skyrisecities.com/database/projects/one12.47031",
    "last_checked": "2026-09-28",
    "lat": 53.519781,
    "lon": -113.520207,
@@ -346,14 +309,16 @@
    "footprint": [
     [
      [
-      -1768.98,
-      -2763.28,
-      -1768.26,
-      -2732.05,
-      -1792.28,
-      -2731.52,
-      -1792.99,
-      -2762.73
+      -1781.45,
+      -2761.38,
+      -1757.77,
+      -2761.92,
+      -1756.92,
+      -2739.59,
+      -1756.72,
+      -2730.71,
+      -1780.73,
+      -2730.16
      ]
     ]
    ],
@@ -363,67 +328,19 @@
    "replaced_height_m": 42.4
   },
   {
-   "id": "P013",
-   "name": "11425 St Albert Trail NW (10-storey residential)",
-   "address": "11425 St Albert Trail NW",
-   "status": "construction",
-   "height_m": 34.0,
-   "height_source": "dc_text",
-   "height_confidence": "medium",
-   "storeys": 10,
-   "footprint_source": "needs_trace",
-   "trace_reason": "lot 10,814 m2 > 8,000 m2 for a single building",
-   "candidate_id": "392111925-002",
-   "developer": "",
-   "source_url": "https://zoningbylaw.edmonton.ca/dc2-1138",
-   "last_checked": "2026-09-28",
-   "lat": 53.564187,
-   "lon": -113.54349,
-   "local": [
-    -3135.89,
-    2247.65
-   ],
-   "footprint": [
-    [
-     [
-      -3210.89,
-      2215.56,
-      -3113.04,
-      2184.38,
-      -3100.73,
-      2185.6,
-      -3098.28,
-      2190.13,
-      -3096.34,
-      2190.05,
-      -3051.96,
-      2235.07,
-      -3240.51,
-      2279.95,
-      -3247.7,
-      2275.95
-     ]
-    ]
-   ],
-   "hide_base": [
-    48576
-   ],
-   "replaced_height_m": 12.8
-  },
-  {
    "id": "P014",
-   "name": "8709 118 Street NW (9-storey residential)",
+   "name": "Windsor Terrace",
    "address": "8709 118 Street NW",
    "status": "construction",
-   "height_m": 29.9,
-   "height_source": "dc_text",
+   "height_m": 37.2,
+   "height_source": "skyrisecities (exceeds current DC; scheme per SkyriseCities)",
    "height_confidence": "medium",
-   "storeys": 9,
-   "footprint_source": "auto: Direct Control polygon (DC); lot inset 3 m",
+   "storeys": 12,
+   "footprint_source": "auto: Direct Control polygon (DC); 750 m2 residential floorplate on the permit coordinate",
    "trace_reason": "",
    "candidate_id": "394179076-002",
-   "developer": "",
-   "source_url": "https://zoningbylaw.edmonton.ca/dc-21179",
+   "developer": "Pagaro Investments",
+   "source_url": "https://skyrisecities.com/database/projects/windsor-terrace.18943",
    "last_checked": "2026-09-28",
    "lat": 53.523262,
    "lon": -113.533766,
@@ -434,16 +351,14 @@
    "footprint": [
     [
      [
-      -2632.01,
-      -2362.21,
-      -2630.63,
-      -2305.76,
-      -2685.24,
-      -2303.51,
-      -2687.28,
-      -2360.93,
-      -2632.05,
-      -2363.39
+      -2642.59,
+      -2343.03,
+      -2641.48,
+      -2311.82,
+      -2665.48,
+      -2310.97,
+      -2666.59,
+      -2342.17
      ]
     ]
    ],
@@ -452,18 +367,18 @@
   },
   {
    "id": "P015",
-   "name": "8615 108 Street NW (8-storey residential)",
+   "name": "8615 108 Street NW (6-storey residential)",
    "address": "8615 108 Street NW",
    "status": "construction",
-   "height_m": 25.0,
-   "height_source": "dc_text",
-   "height_confidence": "medium",
-   "storeys": 8,
+   "height_m": 18.6,
+   "height_source": "building permit 2024-01-18 ('To construct a new 96 dwelling unit residential apartment building, 6 storeys with 1 lower basement level, along with a ')",
+   "height_confidence": "high",
+   "storeys": 6,
    "footprint_source": "auto: Direct Control polygon (DC); lot inset 3 m",
    "trace_reason": "",
    "candidate_id": "430142719-002",
    "developer": "",
-   "source_url": "https://zoningbylaw.edmonton.ca/dc-21463",
+   "source_url": "https://data.edmonton.ca/resource/24uj-dj8v.json?address=8615%20-%20108%20STREET%20NW",
    "last_checked": "2026-09-28",
    "lat": 53.522209,
    "lon": -113.508327,
@@ -495,18 +410,18 @@
   },
   {
    "id": "P016",
-   "name": "9860 83 Avenue NW (7-storey residential)",
+   "name": "99 Street Apartment",
    "address": "9860 83 Avenue NW",
-   "status": "construction",
+   "status": "stalled",
    "height_m": 23.0,
-   "height_source": "zone_max",
-   "height_confidence": "low",
-   "storeys": 7,
+   "height_source": "skyrisecities",
+   "height_confidence": "medium",
+   "storeys": 6,
    "footprint_source": "auto: Voronoi cell of assessment parcel 807 m2; lot inset 3 m",
    "trace_reason": "",
    "candidate_id": "368879276-002",
    "developer": "",
-   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "source_url": "https://skyrisecities.com/database/projects/99-street-apartment.26777",
    "last_checked": "2026-09-28",
    "lat": 53.519214,
    "lon": -113.485932,
@@ -573,18 +488,18 @@
   },
   {
    "id": "P018",
-   "name": "11329 University Avenue NW (7-storey residential)",
+   "name": "11329 University Avenue NW (6-storey residential)",
    "address": "11329 University Avenue NW",
    "status": "construction",
-   "height_m": 23.0,
-   "height_source": "dc_text",
-   "height_confidence": "medium",
-   "storeys": 7,
+   "height_m": 18.6,
+   "height_source": "building permit 2022-11-01 ('To construct a residential building (6 Storey with 132 Dwellings) with an underground parkade - 114 University II.')",
+   "height_confidence": "high",
+   "storeys": 6,
    "footprint_source": "auto: Direct Control polygon (DC2); lot inset 3 m",
    "trace_reason": "",
    "candidate_id": "411836852-002",
    "developer": "",
-   "source_url": "https://zoningbylaw.edmonton.ca/dc2-1152",
+   "source_url": "https://data.edmonton.ca/resource/24uj-dj8v.json?address=11329%20-%20UNIVERSITY%20AVENUE%20NW",
    "last_checked": "2026-09-28",
    "lat": 53.515838,
    "lon": -113.524442,
@@ -617,18 +532,18 @@
   },
   {
    "id": "P019",
-   "name": "10015 113 Street NW (7-storey residential)",
+   "name": "10015 113 Street NW (6-storey residential)",
    "address": "10015 113 Street NW",
    "status": "construction",
-   "height_m": 23.0,
-   "height_source": "dc_text",
-   "height_confidence": "medium",
-   "storeys": 7,
+   "height_m": 18.6,
+   "height_source": "building permit 2024-05-14 ('To construct a 95 Dwelling Multi-unit Housing (6-Storeys Apartment) building with a two-level underground parkade. --\"Gr')",
+   "height_confidence": "high",
+   "storeys": 6,
    "footprint_source": "auto: Direct Control polygon (DC2); lot inset 3 m",
    "trace_reason": "",
    "candidate_id": "463489487-002",
    "developer": "",
-   "source_url": "https://zoningbylaw.edmonton.ca/dc2-1232",
+   "source_url": "https://data.edmonton.ca/resource/24uj-dj8v.json?address=10015%20-%20113%20STREET%20NW",
    "last_checked": "2026-09-28",
    "lat": 53.539157,
    "lon": -113.515261,
@@ -659,18 +574,18 @@
   },
   {
    "id": "P020",
-   "name": "11419 University Avenue NW (7-storey residential)",
+   "name": "11419 University Avenue NW (6-storey residential)",
    "address": "11419 University Avenue NW",
    "status": "construction",
-   "height_m": 23.0,
-   "height_source": "zone_max",
-   "height_confidence": "low",
-   "storeys": 7,
+   "height_m": 18.6,
+   "height_source": "building permit 2025-07-04 ('To construct a 6 storey (41 dwelling units) apartment building with a basement.  **FOOTING AND FOUNDATION ONLY')",
+   "height_confidence": "high",
+   "storeys": 6,
    "footprint_source": "auto: Voronoi cell of assessment parcel 713 m2; lot inset 3 m",
    "trace_reason": "",
    "candidate_id": "471410672-002",
    "developer": "",
-   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "source_url": "https://data.edmonton.ca/resource/24uj-dj8v.json?address=11419%20-%20UNIVERSITY%20AVENUE%20NW",
    "last_checked": "2026-09-28",
    "lat": 53.516311,
    "lon": -113.526779,
@@ -698,70 +613,19 @@
    "replaced_height_m": null
   },
   {
-   "id": "P021",
-   "name": "10808 85 Avenue NW (7-storey residential)",
-   "address": "10808 85 Avenue NW",
-   "status": "construction",
-   "height_m": 23.0,
-   "height_source": "zone_max",
-   "height_confidence": "low",
-   "storeys": 7,
-   "footprint_source": "auto: Voronoi cell of assessment parcel 1618 m2; lot inset 3 m",
-   "trace_reason": "",
-   "candidate_id": "476200645-002",
-   "developer": "",
-   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
-   "last_checked": "2026-09-28",
-   "lat": 53.521265,
-   "lon": -113.509794,
-   "local": [
-    -1073.06,
-    -2605.37
-   ],
-   "footprint": [
-    [
-     [
-      -1083.77,
-      -2631.88,
-      -1074.13,
-      -2633.04,
-      -1064.55,
-      -2632.58,
-      -1049.43,
-      -2629.36,
-      -1047.98,
-      -2591.42,
-      -1072.53,
-      -2585.03,
-      -1082.09,
-      -2586.81
-     ]
-    ]
-   ],
-   "hide_base": [
-    14732,
-    14742,
-    14747,
-    21719,
-    21725,
-    21728
-   ],
-   "replaced_height_m": 9.4
-  },
-  {
    "id": "P022",
-   "name": "8521 106A Street NW (7-storey residential)",
+   "name": "8521 106A Street NW (6-storey residential)",
    "address": "8521 106A Street NW",
    "status": "construction",
-   "height_m": 23.0,
-   "height_source": "zone_max",
-   "height_confidence": "low",
-   "storeys": 7,
+   "height_m": 18.6,
+   "height_source": "building permit 2025-01-21 ('To construct a new 6 storey (52 dwelling units) residential apartment building with 1 level underground parkade. \"Garnea')",
+   "height_confidence": "high",
+   "storeys": 6,
    "footprint_source": "auto: Voronoi cell of assessment parcel 1212 m2; lot inset 3 m",
    "trace_reason": "",
    "candidate_id": "503378470-002",
    "developer": "",
-   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "source_url": "https://data.edmonton.ca/resource/24uj-dj8v.json?address=8521%20-%20106A%20STREET%20NW",
    "last_checked": "2026-09-28",
    "lat": 53.52157,
    "lon": -113.504602,
@@ -800,54 +664,14 @@
    "replaced_height_m": 7.1
   },
   {
-   "id": "P023",
-   "name": "8231 111 Street NW (7-storey residential)",
-   "address": "8231 111 Street NW",
-   "status": "construction",
-   "height_m": 23.0,
-   "height_source": "zone_max",
-   "height_confidence": "low",
-   "storeys": 7,
-   "footprint_source": "auto: Voronoi cell of assessment parcel 810 m2; lot inset 3 m",
-   "trace_reason": "",
-   "candidate_id": "520417913-002",
-   "developer": "",
-   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
-   "last_checked": "2026-09-28",
-   "lat": 53.518833,
-   "lon": -113.517516,
-   "local": [
-    -1594.44,
-    -2857.79
-   ],
-   "footprint": [
-    [
-     [
-      -1608.83,
-      -2870.73,
-      -1594.06,
-      -2871.26,
-      -1592.82,
-      -2838.06,
-      -1595.37,
-      -2837.75,
-      -1607.68,
-      -2838.32
-     ]
-    ]
-   ],
-   "hide_base": [],
-   "replaced_height_m": null
-  },
-  {
    "id": "P024",
-   "name": "10521 78 Avenue NW (7-storey residential)",
+   "name": "10521 78 Avenue NW (6-storey residential)",
    "address": "10521 78 Avenue NW",
    "status": "construction",
-   "height_m": 23.0,
-   "height_source": "zone_max",
-   "height_confidence": "low",
-   "storeys": 7,
+   "height_m": 18.6,
+   "height_source": "estimate: 83 dwellings on a 1,773 m2 lot under RM h23 (6 storeys x 3.1)",
+   "height_confidence": "medium",
+   "storeys": 6,
    "footprint_source": "auto: Voronoi cell of assessment parcel 2019 m2; lot inset 3 m",
    "trace_reason": "",
    "candidate_id": "562465177-002",
@@ -890,49 +714,6 @@
     11684
    ],
    "replaced_height_m": 6.9
-  },
-  {
-   "id": "P025",
-   "name": "11028 85 Avenue NW (7-storey residential)",
-   "address": "11028 85 Avenue NW",
-   "status": "construction",
-   "height_m": 23.0,
-   "height_source": "zone_max",
-   "height_confidence": "low",
-   "storeys": 7,
-   "footprint_source": "auto: 2 adjacent assessment-parcel cells merged (1052 m2); lot inset 3 m",
-   "trace_reason": "",
-   "candidate_id": "613818800-002",
-   "developer": "",
-   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
-   "last_checked": "2026-09-28",
-   "lat": 53.521267,
-   "lon": -113.516369,
-   "local": [
-    -1508.85,
-    -2589.77
-   ],
-   "footprint": [
-    [
-     [
-      -1521.99,
-      -2616.14,
-      -1508.17,
-      -2616.41,
-      -1506.44,
-      -2569.72,
-      -1520.24,
-      -2568.93
-     ]
-    ]
-   ],
-   "hide_base": [
-    21935,
-    21936,
-    21941,
-    21942
-   ],
-   "replaced_height_m": 8.0
   },
   {
    "id": "P026",
@@ -986,7 +767,7 @@
    "address": "11041 86 Avenue NW",
    "status": "construction",
    "height_m": 22.0,
-   "height_source": "dc_text",
+   "height_source": "dc_text; stale SkyriseCities scheme '11023-11045 86 Avenue' 6 storeys (last activity 2024-02-04)",
    "height_confidence": "medium",
    "storeys": 7,
    "footprint_source": "auto: Direct Control polygon (DC2); lot inset 3 m",
@@ -1118,12 +899,12 @@
    "name": "Stationlands Residential Towers (east tower)",
    "address": "10445 101 Street NW",
    "status": "approved",
-   "height_m": 114.7,
-   "height_source": "skyrisecities + dp_description",
-   "height_confidence": "low",
+   "height_m": 127.2,
+   "height_source": "skyrisecities 90.0 m + 12 storeys x 3.1 m (dp_description)",
+   "height_confidence": "medium",
    "storeys": 37,
-   "footprint_source": "needs_trace",
-   "trace_reason": "lot 8,369 m2 > 8,000 m2 for a single building",
+   "footprint_source": "auto: Voronoi cell of assessment parcel 19669 m2; 750 m2 residential floorplate on the permit coordinate",
+   "trace_reason": "",
    "candidate_id": "315143826-064",
    "developer": "",
    "source_url": "https://data.edmonton.ca/resource/2ccn-pwtu.json?city_file_number=315143826-064",
@@ -1137,14 +918,14 @@
    "footprint": [
     [
      [
-      184.55,
-      282.02,
-      215.71,
-      279.94,
-      217.31,
-      303.9,
-      186.16,
-      305.98
+      184.92,
+      282.9,
+      216.08,
+      280.81,
+      217.68,
+      304.78,
+      186.52,
+      306.86
      ]
     ]
    ],
@@ -1160,7 +941,7 @@
    "height_source": "dp_description",
    "height_confidence": "high",
    "storeys": 35,
-   "footprint_source": "auto: Voronoi cell of assessment parcel 2208 m2; 750 m2 residential floorplate centred on the lot",
+   "footprint_source": "auto: Voronoi cell of assessment parcel 2208 m2; 750 m2 residential floorplate on the permit coordinate",
    "trace_reason": "",
    "candidate_id": "640711594-002",
    "developer": "Langham Developments Limited",
@@ -1175,14 +956,14 @@
    "footprint": [
     [
      [
-      -260.72,
-      -633.01,
-      -291.93,
-      -631.91,
-      -292.78,
-      -655.91,
-      -261.57,
-      -657.01
+      -252.9,
+      -628.66,
+      -284.11,
+      -627.56,
+      -284.96,
+      -651.57,
+      -253.76,
+      -652.68
      ]
     ]
    ],
@@ -1198,7 +979,7 @@
    "height_source": "skyrisecities",
    "height_confidence": "high",
    "storeys": 14,
-   "footprint_source": "auto: Voronoi cell of assessment parcel 4321 m2; 750 m2 residential floorplate centred on the lot",
+   "footprint_source": "auto: Voronoi cell of assessment parcel 4321 m2; 750 m2 residential floorplate on the permit coordinate",
    "trace_reason": "",
    "candidate_id": "615671213-002",
    "developer": "Fourcha Group",
@@ -1213,14 +994,14 @@
    "footprint": [
     [
      [
-      -792.25,
-      1533.11,
-      -761.05,
-      1532.04,
-      -760.22,
-      1556.05,
-      -791.43,
-      1557.12
+      -790.58,
+      1524.77,
+      -759.37,
+      1523.69,
+      -758.54,
+      1547.7,
+      -789.75,
+      1548.77
      ]
     ]
    ],
@@ -1236,7 +1017,7 @@
    "height_source": "dwellings_estimate",
    "height_confidence": "low",
    "storeys": 12,
-   "footprint_source": "auto: Voronoi cell of assessment parcel 4189 m2; 750 m2 residential floorplate centred on the lot",
+   "footprint_source": "auto: Voronoi cell of assessment parcel 4189 m2; 750 m2 residential floorplate on the permit coordinate",
    "trace_reason": "",
    "candidate_id": "580337331-002",
    "developer": "",
@@ -1251,14 +1032,14 @@
    "footprint": [
     [
      [
-      -795.59,
-      -307.6,
-      -825.81,
-      -299.75,
-      -831.85,
-      -323.0,
-      -801.63,
-      -330.85
+      -796.51,
+      -303.65,
+      -826.73,
+      -295.81,
+      -832.76,
+      -319.06,
+      -802.54,
+      -326.91
      ]
     ]
    ],
@@ -1317,18 +1098,18 @@
   },
   {
    "id": "P035",
-   "name": "10314 106 Street NW (12-storey residential)",
+   "name": "Massey Ferguson Building Redevelopment",
    "address": "10314 106 Street NW",
    "status": "approved",
-   "height_m": 37.2,
-   "height_source": "dwellings_estimate",
-   "height_confidence": "low",
-   "storeys": 12,
-   "footprint_source": "auto: 2 adjacent assessment-parcel cells merged (8959 m2); 4 x 750 m2 residential floorplate on the lot's long axis",
+   "height_m": 18.6,
+   "height_source": "skyrisecities 6 storeys + press (four six-storey buildings)",
+   "height_confidence": "high",
+   "storeys": 6,
+   "footprint_source": "auto: 2 adjacent assessment-parcel cells merged (8959 m2); lot inset 3 m",
    "trace_reason": "",
    "candidate_id": "640132008-002",
-   "developer": "",
-   "source_url": "https://data.edmonton.ca/resource/2ccn-pwtu.json?city_file_number=640132008-002",
+   "developer": "ESH Housing Ltd.",
+   "source_url": "https://skyrisecities.com/database/projects/massey-ferguson-building-redevelopment.17582",
    "last_checked": "2026-09-28",
    "lat": 53.54519,
    "lon": -113.503436,
@@ -1339,70 +1120,44 @@
    "footprint": [
     [
      [
-      -561.76,
-      146.64,
-      -562.85,
-      115.43,
-      -538.85,
-      114.58,
-      -537.75,
-      145.79
-     ]
-    ],
-    [
-     [
-      -563.26,
-      103.67,
-      -564.36,
-      72.46,
-      -540.35,
-      71.62,
-      -539.26,
-      102.83
-     ]
-    ],
-    [
-     [
-      -564.77,
-      60.71,
-      -565.86,
-      29.5,
-      -541.86,
-      28.65,
-      -540.76,
-      59.86
-     ]
-    ],
-    [
-     [
-      -566.27,
-      17.74,
-      -567.37,
-      -13.47,
-      -543.36,
-      -14.3,
-      -542.27,
-      16.9
+      -581.08,
+      50.62,
+      -574.69,
+      -13.26,
+      -539.06,
+      -14.55,
+      -523.49,
+      111.27,
+      -535.2,
+      151.17,
+      -555.56,
+      152.06,
+      -579.09,
+      115.65,
+      -568.26,
+      63.51
      ]
     ]
    ],
-   "hide_base": [],
-   "replaced_height_m": null
+   "hide_base": [
+    34981
+   ],
+   "replaced_height_m": 9.0
   },
   {
    "id": "P036",
-   "name": "10305 104 Avenue NW (12-storey residential)",
+   "name": "ICE District Block BG residential tower",
    "address": "10305 104 Avenue NW",
    "status": "approved",
-   "height_m": 37.2,
-   "height_source": "dwellings_estimate",
-   "height_confidence": "low",
-   "storeys": 12,
-   "footprint_source": "needs_trace",
-   "trace_reason": "lot 8,949 m2 > 8,000 m2 for a single building",
+   "height_m": 141.1,
+   "height_source": "skyrisecities 'Ice District Tower B' 43 storeys / 141.12 m (Block BG residential tower)",
+   "height_confidence": "medium",
+   "storeys": 43,
+   "footprint_source": "auto: Voronoi cell of assessment parcel 24007 m2; 750 m2 residential floorplate on the permit coordinate",
+   "trace_reason": "",
    "candidate_id": "655770701-002",
    "developer": "",
-   "source_url": "https://data.edmonton.ca/resource/2ccn-pwtu.json?city_file_number=655770701-002",
+   "source_url": "https://skyrisecities.com/database/projects/connect-centre.17572",
    "last_checked": "2026-09-28",
    "lat": 53.545587,
    "lon": -113.497396,
@@ -1413,14 +1168,16 @@
    "footprint": [
     [
      [
-      -126.35,
-      20.69,
-      -95.43,
-      16.33,
-      -92.07,
-      40.11,
-      -122.99,
-      44.48
+      -156.04,
+      72.79,
+      -156.6,
+      68.84,
+      -157.31,
+      48.71,
+      -128.48,
+      44.64,
+      -125.12,
+      68.43
      ]
     ]
    ],
@@ -1885,22 +1642,22 @@
    "footprint": [
     [
      [
-      -1500.23,
-      -2613.72,
-      -1494.87,
-      -2613.5,
-      -1488.88,
-      -2614.44,
-      -1487.37,
-      -2573.4,
-      -1498.74,
-      -2573.25
+      -1510.6,
+      -2613.4,
+      -1504.7,
+      -2613.24,
+      -1501.79,
+      -2613.7,
+      -1499.22,
+      -2613.58,
+      -1497.73,
+      -2573.28,
+      -1509.09,
+      -2572.62
      ]
     ]
    ],
    "hide_base": [
-    21926,
-    21927,
     21929
    ],
    "replaced_height_m": 8.7
@@ -1958,8 +1715,8 @@
    "height_source": "dp_description",
    "height_confidence": "high",
    "storeys": 6,
-   "footprint_source": "needs_trace",
-   "trace_reason": "90% of the footprint on park / water land use",
+   "footprint_source": "auto: 4 adjacent assessment-parcel cells merged (1619 m2); lot inset 3 m; 90% on green land use that is vacant land, not a park (landuse=greenfield)",
+   "trace_reason": "",
    "candidate_id": "641972652-002",
    "developer": "",
    "source_url": "https://data.edmonton.ca/resource/2ccn-pwtu.json?city_file_number=641972652-002",
@@ -1997,17 +1754,17 @@
   },
   {
    "id": "P050",
-   "name": "10301 104 Street NW (51-storey mixed-use)",
+   "name": "La Reina Tower (Horne and Pitfield Building)",
    "address": "near 10301 104 Street NW",
    "status": "proposed",
    "height_m": 160.0,
-   "height_source": "dc_text",
+   "height_source": "dc_text 160 m; 40-45 storeys per press (CBC 2022)",
    "height_confidence": "medium",
-   "storeys": 51,
+   "storeys": 45,
    "footprint_source": "auto: rezoned zoning polygon; 850 m2 mixed-use floorplate centred on the lot (DC maximum floor plate 850 m2)",
    "trace_reason": "",
    "candidate_id": "REZ-DC1-19860-167448",
-   "developer": "",
+   "developer": "Limak Investments",
    "source_url": "https://zoningbylaw.edmonton.ca/dc1-19860",
    "last_checked": "2026-09-28",
    "lat": 53.54486,
@@ -2037,18 +1794,18 @@
   },
   {
    "id": "P051",
-   "name": "12021 Jasper Avenue NW (34-storey mixed-use)",
+   "name": "Jasper House",
    "address": "near 12021 Jasper Avenue NW",
    "status": "proposed",
    "height_m": 108.0,
-   "height_source": "dc_text",
-   "height_confidence": "medium",
+   "height_source": "dc_text 108 m; skyrisecities agrees (108.00 m)",
+   "height_confidence": "high",
    "storeys": 34,
    "footprint_source": "auto: rezoned zoning polygon; 750 m2 residential floorplate centred on the lot",
    "trace_reason": "",
    "candidate_id": "REZ-DC-20932-173298",
    "developer": "",
-   "source_url": "https://zoningbylaw.edmonton.ca/dc-20932",
+   "source_url": "https://skyrisecities.com/database/projects/jasper-house.48762",
    "last_checked": "2026-09-28",
    "lat": 53.54049,
    "lon": -113.530164,
@@ -2082,7 +1839,7 @@
    "height_source": "dp_description",
    "height_confidence": "high",
    "storeys": 33,
-   "footprint_source": "auto: Voronoi cell of assessment parcel 2075 m2; 750 m2 residential floorplate centred on the lot",
+   "footprint_source": "auto: Voronoi cell of assessment parcel 2075 m2; 750 m2 residential floorplate on the permit coordinate",
    "trace_reason": "",
    "candidate_id": "673041335-002",
    "developer": "",
@@ -2097,14 +1854,14 @@
    "footprint": [
     [
      [
-      -1324.36,
-      -624.98,
-      -1293.16,
-      -626.1,
-      -1292.29,
-      -602.1,
-      -1323.5,
-      -600.97
+      -1298.14,
+      -617.02,
+      -1297.31,
+      -593.72,
+      -1328.51,
+      -592.61,
+      -1329.35,
+      -615.91
      ]
     ]
    ],
@@ -2237,7 +1994,7 @@
    "height_source": "dp_description",
    "height_confidence": "high",
    "storeys": 26,
-   "footprint_source": "auto: Direct Control polygon (DC2); 750 m2 residential floorplate centred on the lot",
+   "footprint_source": "auto: Direct Control polygon (DC2); 750 m2 residential floorplate on the permit coordinate",
    "trace_reason": "",
    "candidate_id": "343021915-002",
    "developer": "",
@@ -2252,14 +2009,14 @@
    "footprint": [
     [
      [
-      -327.77,
-      -23.32,
-      -296.57,
-      -24.42,
-      -295.73,
-      -0.41,
-      -326.93,
-      0.69
+      -332.15,
+      -17.62,
+      -300.95,
+      -18.72,
+      -300.1,
+      5.28,
+      -331.3,
+      6.38
      ]
     ]
    ],
@@ -2529,8 +2286,8 @@
    "height_source": "zone_max",
    "height_confidence": "low",
    "storeys": 20,
-   "footprint_source": "needs_trace",
-   "trace_reason": "100% of the footprint on park / water land use",
+   "footprint_source": "auto: rezoned zoning polygon; 750 m2 residential floorplate centred on the lot; 100% on green land use that is vacant land, not a park (landuse=grass)",
+   "trace_reason": "",
    "candidate_id": "REZ-RL-379095",
    "developer": "",
    "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/250-rl-large-scale-residential-zone",
@@ -2560,18 +2317,18 @@
   },
   {
    "id": "P064",
-   "name": "11456 Jasper Avenue NW (19-storey mixed-use)",
+   "name": "Jasper and 115 Street",
    "address": "near 11456 Jasper Avenue NW",
    "status": "proposed",
-   "height_m": 60.0,
-   "height_source": "dc_text",
+   "height_m": 170.0,
+   "height_source": "skyrisecities 52 storeys / 170.00 m; second tower at the DC Area A ceiling 100 m",
    "height_confidence": "medium",
-   "storeys": 19,
-   "footprint_source": "auto: rezoned zoning polygon; 2 x 750 m2 residential floorplate on the lot's long axis",
+   "storeys": 52,
+   "footprint_source": "auto: rezoned zoning polygon; 2 x 750 m2 residential floorplate on the lot's long axis (tower heights 170 / 100 m)",
    "trace_reason": "",
    "candidate_id": "REZ-DC-21522-359895",
-   "developer": "",
-   "source_url": "https://zoningbylaw.edmonton.ca/dc-21522",
+   "developer": "Greenlong Construction",
+   "source_url": "https://skyrisecities.com/database/projects/jasper-and-115-street.28514",
    "last_checked": "2026-09-28",
    "lat": 53.541231,
    "lon": -113.518877,
@@ -2605,6 +2362,10 @@
      ]
     ]
    ],
+   "part_heights": [
+    170.0,
+    100.0
+   ],
    "hide_base": [
     33165
    ],
@@ -2612,17 +2373,17 @@
   },
   {
    "id": "P065",
-   "name": "10035 115 Street NW (18-storey residential)",
+   "name": "Edmonton Motors Phase 1 - Area A",
    "address": "10035 115 Street NW",
    "status": "proposed",
-   "height_m": 58.0,
-   "height_source": "dc_text",
+   "height_m": 140.0,
+   "height_source": "dc_text (DC2-1064 Area A 140.0 m)",
    "height_confidence": "medium",
-   "storeys": 18,
-   "footprint_source": "needs_trace",
-   "trace_reason": "lot 8,824 m2 > 8,000 m2 for a single building",
+   "storeys": 45,
+   "footprint_source": "auto: Direct Control polygon (DC2); 750 m2 residential floorplate on the permit coordinate",
+   "trace_reason": "",
    "candidate_id": "362851822-002",
-   "developer": "",
+   "developer": "Pangman Development Corp.",
    "source_url": "https://zoningbylaw.edmonton.ca/dc2-1064",
    "last_checked": "2026-09-28",
    "lat": 53.540015,
@@ -2634,14 +2395,14 @@
    "footprint": [
     [
      [
-      -1592.14,
-      -471.54,
-      -1591.03,
-      -440.34,
-      -1615.04,
-      -439.49,
-      -1616.14,
-      -470.69
+      -1607.95,
+      -514.12,
+      -1606.85,
+      -482.91,
+      -1630.86,
+      -482.06,
+      -1631.96,
+      -513.27
      ]
     ]
    ],
@@ -2811,7 +2572,7 @@
    "height_source": "dc_text",
    "height_confidence": "high",
    "storeys": 14,
-   "footprint_source": "auto: Direct Control polygon (DC2); 750 m2 residential floorplate centred on the lot",
+   "footprint_source": "auto: Direct Control polygon (DC2); 750 m2 residential floorplate on the permit coordinate",
    "trace_reason": "",
    "candidate_id": "461919270-002",
    "developer": "",
@@ -2826,14 +2587,14 @@
    "footprint": [
     [
      [
-      -1983.36,
-      -282.73,
-      -1952.16,
-      -283.83,
-      -1951.31,
-      -259.83,
-      -1982.51,
-      -258.72
+      -1978.91,
+      -281.23,
+      -1947.7,
+      -282.33,
+      -1946.85,
+      -258.33,
+      -1978.06,
+      -257.22
      ]
     ]
    ],
@@ -2880,18 +2641,18 @@
   },
   {
    "id": "P072",
-   "name": "10212 96 Street NW (12-storey mixed-use)",
+   "name": "Artists Quarters",
    "address": "near 10212 96 Street NW",
    "status": "proposed",
-   "height_m": 40.0,
-   "height_source": "zone_max",
-   "height_confidence": "low",
-   "storeys": 12,
+   "height_m": 77.11,
+   "height_source": "skyrisecities (exceeds current zone ceiling; scheme per SkyriseCities)",
+   "height_confidence": "medium",
+   "storeys": 18,
    "footprint_source": "needs_trace",
    "trace_reason": "lot 8,094 m2 > 8,000 m2 for a single building",
    "candidate_id": "REZ-MU-189192",
-   "developer": "",
-   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/mixed-use-zones/280-mu-mixed-use-zone",
+   "developer": "Arts Habitat Edmonton, Artists Urban Village, City of Edmonton",
+   "source_url": "https://skyrisecities.com/database/projects/artists-quarters.18434",
    "last_checked": "2026-09-28",
    "lat": 53.545166,
    "lon": -113.48293,
@@ -2973,8 +2734,8 @@
    "height_source": "zone_max",
    "height_confidence": "low",
    "storeys": 9,
-   "footprint_source": "needs_trace",
-   "trace_reason": "lot too narrow (footprint about 6 m wide); 89% of the footprint on park / water land use",
+   "footprint_source": "auto: Voronoi cell of assessment parcel 696 m2; lot inset 1.5 m (narrow lot); 86% on green land use that is vacant land, not a park (landuse=grass)",
+   "trace_reason": "",
    "candidate_id": "667385957-002",
    "developer": "",
    "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
@@ -2988,19 +2749,21 @@
    "footprint": [
     [
      [
-      -2173.86,
-      102.65,
-      -2221.67,
-      104.36,
-      -2221.89,
-      97.26,
-      -2175.16,
-      95.59
+      -2172.07,
+      104.09,
+      -2223.12,
+      105.91,
+      -2223.43,
+      95.81,
+      -2173.92,
+      94.05
      ]
     ]
    ],
-   "hide_base": [],
-   "replaced_height_m": null
+   "hide_base": [
+    34748
+   ],
+   "replaced_height_m": 8.0
   },
   {
    "id": "P075",
@@ -3229,18 +2992,18 @@
   },
   {
    "id": "P080",
-   "name": "10015 111 Street NW (9-storey residential)",
+   "name": "The Heights",
    "address": "near 10015 111 Street NW",
    "status": "proposed",
-   "height_m": 28.0,
-   "height_source": "zone_max",
-   "height_confidence": "low",
-   "storeys": 9,
-   "footprint_source": "auto: rezoned zoning polygon; lot inset 3 m",
+   "height_m": 130.14,
+   "height_source": "skyrisecities (exceeds current zone ceiling; scheme per SkyriseCities)",
+   "height_confidence": "medium",
+   "storeys": 43,
+   "footprint_source": "auto: rezoned zoning polygon; 750 m2 residential floorplate centred on the lot",
    "trace_reason": "",
    "candidate_id": "REZ-RM-369095",
-   "developer": "",
-   "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/residential-zones/240-rm-medium-scale-residential-zone",
+   "developer": "Westrich Pacific Corp.",
+   "source_url": "https://skyrisecities.com/database/projects/heights.39408",
    "last_checked": "2026-09-28",
    "lat": 53.53924,
    "lon": -113.51165,
@@ -3251,19 +3014,18 @@
    "footprint": [
     [
      [
-      -1151.57,
-      -559.41,
-      -1154.48,
-      -641.81,
-      -1099.53,
-      -643.74,
-      -1096.64,
-      -561.85
+      -1114.13,
+      -617.73,
+      -1113.03,
+      -586.53,
+      -1137.04,
+      -585.68,
+      -1138.14,
+      -616.88
      ]
     ]
    ],
    "hide_base": [
-    28857,
     33083
    ],
    "replaced_height_m": 8.7
@@ -4323,6 +4085,52 @@
     29039
    ],
    "replaced_height_m": 18.9
+  },
+  {
+   "id": "P104",
+   "name": "Connect Centre",
+   "address": "10324 103 Street NW",
+   "status": "existing",
+   "height_m": 56.3,
+   "height_source": "skyrisecities (as built); replaces an OSM height tag of 142 m",
+   "height_confidence": "medium",
+   "storeys": 16,
+   "footprint_source": "OpenStreetMap building via Overture Maps (base.glb outline, convex hull inset 2 m so the podium it stands on stays visible)",
+   "trace_reason": "",
+   "candidate_id": "",
+   "developer": "ONE Properties, Katz Group Properties",
+   "source_url": "https://skyrisecities.com/database/projects/connect-centre.17572",
+   "last_checked": "2026-09-28",
+   "lat": 53.545868,
+   "lon": -113.497924,
+   "local": [
+    -190.31,
+    103.33
+   ],
+   "footprint": [
+    [
+     [
+      -169.16,
+      82.39,
+      -170.04,
+      121.4,
+      -171.24,
+      122.77,
+      -194.03,
+      125.09,
+      -202.07,
+      125.48,
+      -210.41,
+      121.81,
+      -211.91,
+      84.06
+     ]
+    ]
+   ],
+   "hide_base": [
+    35024
+   ],
+   "replaced_height_m": 142.1
   }
  ],
  "base_glb": {

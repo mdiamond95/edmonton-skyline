@@ -712,7 +712,8 @@ async function buildProposals() {
     // along its outline + height_m; the bottom goes 1.5 m below the lowest terrain anywhere under it
     // (outline and an interior grid), so no sliver of ground shows under a big footprint on a slope.
     const parts = [], geoms = [];
-    for (const poly of p.footprint) {
+    for (const [pi, poly] of p.footprint.entries()) {
+      const h = (p.part_heights && p.part_heights[pi]) || p.height_m;   // per-tower heights (multi-tower rows)
       const toV = (ring) => { const v = []; for (let i = 0; i < ring.length; i += 2) v.push(new THREE.Vector2(ring[i], ring[i + 1])); return v; };
       const sh = new THREE.Shape(toV(poly[0]));
       for (let k = 1; k < poly.length; k++) sh.holes.push(new THREE.Path(toV(poly[k])));
@@ -730,11 +731,11 @@ async function buildProposals() {
         if (pointInPoly(x, y, poly)) lo = Math.min(lo, heightAt(x, -y));
       }
       const base = lo - 1.5, ref = edge[Math.floor(edge.length / 2)];
-      const g = new THREE.ExtrudeGeometry(sh, { depth: ref + p.height_m - base, bevelEnabled: false });
+      const g = new THREE.ExtrudeGeometry(sh, { depth: ref + h - base, bevelEnabled: false });
       g.rotateX(-Math.PI / 2);
       g.translate(0, base, 0);
       geoms.push(g);
-      parts.push({ base, ref, top: ref + p.height_m });
+      parts.push({ base, ref, top: ref + h });
     }
     const g = geoms.length === 1 ? geoms[0] : mergeGeoms(geoms);
     const envelope = p.height_confidence === 'low';

@@ -55,7 +55,8 @@ PROPOSAL_CHECK = """() => {
   const T = world.table;
   return world.propMeshes.map((m) => {
     const p = m.userData.proposal;
-    // every part (tower) of the footprint on its own: seated, top at its ground + height_m, nothing poking through
+    // every part (tower) of the footprint on its own: seated, top at its ground + its height (part_heights,
+    // else height_m), nothing poking through
     const parts = p.footprint.map((poly, k) => {
       const ring = poly[0], part = (m.userData.parts || [])[k] || {};
       let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
@@ -75,12 +76,12 @@ PROPOSAL_CHECK = """() => {
           if (inPoly(x, y, ring) && pos[v * 3 + 1] > window.__skyline.heightAt(x, -y) + 1 && pos[v * 3 + 1] > part.top) { visible++; break; }
         }
       }
-      return { base: part.base, top: part.top, ground_min: gmin, ground_max: gmax,
+      return { base: part.base, top: part.top, ground_min: gmin, ground_max: gmax, h: (p.part_heights || [])[k] || p.height_m,
                ground_ref: ground[Math.floor(ground.length / 2)], poking_through: visible };
     });
-    const bad = (q) => Math.max(q.base - q.ground_min, Math.abs(q.top - q.ground_ref - p.height_m));
+    const bad = (q) => Math.max(q.base - q.ground_min, Math.abs(q.top - q.ground_ref - q.h));
     const w = parts.reduce((a, q) => (bad(q) > bad(a) ? q : a), parts[0]);
-    return { id: p.id, status: p.status, height_m: p.height_m, parts: parts.length, base: w.base, top: w.top,
+    return { id: p.id, status: p.status, height_m: w.h, parts: parts.length, base: w.base, top: w.top,
              ground_min: w.ground_min, ground_max: w.ground_max, ground_ref: w.ground_ref,
              hidden: (p.hide_base || []).length, poking_through: parts.reduce((s, q) => s + q.poking_through, 0) };
   });

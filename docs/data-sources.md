@@ -226,3 +226,33 @@ keeps them and drops the auto footprint for that id.
 they receive shadows but cast none (a ceiling is not a building) and stay out of the SSAO depth pass. Each
 tower of a multi-tower footprint is seated on its own ground, and the bottom goes 1.5 m below the lowest
 terrain anywhere under it. Trace mode lists the needs_trace rows with Jump to / Next.
+
+## Placement and height corrections (Phase 3C, 2026-09-28)
+
+The rules are in CLAUDE.md ("Height, status and placement rules"). `make proposals` applies them and
+logs every change in `docs/promotion-log.md`.
+
+| Source | Used for | Cache |
+|---|---|---|
+| General Building Permits `24uj-dj8v`, by address | storeys named in the permit descriptions of `construction` rows ("6 storey (41 dwelling units) apartment building"); the most storeys mentioned wins | `data/raw/heights/bp/` |
+| SkyriseCities project pages | "Last Post: <date>" of the project's forum thread = the activity date for the 24-month rule (the page shows the date; the forum itself is never read) | `data/raw/heights/skyrise/` |
+| Overture `base/land_use`, `land`, `water` (OSM `source_tags`) | park check: `landuse=grass` / `greenfield` / `meadow` and `natural=scrub` are vacant land, not parks | `data/raw/footprints/landuse_tags/` |
+| Press, via web search only (Connect CRE, Daily Hive, CBC; these sites are blocked from the cloud sessions) | corroboration logged by hand: P035 (four 6-storey buildings), P050 (La Reina Tower, 40-45 storeys), P023 (four storeys; the City's own notice PDF on www.edmonton.ca is readable) | |
+
+Found along the way:
+
+- **Area height tables in DC texts.** `fill_heights.py` misses tables like "maximum building Height: i. Area A:
+  140.0 m / ii. Area B: 170.0 m", and it can pick up the sunset fallback instead ("in the event that the owner
+  does not obtain a Building Permit … within 10 years … the maximum Height shall be 58.0 m"). An audit of every
+  `dc_text` row found this in DC 21522 (P064) and DC2-1064 (P065), both fixed by hand, and in DC 21179 (P014:
+  29.9 m fallback, 34.0 m real; now replaced by the SkyriseCities 12-storey scheme). The parser itself is
+  unchanged: `make candidates` needs a full refetch to test a fix.
+- **False construction status.** "A building permit within 40 m" can be the neighbour's permit (P016 took the
+  11-dwelling permit at 8305 99 St). The Phase 3C building-permit check matches by address.
+- **OSM height tags on post-LiDAR buildings.** Where LiDAR shows ground, `fetch_base.py` falls back to OSM tags,
+  which can hold a planned height: Connect Centre (ICE District Block BG) came through at 142 m, the old
+  residential plan, against 56.3 m as built. It is now P104 (`existing`, official height). The other six
+  base buildings over 80 m with OSM heights all check out against SkyriseCities (The Augustana 95.7 vs 96.0 m,
+  Encore Tower 134.4 vs 138.0 m, Glenora Park 85.1 vs 82.0 m, Falcon Tower One, which is hidden under P010) except
+  **Maclab Garneau** (87 Ave / 112 St): Under Construction, 30 storeys / 98.14 m, but not in `proposals.csv`
+  (its DP predates 2021), so it shows as two grey towers at OSM's 108.4 m and 82.8 m. Left for a later pass.
