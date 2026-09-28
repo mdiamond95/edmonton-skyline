@@ -10,15 +10,23 @@ layer is reachable now and was compared head-to-head in Phase 2; it lost (see
 
 ## Reachability from the cloud sessions
 
-| Host | Phase 1 (2026-09-27) | Phase 2 (2026-09-27) |
-|---|---|---|
-| data.edmonton.ca | blocked (proxy 403) | **reachable** (SODA API works) |
-| overpass-api.de / overpass.kumi.systems | blocked | blocked (connection reset / 403) |
-| download.geofabrik.de | blocked | blocked (403) |
-| cdnjs.cloudflare.com | blocked | blocked (403); headless renders use the identical three 0.166.1 build from registry.npmjs.org |
-| overturemaps-us-west-2 S3 | reachable | reachable |
-| canelevation-dem S3 (NRCan) | reachable | reachable |
-| s3.amazonaws.com/elevation-tiles-prod | reachable | not re-tested |
+| Host | Phase 1 (2026-09-27) | Phase 2 (2026-09-27) | Phase 3A.5 (2026-09-27) |
+|---|---|---|---|
+| data.edmonton.ca | blocked (proxy 403) | **reachable** (SODA API works) | reachable |
+| overpass-api.de / overpass.kumi.systems | blocked | blocked (connection reset / 403) | not re-tested |
+| download.geofabrik.de | blocked | blocked (403) | not re-tested |
+| cdnjs.cloudflare.com | blocked | blocked (403); headless renders use the identical three 0.166.1 build from registry.npmjs.org | not re-tested |
+| overturemaps-us-west-2 S3 | reachable | reachable | not re-tested |
+| canelevation-dem S3 (NRCan) | reachable | reachable | not re-tested |
+| s3.amazonaws.com/elevation-tiles-prod | reachable | not re-tested | not re-tested |
+| zoningbylaw.edmonton.ca (DC texts, zone pages) | | blocked (proxy 403) | **reachable** |
+| www.edmonton.ca | | | reachable |
+| edmonton.ca (bare domain) | | | blocked (proxy 403); not needed, `www.` works |
+| maps.edmonton.ca | | | reachable |
+| coewebapps.edmonton.ca | | | proxy passes it; the site's own Cloudflare answers 403 (not a proxy setting) |
+| pub-edmonton.escribemeetings.com (council agendas) | | | blocked (proxy 403); not needed yet |
+| skyrisecities.com | | | **reachable** |
+| www.skyrisecities.com | | | blocked (proxy 403); not needed, the bare domain serves everything |
 
 ## City of Edmonton Open Data
 
@@ -151,5 +159,28 @@ detection therefore treats a missing part as a wildcard. It also ignores the bul
 where many polygons "change" at once: 2024-01-08 (the Zoning Bylaw 20001 switch-over) and 2025-06-17
 (a re-extract). A real rezoning dated exactly on one of those snapshots is missed. Rezoned polygons
 with a DP inside them are dropped; the DP row stands for the site. `zoningbylaw.edmonton.ca` (the DC
-texts with their heights) is blocked from the cloud sessions (proxy 403), so DC rezonings have no
-height.
+texts with their heights) was blocked from the cloud sessions in Phase 3A (proxy 403), so DC rezonings had no
+height; it is reachable from Phase 3A.5 on.
+
+## Candidate heights (Phase 3A.5, 2026-09-27)
+
+`scripts/fill_heights.py` (`make candidate-heights`; `make candidates` runs it after `fetch_candidates.py`)
+adds `zone_current`, `zone_max_m`, `storeys_final`, `height_final_m`, `height_source`, `height_confidence`,
+`height_source_url` and `height_note` to `data/candidates.csv`, and rewrites `docs/candidates-summary.md`.
+Pages are fetched once, 2 s apart per host, with a User-Agent naming the project, and cached in
+`data/raw/heights/` (gitignored).
+
+| Source | What is read | height_source | Confidence |
+|---|---|---|---|
+| DP description (Phase 3A) | storeys / metres already in the DP text | `dp_description` | high |
+| Zoning Bylaw Map `67p2-r285`, latest snapshot | current zone at the site (point in polygon) and its link | (feeds the next two rows) | |
+| `zoningbylaw.edmonton.ca/dc-NNNNN` (`dc1-`, `dc2-`) | Direct Control provision: every "maximum Height … N m" / "maximum … N Storeys" phrase and height table; podium, street-wall, stepback and setback limits skipped; tallest tower wins | `dc_text` | medium (high if SkyriseCities agrees within 2 storeys) |
+| `skyrisecities.com/database/cities/edmonton.14475` | one page with all Edmonton projects (coordinates, storeys, height, status, completion) | `skyrisecities` | high by street address; medium by DP project name, or the one building project inside a rezoned parcel (≤ 15,000 m²) |
+| `skyrisecities.com/database/projects/<slug>.<id>` | the project's street address, for projects within 120 m of a candidate (one fetch each) | (matching only) | |
+| Zoning Bylaw 20001 zone pages | zone maximum Height: the `hNN` modifier on the map, else the zone table (`ZONE_MAX` in the script, re-checked against the live page every run) | `zone_max` (≤ 40 m, or the site's own rezoning) | low |
+| DP dwelling count | 20–59 → 4–6 storeys, 60–149 → 6–12, 150+ → 12+ (stored as 5 / 9 / 12, capped by the zone ceiling) | `dwellings_estimate` | low |
+
+Metres ↔ storeys use scope.md's 3.1 m (residential) and 4.0 m (office-only DPs). The DC page for
+**DC 21437** (Central McDougall / Queen Mary Park, Bylaw 20989 schedules) carries no regulation text, only
+schedule maps, so its sites fall through to the later sources. SkyriseCities forum threads are never read
+(robots.txt disallows the Edmonton forum).
