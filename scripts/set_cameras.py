@@ -11,10 +11,14 @@ the terrain in dist/terrain.json + terrain.png. Eye-level views give the camera'
 and eye height instead.
 
 Render spec (docs/scope.md, Phase 2 brief): 35 deg vertical FOV, portrait 3:4. Aerials at
-roughly 300-900 m and 35-55 deg pitch; 16 and 17 near-ground eye level; 20 a high overview.
+roughly 300-900 m and 35-55 deg pitch; 16 near-ground eye level; 20 a high overview.
 Phase 3A: 02, 11, 13, 15, 18 are FRAMED views (camera placed at a point, subject put at a chosen
 screen height), and a view can set "aspect": "16:9" (20 does) — the viewer's Render PNG and
-scripts/render_views.py then render it at 16:9 instead of 3:4.
+scripts/render_views.py then render it at 16:9 instead of 3:4. Phase 5: 17 moved from EYE to FRAMED
+(h raised from 1.7 to 50, a valley-rim overlook rather than street level) so the skyline's screen
+height is controllable and sky stays <= 25% — at true street-level eye height the downward tilt
+needed to do that put the near-field view over the rim's edge, which is a real rendering dead zone
+just past the terrain's near boundary at that grazing angle, not a data or framing bug.
 Landmark coordinates come from Overture Maps places / OSM street geometry (checked 2026-09-27).
 To tweak a view, edit its row here and rerun; to capture a hand-framed view instead, use the
 viewer's Copy camera button and paste the result over that entry (and delete its row here).
@@ -61,7 +65,7 @@ AERIAL = {
     "03": ("core_west",   272, 800, 35, 60),   # camera over Wîhkwêntôwin
     "04": ("core",        352, 900, 35, 60),   # camera over Central McDougall, Blatchford behind it
     "05": ("oliver",      160, 600, 40, 30),   # over Victoria Park, looking NNW
-    "06": ("quarters",    120, 550, 40, 30),   # over Riverdale, looking WNW
+    "06": ("quarters",    130, 700, 36, 30),   # over Riverdale, looking WNW; pulled back so P072 sits fully in frame
     "07": ("rossdale",    160, 800, 40, 10),   # over the Cloverdale hill: river, Rossdale flats, downtown rim
     "08": ("104ave",       75, 600, 38, 30),   # along 104 Ave from the east: Station Lands near, MacEwan far
     "09": ("warehouse",   185, 450, 38, 20),   # along 104 St from the south
@@ -69,7 +73,7 @@ AERIAL = {
     "12": ("whyte",        75, 450, 38, 10),   # along Whyte Ave from the east
     "14": ("strathcona",   95, 900, 35, 10),   # from over Bonnie Doon
     "19": ("valley",      180, 900, 30, 0),    # camera over Whyte Ave; frame runs Whyte -> downtown
-    "20": ("centre",      180, 11000, 60, 0),  # 16:9: the bbox's N-S extent fits the 35 deg vertical FOV
+    "20": ("centre",      180, 8000, 60, 0),   # 16:9: tighter than the full bbox so empty background stays < 20%
 }
 
 # Framed views: the camera sits at a point (lat, lon, or a landmark + bearing + range in m), `h` m
@@ -81,12 +85,16 @@ FRAMED = {
     "02": dict(at=(53.5225, -113.4950), h=170, look="ice", aim=80, y=0.52),
     # low and close from over the river, SSW of the dome; dome in the bottom third, core behind it
     "11": dict(at=("legislature", 210, 520), h=290, look="legislature", aim=45, y=-0.50),
-    # pulled back south over the University; Garneau mid-rises foreground, core across the valley
-    "13": dict(at=(53.5190, -113.5215), h=260, look="core", aim=80, y=0.30),
+    # pulled back south over the University, turned W of P012 ONE12 so it's not immediate foreground;
+    # Garneau mid-rises foreground, core across the valley
+    "13": dict(at=(53.51828, -113.52384), h=260, look="core", aim=80, y=0.30),
     # north of Blatchford looking south; the new district in the lower half, downtown the backdrop
     "15": dict(at=("blatchford", 340, 1500), h=450, look="core", aim=60, y=0.30),
     # from the south-west, Commonwealth Stadium in the lower half, Expo Centre lands behind
     "18": dict(at=("stadium", 215, 900), h=380, look="stadium", aim=15, y=-0.35),
+    # Ada Blvd NW at ~67 St, valley-rim overlook (raised from street level and tilted down so the
+    # skyline sits higher in frame and sky stays well under 25%, not the ~48% at plain eye level)
+    "17": dict(at=(53.5588, -113.4466), h=50, look="core", aim=80, y=0.55),
 }
 
 # Per-view output aspect (docs/scope.md: portrait 3:4 by default, optional 16:9 at 3840x2160)
@@ -97,7 +105,6 @@ EYE = {
     # High Level Bridge top deck is ~662 m ASL over the river (HRDEM 1 m DSM, 53.5298-53.5314 N);
     # the terrain model has no bridge, so the eye is set from that deck height.
     "16": (53.5302, -113.51115, 662.2 + 1.7, None, "core", 60),
-    "17": (53.5588, -113.4466, None, 1.7, "core", 80),   # Ada Blvd NW at ~67 St, on the valley rim
 }
 
 

@@ -51,6 +51,8 @@ Alterations, use changes, parking and projects under 20 dwellings are left out a
 ## Quarterly refresh
 
 Everything runs headless from the `Makefile` (a Codespace or a cloud session; no GPU needed).
+[`docs/refresh-prompt.md`](docs/refresh-prompt.md) is a copy-paste prompt that runs the whole thing
+below end to end in a fresh Claude Code session and ends with a report for Mark.
 
 1. `make osm-heights-check`: tall base buildings with OpenStreetMap heights vs SkyriseCities. Fix any
    mismatch with a `status: existing` or `construction` row in `data/proposals.csv` and a footprint.
@@ -64,9 +66,12 @@ Everything runs headless from the `Makefile` (a Codespace or a cloud session; no
    on the rows you re-verified.
 5. `make build`: `dist/proposals.json` and the size check (`base.glb` < 25 MB, `dist/` < 60 MB).
 6. `make contact-sheet`: check `docs/contact-sheet.png`.
-7. `make renders`: all 20 views into `renders/NN-slug_YYYY-MM-DD.png` (the data date), replacing the
+7. `make renders-archive`: snapshots the outgoing `renders/` set (PNGs, thumbs, `renders.json`) to a
+   GitHub Release tagged `renders-<data-date>` before the next step overwrites it in place. No-ops if
+   `renders/` is empty or that tag already exists.
+8. `make renders`: all 20 views into `renders/NN-slug_YYYY-MM-DD.png` (the data date), replacing the
    older ones, then `make renders-check`, which fails on any render older than the data date.
-8. Commit and merge to `main`; GitHub Pages redeploys.
+9. Commit and merge to `main`; GitHub Pages redeploys.
 
 Base city, only when it needs updating: `make fetch` (then `make build`, which the Makefile runs for you).
 
@@ -80,6 +85,7 @@ make cameras  # recompute the 20 views in data/cameras.json from landmark coordi
 make contact-sheet   # headless 600×800 previews of all 20 views -> docs/contact-sheet.png
 make renders  # headless 2400×3200 renders (3840×2160 for 16:9 views) -> renders/NN-slug_YYYY-MM-DD.png
 make renders-check   # flags renders older than the data date
+make renders-archive # snapshots renders/ to a GitHub Release (renders-<data-date>) before make renders replaces it
 make candidates      # City open-data leads -> data/candidates.csv + docs/candidates-summary.md (unverified)
 make proposals       # candidates -> data/proposals.csv + proposals.geojson, then make build
 make osm-heights-check   # OSM-tagged base buildings over 80 m vs SkyriseCities
