@@ -12,7 +12,8 @@ lat 53.505–53.585, lon -113.560 to -113.430. Projection for geometry: UTM zone
 Ground #EDECE8, roads #C9C8C4, parks/landuse green #9CC08E, water #8FB8D8, trees #7FA872.
 
 ## Inclusion rule for proposals
-≥ 12 storeys OR ≥ 40 m. Exception sites where everything is tracked regardless of height: Ice District, The Quarters, Station Lands, Blatchford, Rossdale, Exhibition Lands.
+≥ 8 storeys (or ≥ 25 m) anywhere in the bbox; ≥ 6 storeys (or ≥ 20 m) within the named nodes (Downtown Core, Ice District, Wîhkwêntôwin, Quarters/Boyle, Strathcona/Whyte, Garneau/University, Blatchford, Exhibition Lands) and on exception sites. Alterations, use changes, parking and projects under 20 dwellings are excluded regardless of height.
+Exception sites: Ice District, The Quarters, Station Lands, Blatchford, Rossdale, Exhibition Lands.
 Applications considered from 2021-01-01 onward. Height source priority: DP document > developer site > SkyriseCities > storeys × 3.1 m (residential) or × 4.0 m (office).
 
 ## Base-building height priority
@@ -31,6 +32,7 @@ Every proposals.csv row must carry a source_url and last_checked date.
 - Materials: MeshStandardMaterial, roughness 0.9, metalness 0
 - Bottom-left name chip: dark rounded rect, white bold sans, 4% of frame height
 - Low-poly instanced trees on park/landuse polygons, cap 20,000 instances
+- height_confidence = low renders as an envelope: status colour at 50% opacity. Legend notes 'translucent = height ceiling, no confirmed design'.
 - Base buildings under a proposal footprint are hidden
 - Output filename: renders/NN-slug_YYYY-MM-DD.png (date = data date, see CLAUDE.md)
 
