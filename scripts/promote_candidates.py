@@ -197,9 +197,10 @@ MANUAL_NOTES = {
     "P105": "Maclab Garneau (11120 86 Ave, Maclab Development Group; decided by Mark, Phase 4) entered as `construction` "
             "at SkyriseCities' 30 storeys / 98.14 m (Under Construction, 2 buildings). Its DP predates 2021, so it was never a "
             "candidate, and base.glb showed OpenStreetMap's two planned towers (building:part 108.0 m / 30 floors and "
-            "82.5 m / 20 floors). Footprint: those two building:part outlines, which hides both phantoms. part_heights: "
-            "east tower 98.1 m, west tower 65.4 m (98.14 x 20 / 30, OSM's floor counts; SkyriseCities gives only the "
-            "taller one)",
+            "82.5 m / 20 floors). Footprint: those two building:part outlines plus their podiums (the parent outlines minus "
+            "the towers, OSM 12 m and 16 m), which hides both phantoms and shows the whole project in construction blue. "
+            "part_heights: east tower 98.1 m, west tower 65.4 m (98.14 x 20 / 30, OSM's floor counts; SkyriseCities gives "
+            "only the taller one), podiums 12 / 16 m",
 }
 
 # Rows removed from proposals.csv in Phase 3C / Phase 4: their former ids, for the log.

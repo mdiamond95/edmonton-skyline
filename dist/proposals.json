@@ -409,44 +409,6 @@
    "replaced_height_m": 6.2
   },
   {
-   "id": "P016",
-   "name": "99 Street Apartment",
-   "address": "9860 83 Avenue NW",
-   "status": "stalled",
-   "height_m": 23.0,
-   "height_source": "skyrisecities",
-   "height_confidence": "medium",
-   "storeys": 6,
-   "footprint_source": "auto: Voronoi cell of assessment parcel 807 m2; lot inset 3 m",
-   "trace_reason": "",
-   "candidate_id": "368879276-002",
-   "developer": "",
-   "source_url": "https://skyrisecities.com/database/projects/99-street-apartment.26777",
-   "last_checked": "2026-09-28",
-   "lat": 53.519214,
-   "lon": -113.485932,
-   "local": [
-    500.57,
-    -2888.96
-   ],
-   "footprint": [
-    [
-     [
-      495.38,
-      -2865.39,
-      493.91,
-      -2896.12,
-      510.02,
-      -2896.77,
-      511.2,
-      -2866.0
-     ]
-    ]
-   ],
-   "hide_base": [],
-   "replaced_height_m": null
-  },
-  {
    "id": "P017",
    "name": "10563 116 Street NW (5-storey office)",
    "address": "10563 116 Street NW",
@@ -2034,8 +1996,8 @@
    "height_source": "zone_max",
    "height_confidence": "low",
    "storeys": 24,
-   "footprint_source": "needs_trace",
-   "trace_reason": "lot 8,761 m2 > 8,000 m2 for a single building",
+   "footprint_source": "traced in viewer 2026-09-28",
+   "trace_reason": "",
    "candidate_id": "REZ-MU-177029",
    "developer": "",
    "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/mixed-use-zones/280-mu-mixed-use-zone",
@@ -2049,14 +2011,14 @@
    "footprint": [
     [
      [
-      96.23,
-      1395.24,
-      52.1,
-      1396.78,
-      50.91,
-      1362.83,
-      95.04,
-      1361.28
+      94.88,
+      1362.22,
+      97.23,
+      1395.7,
+      52.47,
+      1396.74,
+      51.57,
+      1363.19
      ]
     ]
    ],
@@ -2172,8 +2134,8 @@
    "height_source": "zone_max",
    "height_confidence": "low",
    "storeys": 20,
-   "footprint_source": "needs_trace",
-   "trace_reason": "lot 13,253 m2 > 8,000 m2 for a single building",
+   "footprint_source": "traced in viewer 2026-09-28",
+   "trace_reason": "",
    "candidate_id": "REZ-MU-271095",
    "developer": "",
    "source_url": "https://zoningbylaw.edmonton.ca/part-2-standard-zones-and-overlays/mixed-use-zones/280-mu-mixed-use-zone",
@@ -2187,14 +2149,14 @@
    "footprint": [
     [
      [
-      -997.17,
-      2485.67,
-      -999.16,
-      2441.55,
-      -965.23,
-      2440.02,
-      -963.24,
-      2484.14
+      -964.06,
+      2438.73,
+      -962.45,
+      2484.45,
+      -996.67,
+      2485.29,
+      -997.72,
+      2442.01
      ]
     ]
    ],
@@ -2610,8 +2572,8 @@
    "height_source": "dc_text",
    "height_confidence": "medium",
    "storeys": 12,
-   "footprint_source": "needs_trace",
-   "trace_reason": "lot 38,912 m2 > 8,000 m2 for a single building",
+   "footprint_source": "traced in viewer 2026-09-28",
+   "trace_reason": "",
    "candidate_id": "REZ-DC-21128-273495",
    "developer": "",
    "source_url": "https://zoningbylaw.edmonton.ca/dc-21128",
@@ -2625,14 +2587,14 @@
    "footprint": [
     [
      [
-      -2441.12,
-      439.47,
-      -2441.37,
-      395.31,
-      -2407.4,
-      395.13,
-      -2407.16,
-      439.28
+      -2407.75,
+      394.15,
+      -2407.75,
+      438.29,
+      -2441.32,
+      438.29,
+      -2441.53,
+      395.64
      ]
     ]
    ],
@@ -2643,13 +2605,13 @@
    "id": "P072",
    "name": "Artists Quarters",
    "address": "near 10212 96 Street NW",
-   "status": "proposed",
+   "status": "stalled",
    "height_m": 77.11,
-   "height_source": "skyrisecities (exceeds current zone ceiling; scheme per SkyriseCities)",
+   "height_source": "skyrisecities 18 storeys / 77.11 m (exceeds current zone ceiling MU h40); on hold; site downzoned 2024",
    "height_confidence": "medium",
    "storeys": 18,
-   "footprint_source": "needs_trace",
-   "trace_reason": "lot 8,094 m2 > 8,000 m2 for a single building",
+   "footprint_source": "traced in viewer 2026-09-28",
+   "trace_reason": "",
    "candidate_id": "REZ-MU-189192",
    "developer": "Arts Habitat Edmonton, Artists Urban Village, City of Edmonton",
    "source_url": "https://skyrisecities.com/database/projects/artists-quarters.18434",
@@ -2663,18 +2625,18 @@
    "footprint": [
     [
      [
-      784.35,
-      4.21,
-      790.88,
-      -22.53,
-      814.54,
-      -16.78,
-      816.04,
-      -23.02,
-      835.3,
-      -18.31,
-      827.25,
-      14.69
+      815.04,
+      -17.47,
+      817.21,
+      -23.61,
+      835.73,
+      -17.62,
+      827.4,
+      15.05,
+      785.01,
+      3.92,
+      790.38,
+      -23.07
      ]
     ]
    ],
@@ -4131,6 +4093,211 @@
     35024
    ],
    "replaced_height_m": 142.1
+  },
+  {
+   "id": "P105",
+   "name": "Maclab Garneau",
+   "address": "11120 86 Avenue NW",
+   "status": "construction",
+   "height_m": 98.14,
+   "height_source": "skyrisecities 30 storeys / 98.14 m (tallest of 2 towers); replaces OSM height tags of 108 m and 82.5 m; podiums at OSM 12 m / 16 m",
+   "height_confidence": "medium",
+   "storeys": 30,
+   "footprint_source": "OpenStreetMap outlines via Overture Maps: towers = building:part ways 1409368149 (east) and 1409368151 (west); podiums = parent buildings 1409368153 and 1409368150 minus the towers",
+   "trace_reason": "",
+   "candidate_id": "",
+   "developer": "Maclab Development Group",
+   "source_url": "https://skyrisecities.com/database/projects/maclab-garneau.35623",
+   "last_checked": "2026-09-28",
+   "lat": 53.522229,
+   "lon": -113.519651,
+   "local": [
+    -1722.6,
+    -2475.08
+   ],
+   "footprint": [
+    [
+     [
+      -1702.44,
+      -2491.94,
+      -1672.41,
+      -2493.32,
+      -1671.12,
+      -2465.18,
+      -1701.15,
+      -2463.8
+     ]
+    ],
+    [
+     [
+      -1768.89,
+      -2462.66,
+      -1768.96,
+      -2463.96,
+      -1772.45,
+      -2463.77,
+      -1772.89,
+      -2471.92,
+      -1771.28,
+      -2471.64,
+      -1771.74,
+      -2480.14,
+      -1773.05,
+      -2480.07,
+      -1773.37,
+      -2486.04,
+      -1769.44,
+      -2486.24,
+      -1769.5,
+      -2487.52,
+      -1760.99,
+      -2487.97,
+      -1760.79,
+      -2484.32,
+      -1755.64,
+      -2484.59,
+      -1755.78,
+      -2487.24,
+      -1738.81,
+      -2488.13,
+      -1738.75,
+      -2486.97,
+      -1732.68,
+      -2487.29,
+      -1732.39,
+      -2481.7,
+      -1731.23,
+      -2481.76,
+      -1730.74,
+      -2472.21,
+      -1731.65,
+      -2472.16,
+      -1731.33,
+      -2466.12,
+      -1737.05,
+      -2465.82,
+      -1736.97,
+      -2464.48,
+      -1754.73,
+      -2463.53,
+      -1754.95,
+      -2467.56,
+      -1759.35,
+      -2467.32,
+      -1759.12,
+      -2463.19
+     ]
+    ],
+    [
+     [
+      -1671.38,
+      -2494.18,
+      -1669.98,
+      -2464.29,
+      -1729.36,
+      -2461.51,
+      -1730.86,
+      -2491.38
+     ],
+     [
+      -1672.22,
+      -2493.52,
+      -1702.65,
+      -2492.14,
+      -1701.35,
+      -2463.6,
+      -1670.92,
+      -2464.98
+     ]
+    ],
+    [
+     [
+      -1729.12,
+      -2456.43,
+      -1787.04,
+      -2453.71,
+      -1788.69,
+      -2488.66,
+      -1731.06,
+      -2491.37,
+      -1729.56,
+      -2461.31,
+      -1729.36,
+      -2461.31
+     ],
+     [
+      -1772.64,
+      -2463.57,
+      -1769.15,
+      -2463.76,
+      -1769.08,
+      -2462.46,
+      -1758.91,
+      -2462.99,
+      -1759.13,
+      -2467.13,
+      -1755.14,
+      -2467.35,
+      -1754.92,
+      -2463.33,
+      -1736.76,
+      -2464.29,
+      -1736.84,
+      -2465.62,
+      -1731.12,
+      -2465.93,
+      -1731.44,
+      -2471.96,
+      -1730.53,
+      -2472.02,
+      -1731.04,
+      -2481.97,
+      -1732.2,
+      -2481.9,
+      -1732.49,
+      -2487.49,
+      -1738.56,
+      -2487.18,
+      -1738.62,
+      -2488.33,
+      -1755.99,
+      -2487.43,
+      -1755.85,
+      -2484.78,
+      -1760.6,
+      -2484.53,
+      -1760.79,
+      -2488.17,
+      -1769.72,
+      -2487.71,
+      -1769.65,
+      -2486.43,
+      -1773.58,
+      -2486.23,
+      -1773.24,
+      -2479.86,
+      -1771.93,
+      -2479.93,
+      -1771.5,
+      -2471.88,
+      -1773.1,
+      -2472.16
+     ]
+    ]
+   ],
+   "part_heights": [
+    98.14,
+    65.4,
+    12.0,
+    16.0
+   ],
+   "hide_base": [
+    21985,
+    21986,
+    21994,
+    21996
+   ],
+   "replaced_height_m": 108.4
   }
  ],
  "base_glb": {
