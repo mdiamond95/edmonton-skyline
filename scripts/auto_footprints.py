@@ -23,10 +23,20 @@ Footprints (the brief):
   storeys >= 12      N tower floorplate rectangles on the lot's long axis: 750 m2 residential,
                      1,500 m2 office / hotel / mixed-use, capped at 70% of the lot; N from the permit
                      text or SkyriseCities (promote_candidates.py). No podiums in this pass.
+                     Phase 3C: a single tower from a development permit is centred on the permit's
+                     own coordinate (or as near as it fits), still clipped to the lot; rezonings have
+                     no such coordinate and stay centred on the lot. Multi-tower rows carry
+                     `part_heights` (one height per tower) when the DP or a hand correction gives them.
 footprint_source = needs_trace (the auto footprint is still written, so the row renders) when the lot
-was not found, a single building sits on more than 8,000 m2, the footprint overlaps park or water
-land use by more than 10%, or the lot is too narrow for the footprint (under about 8 m wide). Features whose footprint_source is not auto-generated (P001, anything traced
-by hand in the viewer) are kept as they are. footprint_source is copied back into proposals.csv.
+was not found, a single building not anchored on a permit coordinate sits on more than 8,000 m2, the
+footprint overlaps a genuine park or water by more than 10%, or the lot is too narrow for the footprint
+(under about 8 m wide, as an equivalent rectangle; narrow lots try a 1.5 m inset first).
+Park check (Phase 3C): dist/landuse.json's green class includes vacant land (landuse=grass, greenfield,
+meadow; natural=scrub). For a flagged footprint the OSM tags of the Overture land-use polygons under it
+are read (cached in data/raw/footprints/landuse_tags/): vacant land clears the flag; a genuine park with
+the permit coordinate outside it trims the lot to the part off the park; otherwise the flag stays.
+Features whose footprint_source is not auto-generated (P001, P104, anything traced by hand in the
+viewer) are kept as they are. footprint_source is copied back into proposals.csv.
 """
 import csv
 import json
@@ -35,20 +45,19 @@ import sys
 from pathlib import Path
 
 import numpy as np
-import requests
 from shapely import affinity
 from shapely.ops import voronoi_diagram
 from shapely.geometry import MultiPoint, MultiPolygon, Point, Polygon, box, mapping, shape
+from shapely.wkt import loads as wkt_loads
 from shapely.ops import transform, unary_union
 from shapely.strtree import STRtree
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import DATA, DIST, RAW, ROOT, to_local, to_wgs84  # noqa: E402
 from build_proposals import read_base_buildings  # noqa: E402
-from promote_candidates import COLUMNS, zoning_snapshot  # noqa: E402
+from promote_candidates import COLUMNS, parcel_rows, zoning_snapshot  # noqa: E402
 
 CACHE = RAW / "footprints"
-PARCELS = CACHE / "parcels_assessment.json"
 REPORT = ROOT / "docs" / "footprints-report.md"
 AUTO = ("auto:", "needs_trace")
 INSET_M = 3.0
@@ -59,6 +68,7 @@ BIG_LOT_M2 = 8000.0
 DC_SITE_MAX_M2 = 15000.0
 PARK_WATER_MAX = 0.10
 PARCEL_SNAP_M = 40.0
+MIN_WIDTH_M = 8.0
 
 
 def local(geom):
@@ -70,13 +80,7 @@ def wgs(geom):
 
 
 def load_parcels():
-    if not PARCELS.exists():
-        rows = requests.get("https://data.edmonton.ca/resource/dm3i-bp8w.json", timeout=180, params={
-            "$select": "id,area,latitude,longitude", "$limit": 200000,
-            "$where": "within_box(geometry_point,53.585,-113.560,53.505,-113.430)"}).json()
-        CACHE.mkdir(parents=True, exist_ok=True)
-        PARCELS.write_text(json.dumps(rows))
-    rows = json.loads(PARCELS.read_text())
+    rows = parcel_rows()
     lon = np.array([float(r["longitude"]) for r in rows])
     lat = np.array([float(r["latitude"]) for r in rows])
     e, n = to_local(lon, lat)
@@ -116,8 +120,25 @@ def axes(poly):
     return ctr, u, max(l1, l2), min(l1, l2)
 
 
-def towers(lot, n, area_each):
+def towers(lot, n, area_each, anchor=None):
+    """n floorplate rectangles on the lot's long axis. With an anchor (a single tower on the permit's own
+    coordinate), the tower is centred there, or as close to it as it fits (slid towards the lot centre
+    until 97% of it is on the lot), and clipped to the lot. Returns (rects, area each, anchored)."""
     ctr, u, L, S = axes(lot)
+    if anchor is not None and n == 1:
+        a0 = np.asarray(anchor, float)
+        for t in np.linspace(0.0, 1.0, 21):
+            c = a0 + t * (ctr - a0)
+            if not lot.contains(Point(c)):
+                continue
+            rects, a = _towers_at(lot, c, u, L, S, 1, area_each, clip=False)
+            clip = rects[0].intersection(lot)
+            if clip.area >= 0.97 * rects[0].area:
+                return [rects[0] if clip.area > rects[0].area - 0.5 else simplify_to(clip)], a, True
+    return (*_towers_at(lot, ctr, u, L, S, n, area_each), False)
+
+
+def _towers_at(lot, ctr, u, L, S, n, area_each, clip=True):
     v = np.array([-u[1], u[0]])
     a = min(area_each, MAX_COVER * lot.area / n)
     w = math.sqrt(a * 1.3)             # along the long axis, a slightly long rectangle
@@ -134,8 +155,8 @@ def towers(lot, n, area_each):
         c = ctr + u * off
         corners = [c + u * sx * w / 2 + v * sy * d / 2 for sx, sy in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
         r = Polygon(corners)
-        clip = r.intersection(lot)
-        rects.append(r if clip.area >= 0.9 * r.area else simplify_to(clip))
+        c2 = r.intersection(lot) if clip else r
+        rects.append(r if c2.area >= 0.9 * r.area else simplify_to(c2))
     return rects, w * d
 
 
@@ -229,6 +250,73 @@ def shrink_to(cell, parcel_m2):
         f = math.sqrt(parcel_m2 / cell.area)
         return affinity.scale(cell, f, f, origin=cell.centroid)
     return cell
+
+
+def widths(fp):
+    """Width of each part as its equivalent rectangle (same area and perimeter); exact for a rectangle,
+    where 2 A / P under-reads (9 x 40 m -> 7.3 m)."""
+    out = []
+    for g in getattr(fp, "geoms", [fp]):
+        h = g.length / 2
+        disc = h * h - 4 * g.area
+        out.append((h - math.sqrt(disc)) / 2 if disc > 0 else math.sqrt(g.area))
+    return out
+
+
+# OSM tags that make "park" land use in dist/landuse.json (fetch_base.classify_area) but mean vacant land.
+VACANT_LANDUSE = {"grass", "greenfield", "meadow", "brownfield", "flowerbed"}
+VACANT_NATURAL = {"scrub", "grassland", "shrubbery"}
+
+
+def overture_green(pid, fp):
+    """Overture base/land_use, land and water polygons (OSM tags) around a footprint, cached per row in
+    data/raw/footprints/landuse_tags/. None when Overture is unreachable."""
+    path = CACHE / "landuse_tags" / f"{pid}.json"
+    w, s_, e_, n_ = wgs(fp.buffer(20)).bounds
+    if path.exists():
+        d = json.loads(path.read_text())
+        if d.get("bbox") == [round(v, 6) for v in (w, s_, e_, n_)]:
+            return [(t, wkt_loads(g)) for t, g in d["polys"]]
+    try:
+        import pyarrow.compute as pc
+        import pyarrow.dataset as pds
+        from shapely import wkb
+        import fetch_base as fb
+        rel, fs = fb.overture_release(), fb.overture_fs()
+        polys = []
+        for type_ in ("land_use", "land", "water"):
+            ds = pds.dataset(f"{fb.OVERTURE_BUCKET}/release/{rel}/theme=base/type={type_}/", filesystem=fs, format="parquet")
+            flt = ((pc.field("bbox", "xmin") < e_) & (pc.field("bbox", "xmax") > w) &
+                   (pc.field("bbox", "ymin") < n_) & (pc.field("bbox", "ymax") > s_))
+            for row in ds.to_table(filter=flt, columns=["geometry", "source_tags"]).to_pylist():
+                g = wkb.loads(row["geometry"])
+                tags = dict(row.get("source_tags") or []) or ({"natural": "water"} if type_ == "water" else {})
+                if g.geom_type.endswith("Polygon") and fb.classify_area(tags) in ("park", "water"):
+                    polys.append((tags, g))
+    except Exception as ex:   # noqa: BLE001 - network or S3 failure: keep the flag
+        print(f"  ! {pid}: Overture land use not reachable ({ex.__class__.__name__}); park flag kept")
+        return None
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps({"bbox": [round(v, 6) for v in (w, s_, e_, n_)],
+                                "polys": [(t, g.wkt) for t, g in polys]}))
+    return polys
+
+
+def is_vacant(tags):
+    return "leisure" not in tags and (tags.get("landuse") in VACANT_LANDUSE or tags.get("natural") in VACANT_NATURAL)
+
+
+def genuine_parks(pid, fp):
+    """Local polygons of the parks / water under a footprint, leaving out vacant land; None if unknown."""
+    polys = overture_green(pid, fp)
+    return None if polys is None else [local(g) for t, g in polys if not is_vacant(t)]
+
+
+def vacant_tags(pid, fp):
+    polys = overture_green(pid, fp) or []
+    tags = sorted({f"{k}={v}" for t, g in polys if is_vacant(t) and local(g).intersects(fp)
+                   for k, v in t.items() if k in ("landuse", "natural")})
+    return ", ".join(tags) or "no park tag"
 
 
 def base_hull(blds, boxes, e, n, r=15.0):
@@ -330,48 +418,98 @@ def main():
             opened = max(opened.geoms, key=lambda g: g.area)
         if not opened.is_empty and opened.area >= 0.6 * lot.area:
             lot = opened
-        # --- footprint
-        if r["status"] == "existing":
-            fp = existing_outline(blds, boxes, lot, e, n)
-            method = "base-building outline(s) in the lot (official height replaces LiDAR)"
-            if fp is None:
-                fp, method = simplify_to(lot.buffer(-INSET_M, join_style="mitre")), f"lot inset {INSET_M:g} m"
-        elif storeys <= 11:
-            ins = lot.buffer(-INSET_M, join_style="mitre")
-            if ins.is_empty or ins.area < 0.25 * lot.area:
-                ins, method = lot.buffer(-1.0, join_style="mitre"), "lot inset 1 m (too narrow for 3 m)"
-            else:
+        # --- footprint (a permit's own coordinate anchors a single tower; see towers())
+        anchor = (e, n) if m.get("from_permit", not cid.startswith("REZ-")) else None
+
+        def footprint(lot):
+            if r["status"] == "existing":
+                fp = existing_outline(blds, boxes, lot, e, n)
+                method = "base-building outline(s) in the lot (official height replaces LiDAR)"
+                if fp is None:
+                    fp, method = simplify_to(lot.buffer(-INSET_M, join_style="mitre")), f"lot inset {INSET_M:g} m"
+                return fp, method, False
+            if storeys <= 11:
                 method = f"lot inset {INSET_M:g} m"
-            fp = simplify_to(ins)
-        else:
+                fp = simplify_to(lot.buffer(-INSET_M, join_style="mitre"))
+                if fp.is_empty or fp.area < 0.25 * lot.area or min(widths(fp)) < MIN_WIDTH_M:
+                    # a narrow lot: typical side yards are ~1.5 m, not 3
+                    for inset in (1.5, 1.0):
+                        q = lot.buffer(-inset, join_style="mitre")
+                        if not q.is_empty and q.area >= 0.25 * lot.area:
+                            fp, method = simplify_to(q), f"lot inset {inset:g} m (narrow lot)"
+                            if min(widths(fp)) >= MIN_WIDTH_M:
+                                break
+                return fp, method, False
             use = m.get("use", "residential")
             plate = FLOORPLATE.get(use, 1500.0)
             if m.get("floorplate_max"):   # the Direct Control text's own maximum tower floor plate
                 plate = min(plate, float(m["floorplate_max"]))
-            rects, a = towers(lot, nb, plate)
+            rects, a, anchored = towers(lot, nb, plate, anchor)
             fp = rects[0] if len(rects) == 1 else MultiPolygon(rects)
             method = (f"{nb} x {a:.0f} m2 {use} floorplate on the lot's long axis" if nb > 1
-                      else f"{a:.0f} m2 {use} floorplate centred on the lot")
+                      else f"{a:.0f} m2 {use} floorplate " + ("on the permit coordinate" if anchored else "centred on the lot"))
             if m.get("floorplate_max") and plate < FLOORPLATE.get(use, 1500.0):
                 method += f" (DC maximum floor plate {plate:.0f} m2)"
             if a < plate - 1:
                 method += f" (capped at {MAX_COVER:.0%} of the lot)"
+            return fp, method, anchored
+
+        fp, method, anchored = footprint(lot)
         if not fp.is_valid:
             fp = fp.buffer(0)
-        widths = [2 * g.area / g.length for g in getattr(fp, "geoms", [fp])]   # ~ width of a long thin shape
-        if min(widths) < 8.0 and r["status"] != "existing":
-            flags.append(f"lot too narrow (footprint about {min(widths):.0f} m wide)")
-        if lot.area > BIG_LOT_M2 and nb == 1 and r["status"] != "existing":
-            flags.append(f"lot {lot.area:,.0f} m2 > {BIG_LOT_M2:,.0f} m2 for a single building")
+        # --- park / water: only a genuine park counts; vacant land tagged grass / greenfield does not
         gi = gtree.query(fp)
         wet = sum(fp.intersection(green[i]).area for i in gi) if len(gi) else 0.0
         if wet > PARK_WATER_MAX * fp.area:
-            flags.append(f"{wet / fp.area:.0%} of the footprint on park / water land use")
+            parks = genuine_parks(pid, fp)
+            if parks is None:
+                flags.append(f"{wet / fp.area:.0%} of the footprint on park / water land use (OSM tags not reachable)")
+            else:
+                real = unary_union(parks) if parks else Polygon()
+                share = fp.intersection(real).area / fp.area
+                if share <= PARK_WATER_MAX:
+                    method += (f"; {wet / fp.area:.0%} on green land use that is vacant land, not a park "
+                               f"({vacant_tags(pid, fp)})")
+                elif not real.covers(Point(e, n)):
+                    # the permit coordinate is off the park: keep the lot's non-park part around it
+                    rest = lot.difference(real)
+                    pieces = [g for g in getattr(rest, "geoms", [rest]) if g.area > 50]
+                    if pieces:
+                        lot = min(pieces, key=lambda g: g.distance(Point(e, n)))
+                        fp, method, anchored = footprint(lot)
+                        method += "; lot trimmed to the part off the park (permit coordinate is outside it)"
+                        share = fp.intersection(real).area / fp.area
+                    if share > PARK_WATER_MAX:
+                        flags.append(f"{share:.0%} of the footprint on a park / water")
+                else:
+                    flags.append(f"{share:.0%} of the footprint on a park / water (the permit coordinate is in it too)")
+        if min(widths(fp)) < 8.0 and r["status"] != "existing":
+            flags.append(f"lot too narrow (footprint about {min(widths(fp)):.0f} m wide)")
+        if lot.area > BIG_LOT_M2 and nb == 1 and r["status"] != "existing" and not anchored:
+            flags.append(f"lot {lot.area:,.0f} m2 > {BIG_LOT_M2:,.0f} m2 for a single building")
+        # per-tower heights (multi-tower rows): part_heights in the feature, tallest = height_m
+        part_heights = None
+        if fp.geom_type == "MultiPolygon" and len(fp.geoms) == nb:
+            hm = float(r["height_m"])
+            if m.get("tower_heights"):
+                part_heights = [min(float(h), hm) for h in m["tower_heights"]]
+            elif m.get("tower_storeys"):
+                ts = m["tower_storeys"]
+                part_heights = [round(hm * s / max(ts), 1) for s in ts]
+            if part_heights and m.get("tallest_near"):   # tallest tower nearest a given point, then descending
+                te, tn = to_local(m["tallest_near"][1], m["tallest_near"][0])
+                order = sorted(range(nb), key=lambda i: fp.geoms[i].distance(Point(te, tn)))
+                hs = sorted(part_heights, reverse=True)
+                part_heights = [hs[order.index(i)] for i in range(nb)]
+            if part_heights:
+                method += " (tower heights " + " / ".join(f"{h:g}" for h in part_heights) + " m)"
         src = "needs_trace" if flags else f"auto: {how}; {method}"
         r["footprint_source"] = src
         g = wgs(fp)
         g = transform(lambda x, y, z=None: (round(x, 7), round(y, 7)), g)
         props = {"id": pid, "name": r["name"], "footprint_source": src}
+        if part_heights:
+            props["part_heights"] = part_heights
         if flags:
             props["trace_reason"] = "; ".join(flags)
             props["auto_footprint"] = f"{how}; {method}"

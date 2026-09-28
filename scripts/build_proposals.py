@@ -5,6 +5,8 @@ Also validates data/cameras.json and copies it to dist/cameras.json (the site on
 serves web/, dist/ and renders/). Exits 1 on any validation error.
 
 Height fallback when height_m is blank: storeys x 3.1 m (scope.md residential rate).
+A multi-tower footprint may carry `part_heights` in its GeoJSON properties (one height per part, in
+part order, the tallest = height_m); the viewer extrudes each tower to its own height.
 height_confidence (high / medium / low) is required; the viewer draws `low` rows as translucent
 envelopes (a height ceiling, no confirmed design). footprint_source = needs_trace rows are listed in
 the viewer's Trace mode for manual tracing.
@@ -112,6 +114,9 @@ def build_proposals(errors, warnings):
         conf = r["height_confidence"].strip().lower()
         if conf not in CONFIDENCES:
             errors.append(f"{where}: height_confidence '{r['height_confidence']}' not in {{{','.join(CONFIDENCES)}}}")
+        if status == "construction" and conf == "low":
+            errors.append(f"{where}: status construction must not be an envelope; resolve the height (CLAUDE.md) "
+                          "and set height_confidence to medium or high")
         if not height or height <= 0:
             errors.append(f"{where}: needs height_m or storeys")
             continue
@@ -133,6 +138,11 @@ def build_proposals(errors, warnings):
             x0, y0 = to_wgs84(e - 15, nn - 15)
             x1, y1 = to_wgs84(e + 15, nn + 15)
             geom = box(x0, y0, x1, y1)
+        parts = [geom] if geom.geom_type == "Polygon" else list(geom.geoms)
+        ph = fprops.get("part_heights")
+        if ph is not None and (len(ph) != len(parts) or not all(isinstance(h, (int, float)) and 0 < h <= height + 0.01 for h in ph)):
+            errors.append(f"{where}: part_heights {ph} must give one height per footprint part ({len(parts)}), each <= height_m")
+            ph = None
         e, nn = to_local(lon, lat)
         if not ext.contains(Point(e, nn)):
             warnings.append(f"{where}: outside scope bbox")
@@ -144,6 +154,7 @@ def build_proposals(errors, warnings):
             "developer": r["developer"].strip(), "source_url": r["source_url"].strip(),
             "last_checked": r["last_checked"].strip(), "lat": lat, "lon": lon,
             "local": [round(e, 2), round(nn, 2)], "footprint": local_rings(geom),
+            **({"part_heights": [round(h, 2) for h in ph]} if ph else {}),
         })
     for fid in feats:
         if fid not in seen:
@@ -203,7 +214,8 @@ def hide_base_under(proposals, warnings):
             r = [np.asarray(x).reshape(-1, 2) for x in rings]
             polys.append(Polygon(r[0], r[1:]))
         hide, measured, kept = [], [], []
-        for poly in polys:
+        for i, poly in enumerate(polys):
+            ph = (p.get("part_heights") or [p["height_m"]] * len(polys))[i]
             x0, y0, x1, y1 = poly.bounds
             cand = np.nonzero((boxes[:, 0] < x1) & (boxes[:, 2] > x0) & (boxes[:, 1] < y1) & (boxes[:, 3] > y0))[0]
             pp = prep(poly)
@@ -217,7 +229,7 @@ def hide_base_under(proposals, warnings):
                 if inside and int(k) not in hide:
                     hide.append(int(k))
                     measured.append(top - bot - 1.0)  # base sits 1 m below ground (fetch_base.py)
-                elif not inside and overlap > 5 and top - bot - 1.0 > p["height_m"] - 1:
+                elif not inside and overlap > 5 and top - bot - 1.0 > ph - 1:
                     kept.append(round(overlap))  # partly under the footprint and taller: pokes through
         p["hide_base"] = sorted(hide)
         if kept:

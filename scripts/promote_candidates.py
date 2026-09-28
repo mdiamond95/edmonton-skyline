@@ -24,7 +24,7 @@ import math
 import re
 import sys
 from collections import Counter, defaultdict
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 
 import requests
@@ -33,7 +33,7 @@ from shapely.ops import unary_union
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import DATA, RAW, ROOT  # noqa: E402
-from fetch_candidates import exception_site, metres  # noqa: E402
+from fetch_candidates import BP_ID, exception_site, metres  # noqa: E402
 import fill_heights as fh  # noqa: E402
 
 COLUMNS = ["id", "name", "address", "lat", "lon", "height_m", "storeys", "status", "developer", "source_url",
@@ -53,8 +53,6 @@ EXISTING = {
     "392456153-002": {"name": "The Trax", "sr": "https://skyrisecities.com/database/projects/trax.38015",
                       "storeys": 6, "height_m": 24.08},
     "408272142-002": {"name": "Douglas Manor Addition", "sr": "https://skyrisecities.com/database/projects/douglas-manor-addition.42245",
-                      "storeys": 6, "height_m": None},
-    "411454341-002": {"name": "Stadium Yards", "sr": "https://skyrisecities.com/database/projects/stadium-yards.39328",
                       "storeys": 6, "height_m": None},
 }
 # Flagged as work on an existing building by fill_heights.py, but they are revisions of a new building
@@ -76,13 +74,18 @@ SMALL_PER_BUILDING = {
     "381366998-002": "2 lodging houses of 12 sleeping units each",
     "617134145-002": "cluster housing: 6 buildings of 8-14 dwellings",
 }
-# Station Lands: SkyriseCities lists the east tower at 25 storeys; this DP adds 12.
+# Station Lands: SkyriseCities lists the towers at 25 storeys / 90.0 m; this DP adds 12 storeys (x 3.1 m).
 HEIGHT_OVERRIDE = {
-    "315143826-064": (37, None, "low", "skyrisecities + dp_description",
-                      "SkyriseCities 'Stationlands Residential Towers' 25 storeys + 12 storeys added by this DP"),
+    "315143826-064": (37, 127.2, "medium", "skyrisecities 90.0 m + 12 storeys x 3.1 m (dp_description)",
+                      "SkyriseCities 'Stationlands Residential Towers' 25 storeys / 90.0 m + 12 storeys added by this DP"),
 }
-# Candidates never to promote (candidate_id: reason); e.g. a promoted row deleted by hand.
-SKIP = {}
+# Candidates never to promote (candidate_id: reason); a row already in proposals.csv is removed too.
+SKIP = {
+    "411454341-002": "Stadium Yards: 6 storeys in node 'Other' is below the rule (removed by Mark, Phase 3C)",
+    "520417913-002": "City of Edmonton Garneau supportive housing (8231 111 St): four storeys, 34 units "
+                     "(https://www.edmonton.ca/sites/default/files/public-files/Supportive-Housing-Garneau-Notification.pdf; "
+                     "storeys per ConstructConnect / GEC Architecture); node needs 6",
+}
 # Zoning-map polygons that carry a DC link but are not that DC's site.
 ZONING_ARTEFACT = {
     "REZ-DC-20932-207783": "1 km strip along the valley edge that repeats the DC 20932 link; the DC text describes "
@@ -92,6 +95,236 @@ ZONING_ARTEFACT = {
 # project. Dropped unless listed in KEEP_AREA_REZONING. See area_wide().
 AREA_MIN_M2, AREA_PARCELS, AREA_PARCELS_ANY, AREA_BIG_M2 = 8000.0, 5, 10, 20000.0
 KEEP_AREA_REZONING = set()
+
+# --- Phase 3C (2026-09-28): height and status rules from Mark (CLAUDE.md "Height and status rules") --------
+# Applied to every row, kept or new, after promotion (phase3c()):
+#   1. CORRECTIONS below (researched by hand; each one logged).
+#   2. status = construction: the storeys named in the building-permit descriptions (24uj-dj8v) at the
+#      address replace a zone / DC / estimate height (confidence high); a row that then falls below the
+#      inclusion rule is removed.
+#   3. SkyriseCities scheme above the DC / zone ceiling (dc_text / zone_max rows): a project pin within 40 m
+#      of the permit, or inside the rezoned polygon, with more height than the ceiling. Forum activity in
+#      the last 24 months -> the scheme is the proposal (medium, "exceeds current DC; scheme per
+#      SkyriseCities"); otherwise the ceiling stays and the stale scheme is noted in height_source.
+#   4. status = construction must end at medium or high; anything left low is listed as unresolved
+#      (build_proposals.py refuses it).
+SR_ACTIVE_DAYS = 730
+SR_NEAR_M = 40.0
+CORRECTIONS = {
+    "364536438-002": dict(tower_storeys=[16, 19, 21],
+                          why="DP text: 3 towers of 16, 19 and 21 storeys; each tower gets its own height (order along "
+                              "the lot's long axis as listed, not known)"),
+    "392214637-036": dict(name="ONE12", storeys=14, height_m=46.0, height_confidence="high",
+                          height_source="skyrisecities 46.00 m + building permit 2024-10-31 ('existing 14 storey high-rise - ONE12 Tower')",
+                          source_url="https://skyrisecities.com/database/projects/one12.47031",
+                          why="SkyriseCities 'ONE12' (26 m away, Under Construction) 14 storeys / 46.00 m; building permit "
+                              "calls it an existing 14-storey high-rise; LiDAR already shows a 42 m roof here. Above MU h40, "
+                              "but the DP predates Zoning Bylaw 20001, so this is the as-built height, not a scheme"),
+    "368879276-002": dict(name="99 Street Apartment", status="stalled", storeys=6, height_m=23.0, height_confidence="medium",
+                          height_source="skyrisecities",
+                          source_url="https://skyrisecities.com/database/projects/99-street-apartment.26777",
+                          why="construction status came from an unrelated permit within 40 m (8305 99 St: 11-dwelling "
+                              "'99 Street Townhomes', 2025-06-19); this DP (approved 2021, now 'Other') has no building permit "
+                              "of its own, so approved > 3 years without permit activity = stalled. Height: SkyriseCities "
+                              "'99 Street Apartment' (8301 99 St, same corner, 14 m) 6 storeys / 23.0 m. If the 11-dwelling "
+                              "building is on this lot, the scheme is dead and the row should go"),
+    "562465177-002": dict(storeys=6, height_m=18.6, height_confidence="medium",
+                          height_source="estimate: 83 dwellings on a 1,773 m2 lot under RM h23 (6 storeys x 3.1)",
+                          why="no storeys in the DP or building permits (hoarding only, 2026-05-14), nothing on SkyriseCities; "
+                              "83 dwellings x ~85 m2 gross on the consolidated 1,773 m2 lot needs ~6 storeys, the most RM h23 "
+                              "allows with a 3.1 m floor; listed unit numbers run to 4xx"),
+    "315143826-064": dict(storeys=37, height_m=127.2, height_confidence="medium",
+                          height_source="skyrisecities 90.0 m + 12 storeys x 3.1 m (dp_description)",
+                          why="SkyriseCities 'Stationlands Residential Towers' 25 storeys / 90.0 m (both towers; Under "
+                              "Construction, forum active 2026-09) + the 12 storeys this DP adds = 37 storeys / 127.2 m "
+                              "(was 37 x 3.1 = 114.7 m, which ignored the taller podium storeys in the 90 m)"),
+    "640132008-002": dict(name="Massey Ferguson Building Redevelopment", storeys=6, height_m=18.6, height_confidence="high",
+                          height_source="skyrisecities 6 storeys + press (four six-storey buildings)", developer="ESH Housing Ltd.",
+                          source_url="https://skyrisecities.com/database/projects/massey-ferguson-building-redevelopment.17582",
+                          why="4 buildings / 696 dwellings (student housing): four six-storey mid-rises per Connect CRE and "
+                              "Daily Hive (2026, via search; the sites are blocked from here), SkyriseCities 'Massey Ferguson "
+                              "Building Redevelopment' (21 m) 6 storeys, 4 buildings. Was 12 storeys (dwellings estimate)"),
+    "655770701-002": dict(name="ICE District Block BG residential tower", storeys=43, height_m=141.1, height_confidence="medium",
+                          height_source="skyrisecities 'Ice District Tower B' 43 storeys / 141.12 m (Block BG residential tower)",
+                          source_url="https://skyrisecities.com/database/projects/connect-centre.17572",
+                          why="matched by coordinate: the nearest project is 'Connect Centre' (31 m), ICE District Block BG, "
+                              "whose page says the residential tower was replaced by a shorter commercial tower. This DP puts a "
+                              "386-dwelling residential tower back on the existing podium. SkyriseCities' Block BG residential "
+                              "tower ('Ice District Tower B', mis-pinned, its URL now redirects to Connect Centre) is 43 storeys "
+                              "/ 141.12 m; 386 dwellings over ~38 tower floors fits. AED zone ceiling 195 m"),
+    "REZ-DC1-19860-167448": dict(name="La Reina Tower (Horne and Pitfield Building)", storeys=45, height_m=160.0,
+                                 developer="Limak Investments",
+                                 height_source="dc_text 160 m; 40-45 storeys per press (CBC 2022)",
+                                 why="SkyriseCities 'Horne and Pitfield Building Redevelopment' (16 m, 10301 104 St, Limak "
+                                     "Investments, forum active 2026-01) has no height; the rezoning (LDA21-0129 'La Reina "
+                                     "Tower', Bylaw 19860 April 2022) is for a 40-45-storey tower inside the warehouse. DC1 "
+                                     "19860 max 160.0 m (the 115 m in the text is the 5-year sunset fallback, April 2027). Not "
+                                     "ICE District Phase 2 (that pin is 450 m north). Kept 160 m, storeys 51 -> 45"),
+    "REZ-DC-20932-173298": dict(name="Jasper House", height_confidence="high",
+                                height_source="dc_text 108 m; skyrisecities agrees (108.00 m)",
+                                source_url="https://skyrisecities.com/database/projects/jasper-house.48762",
+                                why="SkyriseCities 'Jasper House' (12021 Jasper Ave, 58 m, forum active 2026-08) 108.00 m = DC "
+                                    "20932 west building 108 m; storeys unknown, 34 kept (108 / 3.1)"),
+    "REZ-DC-21522-359895": dict(name="Jasper and 115 Street", storeys=52, height_m=170.0, height_confidence="medium",
+                                height_source="skyrisecities 52 storeys / 170.00 m; second tower at the DC Area A ceiling 100 m",
+                                developer="Greenlong Construction", tower_heights=[170.0, 100.0],
+                                tallest_near=[53.541372, -113.518958],
+                                source_url="https://skyrisecities.com/database/projects/jasper-and-115-street.28514",
+                                why="DC 21522 allows Area A 100 m / Area B 180 m (the 60 m / 36.6 m read in Phase 3A.5 are "
+                                    "the June 2029 sunset fallbacks). SkyriseCities 'Jasper and 115 Street' (pin inside the "
+                                    "parcel, 2 buildings, forum active 2026-06) 52 storeys / 170.00 m fits Area B; the second "
+                                    "tower is shown at the Area A ceiling. Tallest tower placed nearest the SkyriseCities pin"),
+    "362851822-002": dict(name="Edmonton Motors Phase 1 - Area A", storeys=45, height_m=140.0,
+                          height_source="dc_text (DC2-1064 Area A 140.0 m)", developer="Pangman Development Corp.",
+                          why="DC2-1064 allows Area A 140.0 m / Area B 170.0 m (the 58 m read in Phase 3A.5 is the fallback "
+                              "if no permit by June 2029). This DP is Area A; SkyriseCities 'Edmonton Motors Lands "
+                              "Redevelopment' (56 storeys / 170.07 m, forum active 2026-03) is the Area B tower, which has no "
+                              "DP or rezoning since 2021 and is not in the candidates. 140 m / 3.1 = 45 storeys"),
+}
+
+# Rows entered by hand (no candidate_id): why each one is there (written to the promotion log).
+MANUAL_NOTES = {
+    "P104": "Connect Centre (ICE District Block BG office tower, complete 2023) entered as `existing` at SkyriseCities' "
+            "56.30 m / 16 storeys: it was finished after the LiDAR survey, so base.glb fell back to an OpenStreetMap "
+            "height tag of 142 m (the old 43-storey / 141 m residential plan). Footprint: that building's base.glb outline, inset 2 m so the 12 m podium it stands on is not hidden with it",
+}
+
+# Rows removed from proposals.csv in Phase 3C: their former ids, for the log.
+FORMER_ID = {"411454341-002": "P009", "392111925-002": "P013", "476200645-002": "P021", "520417913-002": "P023",
+             "613818800-002": "P025"}
+
+
+def bp_storeys(address):
+    """(storeys, date, text) named in the building-permit descriptions (24uj-dj8v) at an address, or None.
+    The most storeys mentioned wins ('4-storey structural frame only for the future 6-storey building' -> 6).
+    Cached in data/raw/heights/bp/."""
+    path = fh.CACHE / "bp" / (re.sub(r"\W+", "_", address).strip("_") + ".json")
+    if path.exists():
+        rows = json.loads(path.read_text())
+    else:
+        num, _, rest = address.partition(" - ")
+        rows = requests.get(f"https://data.edmonton.ca/resource/{BP_ID}.json",
+                            params={"$where": f"address like '%{num} - {rest}%'", "$limit": 300}, timeout=60).json()
+        if not isinstance(rows, list):
+            return None
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(rows))
+    best = None
+    for r in rows:
+        d = r.get("job_description") or ""
+        for m in re.finditer(r"\b(\d{1,2}|" + "|".join(fh.WORDS) + r")[ -]?stor(?:e)?y", d, re.I):
+            s = fh._num(m.group(1))
+            if s and (best is None or s > best[0]):
+                best = (s, (r.get("permit_date") or "")[:10], d.strip()[:120])
+    return best
+
+
+def sr_last_post(url):
+    """Date of the last forum post shown on a SkyriseCities project page (cached), or None."""
+    m = re.search(r"\.(\d+)$", url or "")
+    s = fh.fetch(url, fh.CACHE / "skyrise" / f"project_{m.group(1)}.html") if m else None
+    mm = re.search(r"Last Post: (\w{3} \d{1,2}, \d{4})", " ".join(fh.page_text(s or "", start="<body")))
+    return datetime.strptime(mm.group(1), "%b %d, %Y").date() if mm else None
+
+
+def sr_scheme(row, cand, rez_geom, sr_projects):
+    """The SkyriseCities project that stands for this site's scheme, if one shows more height than the row."""
+    lat, lon = float(row["lat"]), float(row["lon"])
+    best = None
+    for p in sr_projects:
+        if p["status"] in ("Complete", "Cancelled") or not (p["storeys"] or p["height"]):
+            continue
+        d = metres(lat, lon, p["lat"], p["lon"])
+        # a rezoning: the pin must be inside the rezoned polygon; a permit: within 40 m of its coordinate
+        if not (rez_geom.buffer(0.00005).contains(Point(p["lon"], p["lat"])) if rez_geom is not None else d <= SR_NEAR_M):
+            continue
+        h = p["height"] or p["storeys"] * RES_M
+        if h > float(row["height_m"]) + 1.0 and (best is None or d < best[1]):
+            best = (p, d, h)
+    return best
+
+
+AUTO_NAME = re.compile(r"^(.*) \((\d+)-storey ([\w-]+)\)$")
+
+
+def phase3c(rows, cands, zpolys, sr_projects, calls, dropped):
+    """Apply the Phase 3C rules (see above) to the finished proposals.csv rows, in place."""
+    today = date.today()
+    out = []
+    for row in rows:
+        cid = row.get("candidate_id") or ""
+        c = cands.get(cid.split(";")[0])
+        if c is None:
+            out.append(row)
+            continue
+        pid = row["id"]
+        before = (row["status"], row["storeys"], row["height_m"], row["height_confidence"])
+        fix = CORRECTIONS.get(cid)
+        if fix:
+            for k in ("name", "status", "storeys", "height_m", "height_confidence", "height_source", "source_url", "developer"):
+                if k in fix:
+                    row[k] = str(fix[k]) if not isinstance(fix[k], float) else f"{fix[k]:g}"
+        lat, lon = float(row["lat"]), float(row["lon"])
+        node, site = c["node"], exception_site(lat, lon)
+        # construction: building-permit storeys
+        src = row["height_source"]
+        if row["status"] == "construction" and not fix and not re.match(r"dp_description|skyrisecities \(as built\)|official", src):
+            bp = bp_storeys(c["address"])
+            if bp and str(bp[0]) != row["storeys"]:
+                s, when, txt = bp
+                rate = 4.0 if fh.office_only(c["description"]) else RES_M
+                row.update(storeys=str(s), height_m=f"{s * rate:.1f}", height_confidence="high",
+                           height_source=f"building permit {when} ('{txt}')",
+                           source_url=f"https://data.edmonton.ca/resource/{BP_ID}.json?address="
+                                      + c["address"].replace(" ", "%20"))
+                calls.append(f"`{pid}` building permit {when}: {s} storeys ('{txt}')")
+            if not meets_rule(num(row["storeys"], int), float(row["height_m"]), node, site):
+                dropped.append((c, f"building permit: {row['storeys']} storeys, below the rule ({node}); "
+                                   f"removed from proposals.csv ({pid})"))
+                calls.append(f"`{pid}` removed: building permit says {row['storeys']} storeys, below the rule in node '{node}'")
+                continue
+        # SkyriseCities scheme above the DC / zone ceiling
+        if not fix and row["height_source"].split(";")[0].strip() in ("dc_text", "zone_max"):
+            rez = None
+            if cid.startswith("REZ-"):
+                ps = [shape(zpolys[x.rsplit("-", 1)[1]]["the_geom"]) for x in cid.split(";") if x.rsplit("-", 1)[1] in zpolys]
+                rez = unary_union(ps) if ps else None
+            hit = sr_scheme(row, c, rez, sr_projects)
+            if hit:
+                p, d, h = hit
+                last = sr_last_post(p["url"])
+                kind = "DC" if row["height_source"].startswith("dc_text") else "zone ceiling"
+                where = "pin inside the rezoned parcel" if rez is not None else f"{d:.0f} m"
+                if last and (today - last).days <= SR_ACTIVE_DAYS:
+                    s = p["storeys"] or round(h / RES_M)
+                    row.update(storeys=str(s), height_m=f"{h:g}", height_confidence="medium", source_url=p["url"],
+                               height_source=f"skyrisecities (exceeds current {kind}; scheme per SkyriseCities)")
+                    if AUTO_NAME.match(row["name"]):
+                        row["name"] = p["title"]
+                    if not row["developer"]:
+                        row["developer"] = re.sub(r"\s+,", ",", sr_info(p["url"]).get("developer", ""))
+                    calls.append(f"`{pid}` SkyriseCities '{p['title']}' ({where}, {p['status']}, last forum post {last}) "
+                                 f"{s} storeys / {h:g} m exceeds the {kind} {before[2]} m: scheme adopted (medium)")
+                elif "stale SkyriseCities" not in row["height_source"]:
+                    row["height_source"] += (f"; stale SkyriseCities scheme '{p['title']}' {p['storeys'] or '?'} storeys "
+                                             f"(last activity {last or 'none shown'})")
+                    calls.append(f"`{pid}` SkyriseCities '{p['title']}' ({where}) {h:g} m exceeds the {kind}, but its last "
+                                 f"forum post is {last or 'not shown'} (> 24 months): {kind} kept, stale scheme noted")
+        m = AUTO_NAME.match(row["name"])
+        if m and m.group(2) != row["storeys"] and row["storeys"]:
+            row["name"] = f"{m.group(1)} ({row['storeys']}-storey {m.group(3)})"
+        after = (row["status"], row["storeys"], row["height_m"], row["height_confidence"])
+        if fix and after != before:
+            calls.append(f"`{pid}` {before[0]} {before[1]} storeys / {before[2]} m ({before[3]}) -> {after[0]} {after[1]} "
+                         f"storeys / {after[2]} m ({after[3]}): {fix['why']}")
+        elif fix:
+            calls.append(f"`{pid}` {fix['why']}")
+        if row["status"] == "construction" and row["height_confidence"] == "low":
+            calls.append(f"`{pid}` UNRESOLVED: status construction with low height confidence")
+        out.append(row)
+    return out
+
+
 NAME_STOP = re.compile(r"\d|dwelling|unit|use\b|site|total|reference|corner|housing|storey|building", re.I)
 
 
@@ -126,6 +359,20 @@ def zoning_snapshot():
     return d
 
 
+PARCELS = CACHE / "parcels_assessment.json"
+
+
+def parcel_rows():
+    """Assessment parcel centroids + areas in the bbox (dm3i-bp8w), cached (also used by auto_footprints.py)."""
+    if not PARCELS.exists():
+        rows = requests.get("https://data.edmonton.ca/resource/dm3i-bp8w.json", timeout=180, params={
+            "$select": "id,area,latitude,longitude", "$limit": 200000,
+            "$where": "within_box(geometry_point,53.585,-113.560,53.505,-113.430)"}).json()
+        CACHE.mkdir(parents=True, exist_ok=True)
+        PARCELS.write_text(json.dumps(rows))
+    return json.loads(PARCELS.read_text())
+
+
 _parcels = None
 
 
@@ -134,8 +381,7 @@ def area_wide(geom_wgs, conf):
     only (low confidence) over >= 5 parcels or > 20,000 m2."""
     global _parcels
     if _parcels is None:
-        rows = json.loads((CACHE / "parcels_assessment.json").read_text())
-        _parcels = [Point(float(r["longitude"]), float(r["latitude"])) for r in rows]
+        _parcels = [Point(float(r["longitude"]), float(r["latitude"])) for r in parcel_rows()]
     from shapely.prepared import prep
     lat = geom_wgs.centroid.y
     m2 = geom_wgs.area * 111_320 ** 2 * math.cos(math.radians(lat))
@@ -283,7 +529,7 @@ def main():
         if cid in HEIGHT_OVERRIDE:
             storeys, height, conf, hsrc, note = HEIGHT_OVERRIDE[cid]
             height = height or round(storeys * RES_M, 1)
-            calls.append(f"`{cid}` height: {note} = {storeys} storeys / {height} m (low)")
+            calls.append(f"`{cid}` height: {note} = {storeys} storeys / {height} m ({conf})")
         known = storeys is not None or height is not None
         if cid == "451843020-002":
             why = "already P001 Stantec Tower (this DP is exterior work on it)"
@@ -399,8 +645,19 @@ def main():
                      else p["address"].replace("near ", ""))
             p["name"] = f"{where} ({s} {p['use']})"
 
-    # Stable ids
+    # Phase 3C: a new construction row whose building permit names fewer storeys than the rule needs is
+    # dropped before it takes an id (rows already in the CSV are checked in phase3c()).
     old = load_existing_proposals()
+    in_csv = {o["candidate_id"] for o in old if o.get("candidate_id")}
+    for p in list(promoted):
+        if p["status"] == "construction" and p["cid"] not in in_csv and p["cid"] not in CORRECTIONS \
+                and not re.match(r"dp_description|skyrisecities \(as built\)", p["height_source"]):
+            bp = bp_storeys(p["cand"]["address"])
+            if bp and not meets_rule(bp[0], bp[0] * RES_M, p["node"], p["site"]):
+                promoted.remove(p)
+                dropped.append((p["cand"], f"building permit {bp[1]}: {bp[0]} storeys ('{bp[2]}'), below the rule"))
+
+    # Stable ids
     manual = [o for o in old if not o.get("candidate_id") and not o["name"].startswith("PLACEHOLDER")]
     by_cid = {o["candidate_id"]: o["id"] for o in old if o.get("candidate_id")}
     taken = {o["id"] for o in manual} | set(by_cid.values())
@@ -418,6 +675,8 @@ def main():
     rows, kept = [], 0
     for o in manual:
         o = {k: o.get(k, "") for k in COLUMNS}
+        if o["id"] in MANUAL_NOTES:
+            calls.append(f"`{o['id']}` (entered by hand) {MANUAL_NOTES[o['id']]}")
         if o["id"] == "P001":
             o.update(height_confidence=o["height_confidence"] or "high",
                      height_source=o["height_source"] or "official (Wikipedia, incl. spire)")
@@ -434,10 +693,14 @@ def main():
             "height_confidence": p["height_confidence"], "height_source": p["height_source"],
             "footprint_source": old_fp.get(p["id"], ""), "candidate_id": p["cid"]})
     gone = [o for o in old if o.get("candidate_id") and o["candidate_id"] not in {p["cid"] for p in promoted}]
-    for o in gone:   # promoted earlier, no longer selected: keep the row, say so
+    for o in gone:   # promoted earlier, no longer selected: keep the row, say so (unless skipped by hand)
+        if o["candidate_id"] in SKIP:
+            calls.append(f"`{o['id']}` {o['name']} removed from proposals.csv: {SKIP[o['candidate_id']]}")
+            continue
         rows.append({k: o.get(k, "") for k in COLUMNS})
         calls.append(f"`{o['id']}` ({o['candidate_id']}) no longer meets the selection but was promoted before: kept")
     rows.sort(key=lambda o: int(o["id"][1:]))
+    rows = phase3c(rows, {r["permit_id"]: r for r in cands}, zpolys, sr_projects, calls, dropped)
     with (DATA / "proposals.csv").open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=COLUMNS)
         w.writeheader()
@@ -448,8 +711,19 @@ def main():
         if p["cid"].startswith("REZ-DC") and re.search(r"residential towers?\b", dc_text(p, zpolys), re.I):
             p["use"] = "residential"
     meta = {p["id"]: {"use": p["use"], "buildings": dc_towers(p, zpolys) or building_count(p), "node": p["node"], "site": p["site"],
-                      "cid": p["cid"], "dwellings": units(p["cand"]), "floorplate_max": dc_floorplate(p, zpolys)}
+                      "cid": p["cid"], "dwellings": units(p["cand"]), "floorplate_max": dc_floorplate(p, zpolys),
+                      "from_permit": not p["cid"].startswith("REZ-")}
             for p in promoted}
+    for p in promoted:   # per-tower heights: CORRECTIONS, else a DP that lists them ('16, 19, and 21 Storeys')
+        fix, m = CORRECTIONS.get(p["cid"], {}), meta[p["id"]]
+        ts = fix.get("tower_storeys") or tower_storeys(p["cand"]["description"])
+        if ts and len(ts) == m["buildings"]:
+            m["tower_storeys"] = ts
+        if fix.get("tower_heights"):
+            m["tower_heights"] = fix["tower_heights"]
+            m["buildings"] = max(m["buildings"], len(fix["tower_heights"]))
+        if fix.get("tallest_near"):
+            m["tallest_near"] = fix["tallest_near"]
     (CACHE / "promote_meta.json").write_text(json.dumps(meta, indent=1))
     write_log(rows, promoted, dropped, calls, today)
     by = Counter(p["status"] for p in promoted)
@@ -469,6 +743,12 @@ def building_count(p):
     # SkyriseCities counts buildings per project; a DP is usually one building of it, so only a
     # rezoning (the whole site) takes the project's count.
     return (p["buildings"] or 1) if p["cid"].startswith("REZ-") else 1
+
+
+def tower_storeys(desc):
+    """Per-building storeys a DP lists ('3 Apartment House buildings (16, 19, and 21 Storeys ...') -> [16, 19, 21]."""
+    m = re.search(r"\b(\d{1,2}(?:\s*,\s*\d{1,2})*,?\s+and\s+\d{1,2})\s+Storeys", desc, re.I)
+    return [int(x) for x in re.findall(r"\d+", m.group(1))] if m else None
 
 
 def dc_text(p, zpolys):
@@ -533,7 +813,7 @@ def nearest_address(lat, lon):
 
 def write_log(rows, promoted, dropped, calls, today):
     rule_n = sum(1 for _, w in dropped if w == "rule")
-    L = [f"# Promotion log (Phase 3B)", "",
+    L = [f"# Promotion log (Phase 3B, Phase 3C rules)", "",
          f"Generated {today} by `scripts/promote_candidates.py` (`make proposals`). "
          f"{len(promoted)} candidates promoted into `data/proposals.csv`; {len(dropped)} not promoted "
          f"({rule_n} below the inclusion rule, listed only as a count).", "",
@@ -541,8 +821,9 @@ def write_log(rows, promoted, dropped, calls, today):
     for r, why in dropped:
         if why == "rule":
             continue
+        was = f" (was {FORMER_ID[r['permit_id']]})" if r["permit_id"] in FORMER_ID else ""
         L.append(f"| {r['permit_id']} | {r['node']} | {r['address']} | {r['storeys_final'] or '?'} / "
-                 f"{r['height_final_m'] or '?'} | {why} |")
+                 f"{r['height_final_m'] or '?'} | {why}{was} |")
     L += ["", "## Judgment calls", ""] + [f"- {c}" for c in calls]
     LOG.write_text("\n".join(L) + "\n", encoding="utf-8")
 

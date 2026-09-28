@@ -524,16 +524,9 @@ def overture_release():
     return rel[-1]
 
 
-def overture_table(theme, type_, columns, refresh):
-    import pyarrow.compute as pc
-    import pyarrow.dataset as pds
+def overture_fs():
+    """Anonymous S3 filesystem for the Overture bucket, through the HTTPS proxy when one is set."""
     import pyarrow.fs as pfs
-    import pyarrow.parquet as pq
-    path = cached(f"overture_{type_}.parquet")
-    if path.exists() and not refresh:
-        return pq.read_table(path).to_pylist()
-    release = overture_release()
-    LOG["sources"]["overture_release"] = release
     kw = {"anonymous": True, "region": "us-west-2"}
     proxy = os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
     if proxy:
@@ -543,7 +536,19 @@ def overture_table(theme, type_, columns, refresh):
     for var in ("REQUESTS_CA_BUNDLE", "SSL_CERT_FILE", "CURL_CA_BUNDLE"):
         if os.environ.get(var) and not os.environ.get("AWS_CA_BUNDLE"):
             os.environ["AWS_CA_BUNDLE"] = os.environ[var]
-    fs = pfs.S3FileSystem(**kw)
+    return pfs.S3FileSystem(**kw)
+
+
+def overture_table(theme, type_, columns, refresh):
+    import pyarrow.compute as pc
+    import pyarrow.dataset as pds
+    import pyarrow.parquet as pq
+    path = cached(f"overture_{type_}.parquet")
+    if path.exists() and not refresh:
+        return pq.read_table(path).to_pylist()
+    release = overture_release()
+    LOG["sources"]["overture_release"] = release
+    fs = overture_fs()
     d = pds.dataset(f"{OVERTURE_BUCKET}/release/{release}/theme={theme}/type={type_}/",
                     filesystem=fs, format="parquet")
     xmin, ymin, xmax, ymax = BBOX_WSEN

@@ -152,50 +152,9 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "P009",
-    "name": "Stadium Yards",
-    "footprint_source": "auto: Voronoi cell of assessment parcel 6557 m2; base-building outline(s) in the lot (official height replaces LiDAR)",
-    "lot_m2": 8410,
-    "parcel_m2": 6557
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -113.472734,
-       53.5568594
-      ],
-      [
-       -113.4735658,
-       53.5571538
-      ],
-      [
-       -113.4728173,
-       53.557795
-      ],
-      [
-       -113.4720854,
-       53.5575948
-      ],
-      [
-       -113.4722075,
-       53.5574352
-      ],
-      [
-       -113.472734,
-       53.5568594
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
     "id": "P010",
     "name": "Falcon Tower One",
-    "footprint_source": "auto: Voronoi cell of assessment parcel 2005 m2; 750 m2 residential floorplate centred on the lot",
+    "footprint_source": "auto: Voronoi cell of assessment parcel 2005 m2; 750 m2 residential floorplate on the permit coordinate",
     "lot_m2": 2493,
     "parcel_m2": 2005
    },
@@ -204,24 +163,24 @@
     "coordinates": [
      [
       [
-       -113.4990628,
-       53.5394769
+       -113.4989531,
+       53.539468
       ],
       [
-       -113.4985918,
-       53.5394791
+       -113.4984821,
+       53.5394702
       ],
       [
-       -113.4985946,
-       53.5396949
+       -113.4984849,
+       53.539686
       ],
       [
-       -113.4990656,
-       53.5396927
+       -113.4989559,
+       53.5396838
       ],
       [
-       -113.4990628,
-       53.5394769
+       -113.4989531,
+       53.539468
       ]
      ]
     ]
@@ -232,7 +191,12 @@
    "properties": {
     "id": "P011",
     "name": "10455 81 Avenue NW (21-storey residential)",
-    "footprint_source": "auto: Direct Control polygon (DC2); 3 x 750 m2 residential floorplate on the lot's long axis",
+    "footprint_source": "auto: Direct Control polygon (DC2); 3 x 750 m2 residential floorplate on the lot's long axis (tower heights 49.6 / 58.9 / 65.1 m)",
+    "part_heights": [
+     49.6,
+     58.9,
+     65.1
+    ],
     "lot_m2": 12730
    },
    "geometry": {
@@ -329,8 +293,8 @@
    "type": "Feature",
    "properties": {
     "id": "P012",
-    "name": "11141 84 Avenue NW (12-storey residential)",
-    "footprint_source": "auto: Voronoi cell of assessment parcel 2251 m2; 750 m2 residential floorplate centred on the lot",
+    "name": "ONE12",
+    "footprint_source": "auto: Voronoi cell of assessment parcel 2251 m2; 750 m2 residential floorplate on the permit coordinate",
     "lot_m2": 2253,
     "parcel_m2": 2251
    },
@@ -339,79 +303,28 @@
     "coordinates": [
      [
       [
-       -113.5201962,
-       53.5196263
+       -113.5203851,
+       53.5196394
       ],
       [
-       -113.5202021,
-       53.5199069
+       -113.520391,
+       53.5199199
       ],
       [
-       -113.5205642,
-       53.5199041
+       -113.5200289,
+       53.5199226
       ],
       [
-       -113.5205583,
-       53.5196236
+       -113.5200272,
+       53.5198428
       ],
       [
-       -113.5201962,
-       53.5196263
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "P013",
-    "name": "11425 St Albert Trail NW (10-storey residential)",
-    "footprint_source": "needs_trace",
-    "trace_reason": "lot 10,814 m2 > 8,000 m2 for a single building",
-    "auto_footprint": "Voronoi cell of assessment parcel 15020 m2; lot inset 3 m",
-    "lot_m2": 10814,
-    "parcel_m2": 15020
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -113.544604,
-       53.5638748
+       -113.520028,
+       53.519642
       ],
       [
-       -113.5451918,
-       53.5644052
-      ],
-      [
-       -113.5450854,
-       53.5644435
-      ],
-      [
-       -113.5422172,
-       53.564101
-      ],
-      [
-       -113.5428624,
-       53.5636825
-      ],
-      [
-       -113.5428917,
-       53.5636826
-      ],
-      [
-       -113.5429262,
-       53.5636411
-      ],
-      [
-       -113.5431113,
-       53.5636262
-      ],
-      [
-       -113.544604,
-       53.5638748
+       -113.5203851,
+       53.5196394
       ]
      ]
     ]
@@ -421,8 +334,8 @@
    "type": "Feature",
    "properties": {
     "id": "P014",
-    "name": "8709 118 Street NW (9-storey residential)",
-    "footprint_source": "auto: Direct Control polygon (DC); lot inset 3 m",
+    "name": "Windsor Terrace",
+    "footprint_source": "auto: Direct Control polygon (DC); 750 m2 residential floorplate on the permit coordinate",
     "lot_m2": 3874
    },
    "geometry": {
@@ -430,28 +343,24 @@
     "coordinates": [
      [
       [
-       -113.5334152,
-       53.5229528
+       -113.5335849,
+       53.5231217
       ],
       [
-       -113.5334152,
-       53.5229422
+       -113.5335849,
+       53.5234023
       ],
       [
-       -113.5342488,
-       53.5229467
+       -113.5339471,
+       53.5234023
       ],
       [
-       -113.5342488,
-       53.5234629
+       -113.5339471,
+       53.5231217
       ],
       [
-       -113.5334247,
-       53.5234602
-      ],
-      [
-       -113.5334152,
-       53.5229528
+       -113.5335849,
+       53.5231217
       ]
      ]
     ]
@@ -461,7 +370,7 @@
    "type": "Feature",
    "properties": {
     "id": "P015",
-    "name": "8615 108 Street NW (8-storey residential)",
+    "name": "8615 108 Street NW (6-storey residential)",
     "footprint_source": "auto: Direct Control polygon (DC); lot inset 3 m",
     "lot_m2": 2657
    },
@@ -497,7 +406,7 @@
    "type": "Feature",
    "properties": {
     "id": "P016",
-    "name": "9860 83 Avenue NW (7-storey residential)",
+    "name": "99 Street Apartment",
     "footprint_source": "auto: Voronoi cell of assessment parcel 807 m2; lot inset 3 m",
     "lot_m2": 808,
     "parcel_m2": 807
@@ -575,7 +484,7 @@
    "type": "Feature",
    "properties": {
     "id": "P018",
-    "name": "11329 University Avenue NW (7-storey residential)",
+    "name": "11329 University Avenue NW (6-storey residential)",
     "footprint_source": "auto: Direct Control polygon (DC2); lot inset 3 m",
     "lot_m2": 3831
    },
@@ -619,7 +528,7 @@
    "type": "Feature",
    "properties": {
     "id": "P019",
-    "name": "10015 113 Street NW (7-storey residential)",
+    "name": "10015 113 Street NW (6-storey residential)",
     "footprint_source": "auto: Direct Control polygon (DC2); lot inset 3 m",
     "lot_m2": 3528
    },
@@ -663,7 +572,7 @@
    "type": "Feature",
    "properties": {
     "id": "P020",
-    "name": "11419 University Avenue NW (7-storey residential)",
+    "name": "11419 University Avenue NW (6-storey residential)",
     "footprint_source": "auto: Voronoi cell of assessment parcel 713 m2; lot inset 3 m",
     "lot_m2": 714,
     "parcel_m2": 713
@@ -703,57 +612,8 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "P021",
-    "name": "10808 85 Avenue NW (7-storey residential)",
-    "footprint_source": "auto: Voronoi cell of assessment parcel 1618 m2; lot inset 3 m",
-    "lot_m2": 2011,
-    "parcel_m2": 1618
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -113.5099413,
-       53.5210235
-      ],
-      [
-       -113.5099399,
-       53.5214288
-      ],
-      [
-       -113.5097967,
-       53.5214478
-      ],
-      [
-       -113.5094235,
-       53.5213982
-      ],
-      [
-       -113.5094251,
-       53.521057
-      ],
-      [
-       -113.5096512,
-       53.5210233
-      ],
-      [
-       -113.5097954,
-       53.5210162
-      ],
-      [
-       -113.5099413,
-       53.5210235
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
     "id": "P022",
-    "name": "8521 106A Street NW (7-storey residential)",
+    "name": "8521 106A Street NW (6-storey residential)",
     "footprint_source": "auto: Voronoi cell of assessment parcel 1212 m2; lot inset 3 m",
     "lot_m2": 1488,
     "parcel_m2": 1212
@@ -801,49 +661,8 @@
   {
    "type": "Feature",
    "properties": {
-    "id": "P023",
-    "name": "8231 111 Street NW (7-storey residential)",
-    "footprint_source": "auto: Voronoi cell of assessment parcel 810 m2; lot inset 3 m",
-    "lot_m2": 810,
-    "parcel_m2": 810
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -113.5177258,
-       53.5187122
-      ],
-      [
-       -113.5177258,
-       53.5190036
-      ],
-      [
-       -113.5175407,
-       53.5190127
-      ],
-      [
-       -113.5175021,
-       53.5190107
-      ],
-      [
-       -113.517503,
-       53.5187122
-      ],
-      [
-       -113.5177258,
-       53.5187122
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
     "id": "P024",
-    "name": "10521 78 Avenue NW (7-storey residential)",
+    "name": "10521 78 Avenue NW (6-storey residential)",
     "footprint_source": "auto: Voronoi cell of assessment parcel 2019 m2; lot inset 3 m",
     "lot_m2": 1773,
     "parcel_m2": 2019
@@ -887,43 +706,6 @@
       [
        -113.5018566,
        53.5141965
-      ]
-     ]
-    ]
-   }
-  },
-  {
-   "type": "Feature",
-   "properties": {
-    "id": "P025",
-    "name": "11028 85 Avenue NW (7-storey residential)",
-    "footprint_source": "auto: 2 adjacent assessment-parcel cells merged (1052 m2); lot inset 3 m",
-    "lot_m2": 1050,
-    "parcel_m2": 405
-   },
-   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-     [
-      [
-       -113.5165529,
-       53.521026
-      ],
-      [
-       -113.5165517,
-       53.5214505
-      ],
-      [
-       -113.5163434,
-       53.5214478
-      ],
-      [
-       -113.5163445,
-       53.521028
-      ],
-      [
-       -113.5165529,
-       53.521026
       ]
      ]
     ]
@@ -1112,9 +894,7 @@
    "properties": {
     "id": "P030",
     "name": "Stationlands Residential Towers (east tower)",
-    "footprint_source": "needs_trace",
-    "trace_reason": "lot 8,369 m2 > 8,000 m2 for a single building",
-    "auto_footprint": "Voronoi cell of assessment parcel 19669 m2; 750 m2 residential floorplate centred on the lot",
+    "footprint_source": "auto: Voronoi cell of assessment parcel 19669 m2; 750 m2 residential floorplate on the permit coordinate",
     "lot_m2": 8369,
     "parcel_m2": 19669
    },
@@ -1123,24 +903,24 @@
     "coordinates": [
      [
       [
-       -113.4923663,
-       53.5475906
+       -113.4923612,
+       53.5475986
       ],
       [
-       -113.4918955,
-       53.5475817
+       -113.4918903,
+       53.5475897
       ],
       [
-       -113.491884,
-       53.5477974
+       -113.4918788,
+       53.5478054
       ],
       [
-       -113.4923548,
-       53.5478063
+       -113.4923497,
+       53.5478143
       ],
       [
-       -113.4923663,
-       53.5475906
+       -113.4923612,
+       53.5475986
       ]
      ]
     ]
@@ -1151,7 +931,7 @@
    "properties": {
     "id": "P031",
     "name": "Falcon Tower Two",
-    "footprint_source": "auto: Voronoi cell of assessment parcel 2208 m2; 750 m2 residential floorplate centred on the lot",
+    "footprint_source": "auto: Voronoi cell of assessment parcel 2208 m2; 750 m2 residential floorplate on the permit coordinate",
     "lot_m2": 2208,
     "parcel_m2": 2208
    },
@@ -1160,24 +940,24 @@
     "coordinates": [
      [
       [
-       -113.498596,
-       53.5392334
+       -113.4984804,
+       53.5392749
       ],
       [
-       -113.499067,
-       53.5392335
+       -113.4989514,
+       53.539275
       ],
       [
-       -113.4990671,
-       53.5390177
+       -113.4989516,
+       53.5390591
       ],
       [
-       -113.4985961,
-       53.5390176
+       -113.4984806,
+       53.539059
       ],
       [
-       -113.498596,
-       53.5392334
+       -113.4984804,
+       53.5392749
       ]
      ]
     ]
@@ -1188,7 +968,7 @@
    "properties": {
     "id": "P032",
     "name": "Kingsway Crossing",
-    "footprint_source": "auto: Voronoi cell of assessment parcel 4321 m2; 750 m2 residential floorplate centred on the lot",
+    "footprint_source": "auto: Voronoi cell of assessment parcel 4321 m2; 750 m2 residential floorplate on the permit coordinate",
     "lot_m2": 4967,
     "parcel_m2": 4321
    },
@@ -1197,24 +977,24 @@
     "coordinates": [
      [
       [
-       -113.5077592,
-       53.5585174
+       -113.5077295,
+       53.558443
       ],
       [
-       -113.507288,
-       53.5585176
+       -113.5072582,
+       53.5584432
       ],
       [
-       -113.5072883,
-       53.5587335
+       -113.5072585,
+       53.558659
       ],
       [
-       -113.5077595,
-       53.5587332
+       -113.5077298,
+       53.5586588
       ],
       [
-       -113.5077592,
-       53.5585174
+       -113.5077295,
+       53.558443
       ]
      ]
     ]
@@ -1225,7 +1005,7 @@
    "properties": {
     "id": "P033",
     "name": "10154 108 Street NW (12-storey residential)",
-    "footprint_source": "auto: Voronoi cell of assessment parcel 4189 m2; 750 m2 residential floorplate centred on the lot",
+    "footprint_source": "auto: Voronoi cell of assessment parcel 4189 m2; 750 m2 residential floorplate on the permit coordinate",
     "lot_m2": 5008,
     "parcel_m2": 4189
    },
@@ -1234,24 +1014,24 @@
     "coordinates": [
      [
       [
-       -113.5068319,
-       53.5419868
+       -113.5068478,
+       53.5420219
       ],
       [
-       -113.5072917,
-       53.5420477
+       -113.5073076,
+       53.5420828
       ],
       [
-       -113.5073704,
-       53.541837
+       -113.5073862,
+       53.5418721
       ],
       [
-       -113.5069106,
-       53.5417761
+       -113.5069264,
+       53.5418112
       ],
       [
-       -113.5068319,
-       53.5419868
+       -113.5068478,
+       53.5420219
       ]
      ]
     ]
@@ -1324,108 +1104,50 @@
    "type": "Feature",
    "properties": {
     "id": "P035",
-    "name": "10314 106 Street NW (12-storey residential)",
-    "footprint_source": "auto: 2 adjacent assessment-parcel cells merged (8959 m2); 4 x 750 m2 residential floorplate on the lot's long axis",
+    "name": "Massey Ferguson Building Redevelopment",
+    "footprint_source": "auto: 2 adjacent assessment-parcel cells merged (8959 m2); lot inset 3 m",
     "lot_m2": 8959,
     "parcel_m2": 3436
    },
    "geometry": {
-    "type": "MultiPolygon",
+    "type": "Polygon",
     "coordinates": [
      [
       [
-       [
-        -113.5035475,
-        53.5461397
-       ],
-       [
-        -113.5035474,
-        53.5458591
-       ],
-       [
-        -113.503185,
-        53.5458591
-       ],
-       [
-        -113.5031851,
-        53.5461397
-       ],
-       [
-        -113.5035475,
-        53.5461397
-       ]
-      ]
-     ],
-     [
+       -113.5037878,
+       53.5452714
+      ],
       [
-       [
-        -113.5035474,
-        53.5457534
-       ],
-       [
-        -113.5035473,
-        53.5454728
-       ],
-       [
-        -113.5031849,
-        53.5454728
-       ],
-       [
-        -113.503185,
-        53.5457534
-       ],
-       [
-        -113.5035474,
-        53.5457534
-       ]
-      ]
-     ],
-     [
+       -113.5036014,
+       53.5453912
+      ],
       [
-       [
-        -113.5035473,
-        53.5453671
-       ],
-       [
-        -113.5035472,
-        53.5450865
-       ],
-       [
-        -113.5031849,
-        53.5450865
-       ],
-       [
-        -113.5031849,
-        53.5453671
-       ],
-       [
-        -113.5035473,
-        53.5453671
-       ]
-      ]
-     ],
-     [
+       -113.5037923,
+       53.545856
+      ],
       [
-       [
-        -113.5035472,
-        53.5449808
-       ],
-       [
-        -113.5035472,
-        53.5447002
-       ],
-       [
-        -113.5031848,
-        53.5447003
-       ],
-       [
-        -113.5031849,
-        53.5449808
-       ],
-       [
-        -113.5035472,
-        53.5449808
-       ]
+       -113.5034569,
+       53.5461904
+      ],
+      [
+       -113.5031494,
+       53.5461888
+      ],
+      [
+       -113.5029518,
+       53.5458342
+      ],
+      [
+       -113.5031198,
+       53.5446994
+      ],
+      [
+       -113.5036576,
+       53.5446997
+      ],
+      [
+       -113.5037878,
+       53.5452714
       ]
      ]
     ]
@@ -1435,10 +1157,8 @@
    "type": "Feature",
    "properties": {
     "id": "P036",
-    "name": "10305 104 Avenue NW (12-storey residential)",
-    "footprint_source": "needs_trace",
-    "trace_reason": "lot 8,949 m2 > 8,000 m2 for a single building",
-    "auto_footprint": "Voronoi cell of assessment parcel 24007 m2; 750 m2 residential floorplate centred on the lot",
+    "name": "ICE District Block BG residential tower",
+    "footprint_source": "auto: Voronoi cell of assessment parcel 24007 m2; 750 m2 residential floorplate on the permit coordinate",
     "lot_m2": 8949,
     "parcel_m2": 24007
    },
@@ -1447,24 +1167,28 @@
     "coordinates": [
      [
       [
-       -113.4969159,
-       53.545146
+       -113.4973912,
+       53.5456045
       ],
       [
-       -113.4964475,
-       53.5451166
+       -113.4969227,
+       53.5455751
       ],
       [
-       -113.4964094,
-       53.5453312
+       -113.4969608,
+       53.5453604
       ],
       [
-       -113.4968779,
-       53.5453607
+       -113.4973975,
+       53.5453879
       ],
       [
-       -113.4969159,
-       53.545146
+       -113.4973975,
+       53.5455689
+      ],
+      [
+       -113.4973912,
+       53.5456045
       ]
      ]
     ]
@@ -1924,7 +1648,7 @@
     "id": "P047",
     "name": "11024 85 Avenue NW (7-storey residential)",
     "footprint_source": "auto: 2 adjacent assessment-parcel cells merged (809 m2); lot inset 3 m",
-    "lot_m2": 811,
+    "lot_m2": 809,
     "parcel_m2": 405
    },
    "geometry": {
@@ -1932,28 +1656,32 @@
     "coordinates": [
      [
       [
-       -113.5162264,
-       53.5210546
+       -113.5163828,
+       53.5210542
       ],
       [
-       -113.5162254,
-       53.5214185
+       -113.5163817,
+       53.5214209
       ],
       [
-       -113.516054,
-       53.5214208
+       -113.5162102,
+       53.5214186
       ],
       [
-       -113.516055,
-       53.5210518
+       -113.5162112,
+       53.5210562
       ],
       [
-       -113.5161457,
-       53.5210583
+       -113.5162499,
+       53.5210543
       ],
       [
-       -113.5162264,
-       53.5210546
+       -113.5162939,
+       53.5210575
+      ],
+      [
+       -113.5163828,
+       53.5210542
       ]
      ]
     ]
@@ -2013,9 +1741,7 @@
    "properties": {
     "id": "P049",
     "name": "9862 90 Avenue NW (6-storey residential)",
-    "footprint_source": "needs_trace",
-    "trace_reason": "90% of the footprint on park / water land use",
-    "auto_footprint": "4 adjacent assessment-parcel cells merged (1619 m2); lot inset 3 m",
+    "footprint_source": "auto: 4 adjacent assessment-parcel cells merged (1619 m2); lot inset 3 m; 90% on green land use that is vacant land, not a park (landuse=greenfield)",
     "lot_m2": 1617,
     "parcel_m2": 407
    },
@@ -2067,7 +1793,7 @@
    "type": "Feature",
    "properties": {
     "id": "P050",
-    "name": "10301 104 Street NW (51-storey mixed-use)",
+    "name": "La Reina Tower (Horne and Pitfield Building)",
     "footprint_source": "auto: rezoned zoning polygon; 850 m2 mixed-use floorplate centred on the lot (DC maximum floor plate 850 m2)",
     "lot_m2": 3521
    },
@@ -2103,7 +1829,7 @@
    "type": "Feature",
    "properties": {
     "id": "P051",
-    "name": "12021 Jasper Avenue NW (34-storey mixed-use)",
+    "name": "Jasper House",
     "footprint_source": "auto: rezoned zoning polygon; 750 m2 residential floorplate centred on the lot",
     "lot_m2": 6026
    },
@@ -2140,7 +1866,7 @@
    "properties": {
     "id": "P052",
     "name": "10004 112 Street NW (33-storey residential)",
-    "footprint_source": "auto: Voronoi cell of assessment parcel 2075 m2; 750 m2 residential floorplate centred on the lot",
+    "footprint_source": "auto: Voronoi cell of assessment parcel 2075 m2; 750 m2 residential floorplate on the permit coordinate",
     "lot_m2": 2075,
     "parcel_m2": 2075
    },
@@ -2149,24 +1875,24 @@
     "coordinates": [
      [
       [
-       -113.5146346,
-       53.5389692
+       -113.5142436,
+       53.539049
       ],
       [
-       -113.5141636,
-       53.5389691
+       -113.5147146,
+       53.5390491
       ],
       [
-       -113.5141634,
-       53.5391849
+       -113.5147144,
+       53.5392586
       ],
       [
-       -113.5146344,
-       53.5391851
+       -113.5142434,
+       53.5392585
       ],
       [
-       -113.5146346,
-       53.5389692
+       -113.5142436,
+       53.539049
       ]
      ]
     ]
@@ -2285,7 +2011,7 @@
    "properties": {
     "id": "P056",
     "name": "The Clancy",
-    "footprint_source": "auto: Direct Control polygon (DC2); 750 m2 residential floorplate centred on the lot",
+    "footprint_source": "auto: Direct Control polygon (DC2); 750 m2 residential floorplate on the permit coordinate",
     "lot_m2": 2521
    },
    "geometry": {
@@ -2293,24 +2019,24 @@
     "coordinates": [
      [
       [
-       -113.4999295,
-       53.5446873
+       -113.4999985,
+       53.5447371
       ],
       [
-       -113.4994585,
-       53.5446873
+       -113.4995275,
+       53.5447371
       ],
       [
-       -113.4994585,
-       53.5449032
+       -113.4995275,
+       53.5449529
       ],
       [
-       -113.4999295,
-       53.5449032
+       -113.4999985,
+       53.5449529
       ],
       [
-       -113.4999295,
-       53.5446873
+       -113.4999985,
+       53.5447371
       ]
      ]
     ]
@@ -2592,9 +2318,7 @@
    "properties": {
     "id": "P063",
     "name": "12415 Jasper Avenue NW (20-storey residential)",
-    "footprint_source": "needs_trace",
-    "trace_reason": "100% of the footprint on park / water land use",
-    "auto_footprint": "rezoned zoning polygon; 750 m2 residential floorplate centred on the lot",
+    "footprint_source": "auto: rezoned zoning polygon; 750 m2 residential floorplate centred on the lot; 100% on green land use that is vacant land, not a park (landuse=grass)",
     "lot_m2": 3455
    },
    "geometry": {
@@ -2629,8 +2353,12 @@
    "type": "Feature",
    "properties": {
     "id": "P064",
-    "name": "11456 Jasper Avenue NW (19-storey mixed-use)",
-    "footprint_source": "auto: rezoned zoning polygon; 2 x 750 m2 residential floorplate on the lot's long axis",
+    "name": "Jasper and 115 Street",
+    "footprint_source": "auto: rezoned zoning polygon; 2 x 750 m2 residential floorplate on the lot's long axis (tower heights 170 / 100 m)",
+    "part_heights": [
+     170.0,
+     100.0
+    ],
     "lot_m2": 7824
    },
    "geometry": {
@@ -2691,10 +2419,8 @@
    "type": "Feature",
    "properties": {
     "id": "P065",
-    "name": "10035 115 Street NW (18-storey residential)",
-    "footprint_source": "needs_trace",
-    "trace_reason": "lot 8,824 m2 > 8,000 m2 for a single building",
-    "auto_footprint": "Direct Control polygon (DC2); 750 m2 residential floorplate centred on the lot",
+    "name": "Edmonton Motors Phase 1 - Area A",
+    "footprint_source": "auto: Direct Control polygon (DC2); 750 m2 residential floorplate on the permit coordinate",
     "lot_m2": 8824
    },
    "geometry": {
@@ -2702,24 +2428,24 @@
     "coordinates": [
      [
       [
-       -113.5187531,
-       53.5402621
+       -113.5189688,
+       53.5398747
       ],
       [
-       -113.5187531,
-       53.5405426
+       -113.5189688,
+       53.5401553
       ],
       [
-       -113.5191155,
-       53.5405426
+       -113.5193312,
+       53.5401553
       ],
       [
-       -113.5191155,
-       53.5402621
+       -113.5193312,
+       53.5398747
       ],
       [
-       -113.5187531,
-       53.5402621
+       -113.5189688,
+       53.5398747
       ]
      ]
     ]
@@ -2874,7 +2600,7 @@
    "properties": {
     "id": "P070",
     "name": "Devonshire",
-    "footprint_source": "auto: Direct Control polygon (DC2); 750 m2 residential floorplate centred on the lot",
+    "footprint_source": "auto: Direct Control polygon (DC2); 750 m2 residential floorplate on the permit coordinate",
     "lot_m2": 2032
    },
    "geometry": {
@@ -2882,24 +2608,24 @@
     "coordinates": [
      [
       [
-       -113.5247519,
-       53.5418332
+       -113.5246855,
+       53.5418481
       ],
       [
-       -113.5242809,
-       53.5418332
+       -113.5242145,
+       53.5418481
       ],
       [
-       -113.5242809,
-       53.542049
+       -113.5242145,
+       53.5420639
       ],
       [
-       -113.5247519,
-       53.542049
+       -113.5246855,
+       53.5420639
       ],
       [
-       -113.5247519,
-       53.5418332
+       -113.5246855,
+       53.5418481
       ]
      ]
     ]
@@ -2947,7 +2673,7 @@
    "type": "Feature",
    "properties": {
     "id": "P072",
-    "name": "10212 96 Street NW (12-storey mixed-use)",
+    "name": "Artists Quarters",
     "footprint_source": "needs_trace",
     "trace_reason": "lot 8,094 m2 > 8,000 m2 for a single building",
     "auto_footprint": "rezoned zoning polygon; 1500 m2 mixed-use floorplate centred on the lot",
@@ -3043,9 +2769,7 @@
    "properties": {
     "id": "P074",
     "name": "10315 120 Street NW (9-storey residential)",
-    "footprint_source": "needs_trace",
-    "trace_reason": "lot too narrow (footprint about 6 m wide); 89% of the footprint on park / water land use",
-    "auto_footprint": "Voronoi cell of assessment parcel 696 m2; lot inset 3 m",
+    "footprint_source": "auto: Voronoi cell of assessment parcel 696 m2; lot inset 1.5 m (narrow lot); 86% on green land use that is vacant land, not a park (landuse=grass)",
     "lot_m2": 699,
     "parcel_m2": 696
    },
@@ -3054,24 +2778,24 @@
     "coordinates": [
      [
       [
-       -113.5278301,
-       53.5452331
+       -113.5278039,
+       53.5452466
       ],
       [
-       -113.5278459,
-       53.5451693
+       -113.5278264,
+       53.5451559
       ],
       [
-       -113.5285513,
-       53.5451694
+       -113.5285738,
+       53.5451559
       ],
       [
-       -113.5285518,
-       53.5452332
+       -113.5285745,
+       53.5452467
       ],
       [
-       -113.5278301,
-       53.5452331
+       -113.5278039,
+       53.5452466
       ]
      ]
     ]
@@ -3309,8 +3033,8 @@
    "type": "Feature",
    "properties": {
     "id": "P080",
-    "name": "10015 111 Street NW (9-storey residential)",
-    "footprint_source": "auto: rezoned zoning polygon; lot inset 3 m",
+    "name": "The Heights",
+    "footprint_source": "auto: rezoned zoning polygon; 750 m2 residential floorplate centred on the lot",
     "lot_m2": 5379
    },
    "geometry": {
@@ -3318,24 +3042,24 @@
     "coordinates": [
      [
       [
-       -113.5120647,
-       53.5396128
+       -113.5114693,
+       53.539101
       ],
       [
-       -113.5112353,
-       53.5396083
+       -113.5114693,
+       53.5393815
       ],
       [
-       -113.5112353,
-       53.538872
+       -113.5118316,
+       53.5393815
       ],
       [
-       -113.5120647,
-       53.538872
+       -113.5118316,
+       53.539101
       ],
       [
-       -113.5120647,
-       53.5396128
+       -113.5114693,
+       53.539101
       ]
      ]
     ]
@@ -4375,6 +4099,53 @@
       [
        -113.4964347,
        53.538204
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "P104",
+    "name": "Connect Centre",
+    "footprint_source": "OpenStreetMap building via Overture Maps (base.glb outline, convex hull inset 2 m so the podium it stands on stays visible)"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -113.497594,
+       53.5456866
+      ],
+      [
+       -113.4982395,
+       53.5456881
+      ],
+      [
+       -113.4982369,
+       53.5460276
+      ],
+      [
+       -113.498113,
+       53.5460632
+      ],
+      [
+       -113.4979916,
+       53.5460622
+      ],
+      [
+       -113.4976467,
+       53.5460486
+      ],
+      [
+       -113.497628,
+       53.5460366
+      ],
+      [
+       -113.497594,
+       53.5456866
       ]
      ]
     ]
